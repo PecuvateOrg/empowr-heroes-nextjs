@@ -4,7 +4,23 @@ export const metadata = {
   title: 'Thank You — Empowr Heroes',
 }
 
-export default function ThankYouPage() {
+const TIERS: Record<string, { name: string; emoji: string }> = {
+  seed:      { name: 'Seed Hero',      emoji: '🌱' },
+  momentum:  { name: 'Momentum Hero',  emoji: '🚀' },
+  community: { name: 'Community Hero', emoji: '🫂' },
+  champion:  { name: 'Champion Hero',  emoji: '🏆' },
+  legacy:    { name: 'Legacy Hero',    emoji: '💎' },
+  onetime:   { name: 'One-Time Hero',  emoji: '💝' },
+}
+
+export default async function ThankYouPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tier?: string }>
+}) {
+  const { tier } = await searchParams
+  const tierInfo = (tier && TIERS[tier]) ?? null
+
   return (
     <main className="page-content page-thankyou">
       <div className="ty-wrap">
@@ -14,10 +30,12 @@ export default function ThankYouPage() {
           You've joined a growing movement of people who believe wellbeing is built through real-life action, connection, and care.
         </p>
 
-        <div className="tier-pill">
-          <div className="tp-label">💠 Your Hero Tier</div>
-          <div className="tp-value">Community Hero 🫂</div>
-        </div>
+        {tierInfo && (
+          <div className="tier-pill">
+            <div className="tp-label">💠 Your Hero Tier</div>
+            <div className="tp-value">{tierInfo.name} {tierInfo.emoji}</div>
+          </div>
+        )}
 
         <div className="ty-steps">
           <div className="h3 text-center">What Happens Next</div>
