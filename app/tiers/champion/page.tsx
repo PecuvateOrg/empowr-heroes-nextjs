@@ -70,7 +70,7 @@ export default function ChampionHeroPage() {
             <strong>Ready to become a Champion Hero?</strong>
             <span>£250/month — cancel anytime. Your impact starts immediately.</span>
           </div>
-          <a href="https://donate.stripe.com/7sYcN4cDO8mS1v70gO18c01" target="_blank" rel="noopener noreferrer" className="btn-white">🏆 Choose This Tier →</a>
+          <Link href="/checkout?tier=champion" className="btn-white">🏆 Choose This Tier →</Link>
         </div>
 
         <div className="btn-row">

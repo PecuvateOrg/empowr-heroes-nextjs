@@ -26,7 +26,7 @@ export default function BecomePage() {
             <div className="tc-price">£10/month</div>
             <div className="tc-desc"><strong>Plant the seeds of change</strong> — Your contribution helps keep our sessions affordable and accessible.</div>
             <div className="tc-btns">
-              <a href="https://donate.stripe.com/3cIdR833e32y2zb7Jg18c03" target="_blank" rel="noopener noreferrer" className="tca tca-main">Choose This Tier</a>
+              <Link href="/checkout?tier=seed" className="tca tca-main">Choose This Tier</Link>
               <Link href="/tiers/seed" className="tca tca-ghost">Find out more →</Link>
             </div>
           </div>
@@ -37,7 +37,7 @@ export default function BecomePage() {
             <div className="tc-price">£25/month</div>
             <div className="tc-desc"><strong>Build momentum for growth</strong> — Your support contributes to the practical infrastructure that enables sessions to happen consistently.</div>
             <div className="tc-btns">
-              <a href="https://donate.stripe.com/4gMcN47ju1Yu2zb3t018c02" target="_blank" rel="noopener noreferrer" className="tca tca-main">Choose This Tier</a>
+              <Link href="/checkout?tier=momentum" className="tca tca-main">Choose This Tier</Link>
               <Link href="/tiers/momentum" className="tca tca-ghost">Find out more →</Link>
             </div>
           </div>
@@ -48,7 +48,7 @@ export default function BecomePage() {
             <div className="tc-price">£50/month</div>
             <div className="tc-desc"><strong>Power community transformation</strong> — Your support helps us expand our reach, enabling us to bring programs to new venues, schools and communities.</div>
             <div className="tc-btns">
-              <a href="https://donate.stripe.com/5kQ7sK7ju7iOgq1gfM18c04" target="_blank" rel="noopener noreferrer" className="tca tca-main">Choose This Tier</a>
+              <Link href="/checkout?tier=community" className="tca tca-main">Choose This Tier</Link>
               <Link href="/tiers/community" className="tca tca-ghost">Find out more →</Link>
             </div>
           </div>
@@ -59,7 +59,7 @@ export default function BecomePage() {
             <div className="tc-price">£250/month</div>
             <div className="tc-desc"><strong>Lead the movement</strong> — You're fueling sustainable growth and long-term impact across the UK.</div>
             <div className="tc-btns">
-              <a href="https://donate.stripe.com/7sYcN4cDO8mS1v70gO18c01" target="_blank" rel="noopener noreferrer" className="tca tca-main">Choose This Tier</a>
+              <Link href="/checkout?tier=champion" className="tca tca-main">Choose This Tier</Link>
               <Link href="/tiers/champion" className="tca tca-ghost">Find out more →</Link>
             </div>
           </div>
@@ -70,7 +70,7 @@ export default function BecomePage() {
             <div className="tc-price">£500/month</div>
             <div className="tc-desc"><strong>Power moves</strong> — Your substantial commitment enables us to think and act more ambitiously while maintaining financial stability.</div>
             <div className="tc-btns">
-              <a href="https://donate.stripe.com/28E00iavGdHc0r3gfM18c00" target="_blank" rel="noopener noreferrer" className="tca tca-main">Choose This Tier</a>
+              <Link href="/checkout?tier=legacy" className="tca tca-main">Choose This Tier</Link>
               <Link href="/tiers/legacy" className="tca tca-ghost">Find out more →</Link>
             </div>
           </div>
@@ -81,7 +81,7 @@ export default function BecomePage() {
             <div className="tc-price">Your Choice</div>
             <div className="tc-desc"><strong>Make a one-off impact.</strong> Every contribution — no matter the size — supports our mission.</div>
             <div className="tc-btns">
-              <a href="https://buy.stripe.com/9B6bJ09rCbz48XzbZw18c05" target="_blank" rel="noopener noreferrer" className="tca tca-main">Choose This Tier</a>
+              <Link href="/checkout?tier=onetime" className="tca tca-main">Choose This Tier</Link>
               <Link href="/tiers/onetime" className="tca tca-ghost">Find out more →</Link>
             </div>
           </div>

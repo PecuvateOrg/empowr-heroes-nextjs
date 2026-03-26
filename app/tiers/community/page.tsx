@@ -61,7 +61,7 @@ export default function CommunityHeroPage() {
             <strong>Ready to become a Community Hero?</strong>
             <span>£50/month — cancel anytime. Your impact starts immediately.</span>
           </div>
-          <a href="https://donate.stripe.com/5kQ7sK7ju7iOgq1gfM18c04" target="_blank" rel="noopener noreferrer" className="btn-white">🫂 Choose This Tier →</a>
+          <Link href="/checkout?tier=community" className="btn-white">🫂 Choose This Tier →</Link>
         </div>
 
         <div className="btn-row">

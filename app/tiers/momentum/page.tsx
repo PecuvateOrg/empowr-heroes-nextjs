@@ -54,7 +54,7 @@ export default function MomentumHeroPage() {
             <strong>Ready to become a Momentum Hero?</strong>
             <span>£25/month — cancel anytime. Your impact starts immediately.</span>
           </div>
-          <a href="https://donate.stripe.com/4gMcN47ju1Yu2zb3t018c02" target="_blank" rel="noopener noreferrer" className="btn-white">🚀 Choose This Tier →</a>
+          <Link href="/checkout?tier=momentum" className="btn-white">🚀 Choose This Tier →</Link>
         </div>
 
         <div className="btn-row">

@@ -54,7 +54,7 @@ export default function SeedHeroPage() {
             <strong>Ready to become a Seed Hero?</strong>
             <span>£10/month — cancel anytime. Your impact starts immediately.</span>
           </div>
-          <a href="https://donate.stripe.com/3cIdR833e32y2zb7Jg18c03" target="_blank" rel="noopener noreferrer" className="btn-white">🌱 Choose This Tier →</a>
+          <Link href="/checkout?tier=seed" className="btn-white">🌱 Choose This Tier →</Link>
         </div>
 
         <div className="btn-row">

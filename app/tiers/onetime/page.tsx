@@ -61,7 +61,7 @@ export default function OneTimeHeroPage() {
             <strong>Ready to make your contribution?</strong>
             <span>Any amount. Every contribution counts.</span>
           </div>
-          <a href="https://buy.stripe.com/9B6bJ09rCbz48XzbZw18c05" target="_blank" rel="noopener noreferrer" className="btn-white">💝 Make a Contribution →</a>
+          <Link href="/checkout?tier=onetime" className="btn-white">💝 Make a Contribution →</Link>
         </div>
 
         <div className="btn-row">

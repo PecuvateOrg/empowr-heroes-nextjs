@@ -78,7 +78,7 @@ export default function LegacyHeroPage() {
             <strong>Ready to become a Legacy Hero?</strong>
             <span>£500/month — cancel anytime. Your impact starts immediately.</span>
           </div>
-          <a href="https://donate.stripe.com/28E00iavGdHc0r3gfM18c00" target="_blank" rel="noopener noreferrer" className="btn-white">💎 Choose This Tier →</a>
+          <Link href="/checkout?tier=legacy" className="btn-white">💎 Choose This Tier →</Link>
         </div>
 
         <div className="btn-row">
