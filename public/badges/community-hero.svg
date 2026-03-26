@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e07b54;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#b85a32;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <circle cx="200" cy="200" r="195" fill="url(#bg)" />
+  <circle cx="200" cy="200" r="175" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="3" />
+  <circle cx="200" cy="200" r="155" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="2" />
+  <text x="200" y="155" text-anchor="middle" font-family="sans-serif" font-size="72" fill="white">🫂</text>
+  <text x="200" y="230" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="32" fill="white" letter-spacing="1">EMPOWR</text>
+  <text x="200" y="268" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="20" fill="rgba(255,255,255,0.85)" letter-spacing="2">COMMUNITY HERO</text>
+  <text x="200" y="310" text-anchor="middle" font-family="sans-serif" font-size="13" fill="rgba(255,255,255,0.6)" letter-spacing="3">PLACEHOLDER</text>
+</svg>
