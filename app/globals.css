@@ -915,6 +915,45 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 2.2rem 0; }
 .footer-links a:hover { color: #fff; }
 
 /* ─────────────────────────────────────────
+   COOKIE BANNER
+───────────────────────────────────────── */
+.cookie-banner {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 500;
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.08);
+  padding: 1rem 1.25rem;
+}
+.cookie-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.cookie-text {
+  font-size: 0.875rem;
+  color: var(--mid);
+  line-height: 1.5;
+}
+.cookie-text a {
+  color: var(--blue);
+  font-weight: 700;
+  text-decoration: underline;
+}
+.cookie-btns {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.cookie-decline {
+  color: var(--muted);
+  border-color: var(--border);
+}
+
+/* ─────────────────────────────────────────
    CHECKOUT PAGE
 ───────────────────────────────────────── */
 .page-checkout { background: var(--cream); }
@@ -1030,6 +1069,10 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 2.2rem 0; }
   .patron-wrap { padding: 4.5rem 2rem 5rem; }
   .patron-impact-grid { grid-template-columns: repeat(3, 1fr); }
   .patron-benefits-strip { grid-template-columns: repeat(3, 1fr); }
+
+  /* Cookie banner */
+  .cookie-inner { flex-direction: row; align-items: center; justify-content: space-between; }
+  .cookie-text { margin-bottom: 0; }
 
   /* Footer */
   .footer-inner { flex-direction: row; justify-content: space-between; align-items: center; }
