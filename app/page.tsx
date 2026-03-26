@@ -8,8 +8,8 @@ export default function Home() {
         <div className="glow2"></div>
         <div className="hero-inner">
           <div className="callout callout-hero">
-            💡 <strong>Our mission is simple:</strong><br />
-            To lead, promote, and scale Experiential Learning as the path to lifelong wellbeing for everyone.
+             <strong><h2>💡Our mission is simple:</h2></strong>
+            <b>To lead, promote, and scale Experiential Learning as the path to lifelong wellbeing for everyone.</b>
           </div>
           <h1 className="h1">Real Change<br /><em>Starts Here</em></h1>
           <p className="hero-sub">
