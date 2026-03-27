@@ -21,6 +21,7 @@ export default function Nav() {
             alt="Empowr"
             width={120}
             height={48}
+            priority
             style={{ height: '48px', width: 'auto', objectFit: 'contain' }}
           />
           <span style={{ fontSize: '1rem', fontWeight: 900, color: 'var(--black)' }}>Heroes</span>
