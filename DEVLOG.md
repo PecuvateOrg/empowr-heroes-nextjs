@@ -91,6 +91,19 @@ These were flagged during the performance audit but left as-is. No need to re-au
 
 ---
 
+### Favicon — ICO File Added
+
+**What we did:**
+- Added `favicon.ico` (Empowr logo, 16×16 and 32×32) to both `app/` and `public/`
+- Removed the old `app/icon.svg` placeholder (blue square, white "E")
+- Updated `CLAUDE.md` to reflect the new favicon setup
+
+**Why ICO over SVG/PNG:** Browsers request `/favicon.ico` by default. Having a proper ICO file at that path avoids unnecessary 404 requests, which adds a small load-time improvement. The ICO format also bundles multiple sizes (16×16 for browser tabs, 32×32 for taskbars) in one file.
+
+**How to update the favicon in future:** Replace `app/favicon.ico` with a new ICO file, and keep `public/favicon.ico` in sync.
+
+---
+
 ## Earlier Sessions (pre 27 March 2026)
 
 | Commit | What was done |

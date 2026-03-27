@@ -33,8 +33,9 @@ lib/
   tiers.ts            ← ALL tier data: names, prices, descriptions, Stripe URLs
 public/
   badges/             SVG badge assets per tier
-  empowr-favicon-logo.png  (large — see favicon note below)
-app/icon.svg          Active favicon (SVG placeholder — see note below)
+  empowr-favicon-logo.png  (large, unused — kept for reference)
+  favicon.ico         Favicon (also served statically at /favicon.ico)
+app/favicon.ico       Active favicon (ICO with 16×16 and 32×32 sizes)
 DEVLOG.md             ← Running log of every dev session and decisions made
 ```
 
@@ -62,8 +63,8 @@ DEVLOG.md             ← Running log of every dev session and decisions made
 - Only activate `CookieBannerFull` when optional cookies are actually in use AND the cookie policy doc has been updated. See `DEVLOG.md` for full details.
 
 ### Favicon
-- `app/icon.svg` is a temporary placeholder (blue square, white "E").
-- To replace: go to favicon.io → upload logo → download → rename to `icon.png` → drop into `app/`.
+- `app/favicon.ico` is the active favicon (Empowr logo, 16×16 and 32×32).
+- To update: replace `app/favicon.ico` with a new ICO file. Keep `public/favicon.ico` in sync.
 
 ---
 
