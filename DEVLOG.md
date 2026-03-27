@@ -76,6 +76,21 @@ To update any link across the entire site, edit `lib/links.ts` only.
 
 ---
 
+### Known Issues — Noted but Deferred
+
+These were flagged during the performance audit but left as-is. No need to re-audit them next session.
+
+| Issue | File | Reason deferred |
+|---|---|---|
+| `backdrop-filter: blur(14px)` on nav | `globals.css:51` | Design choice — removing/reducing would change the look |
+| `@keyframes bob` infinite animation | `globals.css:713` | Decorative, only on thank you page, low impact |
+| Inline styles on nav link and logo | `Nav.tsx:18,24` | Functional, very minor |
+| Inline styles on become page | `become/page.tsx` | Functional, very minor |
+| No dynamic imports / code splitting | All pages | App is small enough that this isn't worth the complexity yet |
+| CheckoutConfirm uses `<a>` instead of `<button>` for disabled state | `CheckoutConfirm.tsx:30` | Works correctly, semantic improvement only |
+
+---
+
 ## Earlier Sessions (pre 27 March 2026)
 
 | Commit | What was done |
