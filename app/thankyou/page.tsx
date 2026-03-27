@@ -11,7 +11,7 @@ export default async function ThankYouPage({
   searchParams: Promise<{ tier?: string }>
 }) {
   const { tier } = await searchParams
-  const tierInfo = (tier && TIERS[tier]) ?? null
+  const tierInfo = (tier && tier in TIERS) ? TIERS[tier as keyof typeof TIERS] : null
 
   return (
     <main className="page-content page-thankyou">
