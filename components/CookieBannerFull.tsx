@@ -5,6 +5,7 @@
 // To activate: in app/layout.tsx comment out <CookieBanner /> and use <CookieBannerFull />
 
 import { useState, useEffect } from 'react'
+import { LINKS } from '@/lib/links'
 
 interface CookieConsent {
   necessary: true
@@ -92,7 +93,7 @@ export default function CookieBannerFull() {
       <div className="cookie-bar">
         <p className="cookie-text">
           We use cookies to improve your experience. Read our{' '}
-          <a href="https://legalhub.pecuvate.com/share/empowr/empowr-cookie-policy" target="_blank" rel="noopener noreferrer">
+          <a href={LINKS.policy.cookiePolicy} target="_blank" rel="noopener noreferrer">
             Cookie Policy
           </a>{' '}
           for more information.

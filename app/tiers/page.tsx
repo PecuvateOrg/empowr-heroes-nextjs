@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { LINKS } from '@/lib/links'
 
 export const metadata = {
   title: 'Hero Tiers — Empowr Heroes',
@@ -117,7 +118,7 @@ export default function TiersPage() {
           <strong>Questions About Your Impact?</strong><br />
           Want to understand more about how your specific contribution would be used, or to just have a chat — we're happy to discuss.
         </p>
-        <a href="mailto:hero@empowr-cic.org" className="btn btn-outline">Contact Us →</a>
+        <a href={LINKS.email.hero} className="btn btn-outline">Contact Us →</a>
 
         <p className="tagline">Live by growing. Grow by learning. Learn by doing.</p>
       </div>

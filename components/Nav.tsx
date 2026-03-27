@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
+import { LINKS } from '@/lib/links'
 
 export default function Nav() {
   const pathname = usePathname()
@@ -17,7 +18,7 @@ export default function Nav() {
       <div className="nav-logo">
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}>
           <Image
-            src="https://empowr-cic.s3.us-east-1.amazonaws.com/empowr_logo.png"
+            src={LINKS.assets.logo}
             alt="Empowr"
             width={120}
             height={48}

@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import { LINKS } from '@/lib/links'
 
 export default function Footer() {
   return (
@@ -6,10 +6,10 @@ export default function Footer() {
       <div className="footer-inner">
         <p className="footer-copy">© {new Date().getFullYear()} Empowr CIC. All rights reserved.</p>
         <div className="footer-links">
-          <a href="https://legalhub.pecuvate.com/share/empowr/empowr-donor-legal-disclaimer" target="_blank" rel="noopener noreferrer">Legal Disclaimer</a>
-          <a href="https://legalhub.pecuvate.com/share/empowr/empowr-donor-terms-and-conditions" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a>
-          <a href="https://legalhub.pecuvate.com/share/empowr/empowr-privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
-          <a href="https://legalhub.pecuvate.com/share/empowr/empowr-cookie-policy" target="_blank" rel="noopener noreferrer">Cookie Policy</a>
+          <a href={LINKS.policy.legalDisclaimer} target="_blank" rel="noopener noreferrer">Legal Disclaimer</a>
+          <a href={LINKS.policy.termsAndConditions} target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a>
+          <a href={LINKS.policy.privacyPolicy} target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+          <a href={LINKS.policy.cookiePolicy} target="_blank" rel="noopener noreferrer">Cookie Policy</a>
         </div>
       </div>
     </footer>

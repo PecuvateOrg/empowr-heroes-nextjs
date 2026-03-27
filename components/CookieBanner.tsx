@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { LINKS } from '@/lib/links'
 
 function getCookie(name: string) {
   const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'))
@@ -41,7 +42,7 @@ export default function CookieBanner() {
       <div className="cookie-inner">
         <p className="cookie-text">
           We use cookies to improve your experience. Read our{' '}
-          <a href="https://legalhub.pecuvate.com/share/empowr/empowr-cookie-policy" target="_blank" rel="noopener noreferrer">Cookie Policy</a>{' '}
+          <a href={LINKS.policy.cookiePolicy} target="_blank" rel="noopener noreferrer">Cookie Policy</a>{' '}
           for more information.
         </p>
         <div className="cookie-btns">
