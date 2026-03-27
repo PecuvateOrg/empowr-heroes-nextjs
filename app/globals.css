@@ -945,18 +945,7 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 2.2rem 0; }
   flex-direction: column;
   gap: 0.75rem;
 }
-/* .cookie-header and .cookie-title are used by CookieBannerFull only */
-.cookie-header {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-.cookie-title {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--dark);
-  margin: 0;
-}
+/* Simple banner text */
 .cookie-text {
   font-size: 0.875rem;
   color: var(--mid);
@@ -967,28 +956,41 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 2.2rem 0; }
   font-weight: 700;
   text-decoration: underline;
 }
-.cookie-categories {
+/* Full banner — bottom bar */
+.cookie-bar {
+  max-width: 900px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
-.cookie-category {
+/* Full banner — expandable settings panel */
+.cookie-settings {
+  max-width: 900px;
+  margin: 0 auto 1rem;
+  background: var(--cream, #f9f7f4);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  animation: cookie-slide-up 0.2s ease-out both;
+}
+.cookie-setting-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  background: var(--cream, #f9f7f4);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0.6rem 0.875rem;
+  padding: 0.75rem 1rem;
 }
-.cookie-category-info { flex: 1; min-width: 0; }
-.cookie-category-name {
+.cookie-setting-row + .cookie-setting-row {
+  border-top: 1px solid var(--border);
+}
+.cookie-setting-info { flex: 1; min-width: 0; }
+.cookie-setting-name {
   font-size: 0.8125rem;
   font-weight: 700;
   color: var(--dark);
 }
-.cookie-category-desc {
+.cookie-setting-desc {
   font-size: 0.75rem;
   color: var(--muted);
   margin-top: 0.1rem;
@@ -1152,10 +1154,9 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 2.2rem 0; }
   /* Cookie banner (simple) */
   .cookie-inner { flex-direction: row; align-items: center; justify-content: space-between; }
   .cookie-text { margin-bottom: 0; }
-  /* Cookie banner (full — CookieBannerFull) */
-  .cookie-categories { flex-direction: row; }
-  .cookie-category { flex: 1; flex-direction: column; align-items: flex-start; gap: 0.5rem; }
-  .cookie-btns { justify-content: flex-end; }
+  /* Cookie banner (full) */
+  .cookie-bar { flex-direction: row; align-items: center; justify-content: space-between; }
+  .cookie-btns { flex-wrap: nowrap; }
 
   /* Footer */
   .footer-inner { flex-direction: row; justify-content: space-between; align-items: center; }

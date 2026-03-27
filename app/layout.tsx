@@ -4,6 +4,7 @@ import './globals.css'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import CookieBanner from '@/components/CookieBanner'
+// import CookieBannerFull from '@/components/CookieBannerFull'
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -34,6 +35,7 @@ export default function RootLayout({
         {children}
         <Footer />
         <CookieBanner />
+        {/* <CookieBannerFull /> */}
       </body>
     </html>
   )
