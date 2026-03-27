@@ -2,6 +2,7 @@ import Link from 'next/link'
 
 export const metadata = {
   title: 'One-Time Hero — Empowr Heroes',
+  description: 'Make a one-off contribution to Empowr. Every donation, no matter the size, directly supports our mission of lifelong wellbeing through experiential learning.',
 }
 
 export default function OneTimeHeroPage() {

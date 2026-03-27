@@ -2,6 +2,7 @@ import Link from 'next/link'
 
 export const metadata = {
   title: 'Founding Patron — Empowr Heroes',
+  description: 'Become a Founding Patron of Empowr CIC. Shape the future of wellbeing with a transformational investment in national expansion, research, and lasting community impact.',
 }
 
 export default function PatronPage() {

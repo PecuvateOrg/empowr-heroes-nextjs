@@ -17,10 +17,6 @@ const nunito = Nunito({
 export const metadata: Metadata = {
   title: 'Empowr Heroes — Be the Change',
   description: 'Support Empowr\'s mission of lifelong wellbeing through experiential learning. Become an Empowr Hero today.',
-  icons: {
-    icon: '/empowr-favicon-logo.png',
-    apple: '/empowr-favicon-logo.png',
-  },
 }
 
 export default function RootLayout({

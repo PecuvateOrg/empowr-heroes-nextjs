@@ -2,6 +2,7 @@ import Link from 'next/link'
 
 export const metadata = {
   title: 'Momentum Hero — Empowr Heroes',
+  description: 'Become a Momentum Hero for £25/month. Build momentum for growth and fund the infrastructure that keeps Empowr sessions running consistently.',
 }
 
 export default function MomentumHeroPage() {

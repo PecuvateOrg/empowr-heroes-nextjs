@@ -2,6 +2,7 @@ import Link from 'next/link'
 
 export const metadata = {
   title: 'Champion Hero — Empowr Heroes',
+  description: 'Become a Champion Hero for £250/month. Lead the movement and fuel sustainable growth and long-term impact across the UK.',
 }
 
 export default function ChampionHeroPage() {

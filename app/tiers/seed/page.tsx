@@ -2,6 +2,7 @@ import Link from 'next/link'
 
 export const metadata = {
   title: 'Seed Hero — Empowr Heroes',
+  description: 'Become a Seed Hero for £10/month. Plant the seeds of change and help keep Empowr sessions affordable and accessible for everyone.',
 }
 
 export default function SeedHeroPage() {

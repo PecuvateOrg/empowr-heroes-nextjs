@@ -2,6 +2,7 @@ import Link from 'next/link'
 
 export const metadata = {
   title: 'Community Hero — Empowr Heroes',
+  description: 'Become a Community Hero for £50/month. Power community transformation and help Empowr expand to new venues, schools, and communities.',
 }
 
 export default function CommunityHeroPage() {

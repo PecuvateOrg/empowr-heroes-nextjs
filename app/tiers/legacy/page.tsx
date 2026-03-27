@@ -2,6 +2,7 @@ import Link from 'next/link'
 
 export const metadata = {
   title: 'Legacy Hero — Empowr Heroes',
+  description: 'Become a Legacy Hero for £500/month. Your substantial commitment enables Empowr to think and act more ambitiously while maintaining financial stability.',
 }
 
 export default function LegacyHeroPage() {

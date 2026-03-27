@@ -3,6 +3,7 @@ import { TIERS } from '@/lib/tiers'
 
 export const metadata = {
   title: 'Thank You — Empowr Heroes',
+  description: 'Welcome to the Empowr Heroes movement. Thank you for your support — your contribution is already making a difference.',
 }
 
 export default async function ThankYouPage({

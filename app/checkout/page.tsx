@@ -5,6 +5,7 @@ import { TIERS } from '@/lib/tiers'
 
 export const metadata = {
   title: 'Confirm Your Contribution — Empowr Heroes',
+  description: 'Review and confirm your Hero tier contribution to Empowr CIC. Your support helps us deliver experiential wellbeing programmes across the UK.',
 }
 
 export default async function CheckoutPage({
