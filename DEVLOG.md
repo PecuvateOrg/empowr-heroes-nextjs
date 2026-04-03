@@ -4,6 +4,131 @@ A running record of development sessions, changes made, and decisions taken.
 
 ---
 
+## Session — 3 April 2026
+
+### Email Automation — Stripe Webhook, Resend, Notion
+
+Built a complete end-to-end donation automation flow. When a donor completes a checkout, the system automatically sends a branded welcome email and logs the donation to a Notion database.
+
+---
+
+#### Architecture — Agent-First, Split Design
+
+Deliberately built with portability in mind. The logic is split into two layers:
+
+```
+core/donation-handler.js              ← all business logic (no platform dependency)
+netlify/functions/stripe-webhook.js   ← thin Netlify adapter (handles HTTP only)
+```
+
+The core module is self-contained and can be extracted into a standalone Pecuvate service in the future without any changes to the logic itself.
+
+---
+
+#### What Was Built
+
+**`core/donation-handler.js`**
+- Verifies Stripe webhook signature
+- Extracts donor name, email, and tier from session metadata and billing details
+- Sends a branded HTML welcome email via Resend (with plain text fallback)
+- Logs donation to Notion with: Name, Email, Tier, Amount, Currency, Date, Email Status, Stripe Session ID, Donor ID (auto-increment), Record Created, Last Updated
+- Errors are caught gracefully — a Resend or Notion failure does not crash the webhook or cause Stripe to retry
+
+**`netlify/functions/stripe-webhook.js`**
+- Receives POST request from Stripe
+- Passes raw body and signature header to core handler
+- Returns 200 to Stripe
+
+**Email**
+- Sent from `heroes@hero.empowrcic.org`
+- Subject: `You're an Empowr Hero`
+- Branded HTML email welcoming donor by name, confirming tier, including badge
+- Plain text fallback included
+- Handles all 5 badge tiers (seed, momentum, community, champion, legacy)
+
+**Notion Database**
+- Created `Donations` database inside `Empowr Heroes — Donor Hub` page in Notion
+- Schema: Name (Title), Donor ID (Auto-increment, prefix DON), Email, Tier (Select), Amount (£), Currency (Select), Date, Email Status (Select), Stripe Session ID (Text), Record Created, Last Updated
+
+---
+
+#### Stripe Payment Link Metadata
+
+Metadata must be added manually to each Payment Link in the Stripe dashboard:
+
+| Payment Link | Key | Value |
+|---|---|---|
+| Seed Hero (£10/mo) | `tier` | `seed` |
+| Momentum Hero (£25/mo) | `tier` | `momentum` |
+| Community Hero (£50/mo) | `tier` | `community` |
+| Champion Hero (£250/mo) | `tier` | `champion` |
+| Legacy Hero (£500/mo) | `tier` | `legacy` |
+
+Only Community Hero metadata had been added by end of session — others to be added before going live.
+
+---
+
+#### Infrastructure — DNS Migration to AWS Route 53
+
+Migrated DNS management for `empowrcic.org` from Wix to AWS Route 53 to enable subdomain MX records (required by Resend for bounce handling).
+
+- All existing DNS records exported from Wix and recreated in Route 53 via zone file import
+- Nameservers updated in Namecheap from Wix (`ns14/ns15.wixdns.net`) to Route 53
+- Propagated globally within minutes
+- Wix website and Google Workspace email unaffected
+
+**Resend domain verification records added to Route 53:**
+
+| Type | Name | Value |
+|---|---|---|
+| TXT | `resend._domainkey.hero` | DKIM public key |
+| TXT | `send.hero` | `v=spf1 include:amazonses.com ~all` |
+| MX | `send.hero` | `feedback-smtp.eu-west-1.amazonses.com` (priority 10) |
+
+---
+
+#### Dependencies Added
+
+```
+stripe
+resend
+@notionhq/client
+```
+
+---
+
+#### Environment Variables Required
+
+| Variable | Purpose |
+|---|---|
+| `STRIPE_SECRET_KEY` | Stripe API authentication |
+| `STRIPE_WEBHOOK_SECRET` | Webhook signature verification |
+| `RESEND_API_KEY` | Resend email sending |
+| `NOTION_API_KEY` | Notion integration token |
+| `NOTION_DATABASE_ID` | `9760dd1c24f0437d8b0bbae87524636a` |
+| `SITE_URL` | Used to build badge image URLs in emails |
+
+---
+
+#### Tested
+
+Full end-to-end test completed locally using Stripe CLI + `netlify dev`:
+- Stripe signature verified ✓
+- Community Hero metadata read correctly ✓
+- Welcome email delivered to real inbox ✓
+- Donation row created in Notion with all fields populated ✓
+
+---
+
+#### Deferred / Still To Do
+
+- Add `tier` metadata to remaining 4 Payment Links in Stripe dashboard (momentum, seed, champion, legacy)
+- Set all env vars in Netlify production environment
+- Register webhook endpoint in Stripe dashboard for production: `https://hero.empowrcic.org/.netlify/functions/stripe-webhook`
+- Switch `STRIPE_SECRET_KEY` back to live key (`sk_live_...`) for production
+
+---
+
 ## Session — 27 March 2026
 
 ### Cookie Banner
