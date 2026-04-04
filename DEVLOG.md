@@ -122,10 +122,31 @@ Full end-to-end test completed locally using Stripe CLI + `netlify dev`:
 
 #### Deferred / Still To Do
 
-- Add `tier` metadata to remaining 4 Payment Links in Stripe dashboard (momentum, seed, champion, legacy)
 - Set all env vars in Netlify production environment
 - Register webhook endpoint in Stripe dashboard for production: `https://hero.empowrcic.org/.netlify/functions/stripe-webhook`
 - Switch `STRIPE_SECRET_KEY` back to live key (`sk_live_...`) for production
+- Fix contact email address in `core/email-template.js`
+
+---
+
+#### Follow-up — Email Template Separation & Badge PNG Conversion
+
+Done in same session, committed separately.
+
+**Email template extracted:**
+- Moved `buildEmailHtml` and `buildEmailText` out of `donation-handler.js` into `core/email-template.js`
+- `donation-handler.js` now imports from the template file
+- Reason: template will change independently of handler logic — cleaner separation for future agent management
+
+**Badge assets converted to PNG:**
+- All 5 badge SVGs converted to PNG using `sharp` (already a project dependency)
+- PNG files added to `public/badges/` alongside SVGs
+- `TIER_CONFIG` badge filenames updated from `.svg` to `.png`
+- Reason: SVG images are not rendered by email clients (Gmail, Outlook, Apple Mail)
+- Note: Badge images will not display in test emails sent from localhost — this is expected. They will display correctly once the site is deployed and `SITE_URL` is set to the live domain in Netlify env vars.
+
+**Sending address updated:**
+- From: `heroes@empowr.com` → `heroes@hero.empowrcic.org`
 
 ---
 
