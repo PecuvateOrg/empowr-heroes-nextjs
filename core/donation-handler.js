@@ -89,8 +89,8 @@ async function logToNotionWithStatus({ tier, amountTotal, currency, emailStatus,
       'Email Status': {
         select: { name: emailStatus },
       },
-      'Stripe Session ID': {
-        rich_text: [{ text: { content: stripeSessionId || '' } }],
+      'Stripe Dashboard': {
+        url: stripeSessionId ? `https://dashboard.stripe.com/checkout/sessions/${stripeSessionId}` : null,
       },
     },
   })
