@@ -4,6 +4,92 @@ A running record of development sessions, changes made, and decisions taken.
 
 ---
 
+## Session — 4 April 2026
+
+### Production Deployment — Donation Automation Go-Live
+
+Completed all remaining steps to take the donation automation live in production.
+
+---
+
+#### Email Address Fixes
+
+Corrected a typo in the contact email address across two files — `empowr-cic.org` → `empowrcic.org`:
+
+- `core/email-template.js` — plain text email body
+- `lib/links.ts` — both `hero@` and `patron@` contact links
+
+---
+
+#### Brand Rulebook Added to CLAUDE.md
+
+Added a **Brand & Contact** section to `CLAUDE.md` covering:
+- Canonical email addresses (hero, patron, sending address) — never to be guessed or abbreviated
+- Full colour palette as a reference table (CSS variables with hex values and usage notes)
+- Rule: never use raw hex values in components — always reference via `var(--variable-name)`
+
+---
+
+#### Netlify CLI Setup
+
+Installed and configured the Netlify CLI for terminal-based site management:
+
+```bash
+npm install -g netlify-cli
+netlify login        # authenticated via GitHub
+netlify link         # linked to empowr-heroes site (hero.empowrcic.org)
+```
+
+All future Netlify env var changes can now be made from the terminal without touching the dashboard.
+
+---
+
+#### Environment Variables Set in Netlify Production
+
+All required env vars set via `netlify env:set`:
+
+| Variable | Notes |
+|---|---|
+| `STRIPE_SECRET_KEY` | Live key (`sk_live_...`) |
+| `STRIPE_WEBHOOK_SECRET` | From Stripe webhook registration (see below) |
+| `RESEND_API_KEY` | Copied from local env |
+| `NOTION_API_KEY` | Copied from local env |
+| `NOTION_DATABASE_ID` | `9760dd1c24f0437d8b0bbae87524636a` |
+| `SITE_URL` | `https://hero.empowrcic.org` |
+
+---
+
+#### Stripe Webhook Registered
+
+Registered the live webhook endpoint in Stripe dashboard:
+
+- **URL:** `https://hero.empowrcic.org/.netlify/functions/stripe-webhook`
+- **Event:** `checkout.session.completed`
+- **Name:** `Empowr Heroes — Donation Handler`
+- Signing secret saved to Netlify as `STRIPE_WEBHOOK_SECRET`
+
+---
+
+#### Stripe Payment Link Metadata
+
+`tier` metadata added to all Payment Links in Stripe dashboard (completed this session):
+
+| Payment Link | Key | Value |
+|---|---|---|
+| Seed Hero (£10/mo) | `tier` | `seed` |
+| Momentum Hero (£25/mo) | `tier` | `momentum` |
+| Community Hero (£50/mo) | `tier` | `community` |
+| Champion Hero (£250/mo) | `tier` | `champion` |
+| Legacy Hero (£500/mo) | `tier` | `legacy` |
+
+---
+
+#### Status
+
+Donation automation is now fully live. Netlify processes webhooks 24/7 — no local machine required. A live end-to-end test is recommended to confirm production flow.
+
+---
+
 ## Session — 3 April 2026
 
 ### Email Automation — Stripe Webhook, Resend, Notion
