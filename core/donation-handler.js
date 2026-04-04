@@ -62,7 +62,7 @@ const TIER_CONFIG = {
 // Notion logger
 // ---------------------------------------------------------------------------
 
-async function logToNotionWithStatus({ name, email, tier, amountTotal, currency, emailStatus, stripeSessionId, notionApiKey, notionDatabaseId }) {
+async function logToNotionWithStatus({ tier, amountTotal, currency, emailStatus, stripeSessionId, notionApiKey, notionDatabaseId }) {
   const notion = new Client({ auth: notionApiKey })
   const tierData = TIER_CONFIG[tier] || {}
   const amount = amountTotal ? (amountTotal / 100).toFixed(2) : '0.00'
@@ -71,11 +71,8 @@ async function logToNotionWithStatus({ name, email, tier, amountTotal, currency,
   await notion.pages.create({
     parent: { database_id: notionDatabaseId },
     properties: {
-      Name: {
-        title: [{ text: { content: name || 'Unknown' } }],
-      },
-      Email: {
-        email: email || '',
+      Record: {
+        title: [{ text: { content: tierData.label || tier || 'Unknown' } }],
       },
       Tier: {
         select: { name: tierData.label || tier },
@@ -185,8 +182,6 @@ async function handleDonation({
   // 5. Log to Notion
   try {
     await logToNotionWithStatus({
-      name,
-      email,
       tier,
       amountTotal,
       currency,
@@ -195,7 +190,7 @@ async function handleDonation({
       notionApiKey,
       notionDatabaseId,
     })
-    console.log(`[donation-handler] Logged to Notion for ${email}`)
+    console.log(`[donation-handler] Logged to Notion for session ${stripeSessionId}`)
   } catch (err) {
     console.error('[donation-handler] Notion error:', err.message)
     // Don't throw — email was already sent, logging failure should not break the response
