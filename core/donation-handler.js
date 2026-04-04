@@ -90,7 +90,9 @@ async function logToNotionWithStatus({ tier, amountTotal, currency, emailStatus,
         select: { name: emailStatus },
       },
       'Stripe Dashboard': {
-        url: stripeSessionId ? `https://dashboard.stripe.com/checkout/sessions/${stripeSessionId}` : null,
+        url: stripeSessionId
+          ? `https://dashboard.stripe.com/${stripeSessionId.startsWith('cs_test_') ? 'test/' : ''}checkout/sessions/${stripeSessionId}`
+          : null,
       },
     },
   })
