@@ -11,8 +11,8 @@ export const LINKS = {
   },
 
   email: {
-    hero:   'mailto:hero@empowr-cic.org',
-    patron: 'mailto:patron@empowr-cic.org',
+    hero:   'mailto:hero@empowrcic.org',
+    patron: 'mailto:patron@empowrcic.org',
   },
 
   assets: {

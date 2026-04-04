@@ -60,6 +60,37 @@ README.md                     ← Setup guide and Stripe CLI local testing instr
 ### Styling
 - No Tailwind. All CSS is custom, in `app/globals.css` using CSS variables.
 - Font: Nunito via `next/font/google`. Weights: 400, 500, 600, 700, 800, 900 + italic.
+- **Never use raw hex values in components — always reference colours via `var(--variable-name)`.**
+
+### Brand & Contact
+
+**Email addresses — always use these exactly:**
+
+| Purpose | Address |
+|---|---|
+| Hero contact (site links, email body) | `hero@empowrcic.org` |
+| Patron contact | `patron@empowrcic.org` |
+| Sending address (Resend, outbound emails) | `heroes@hero.empowrcic.org` |
+
+All site contact links live in `lib/links.ts` — never hardcode.
+
+**Colour palette — all defined as CSS variables in `app/globals.css`:**
+
+| Variable | Value | Usage |
+|---|---|---|
+| `--blue` | `#4A70C2` | Primary brand colour |
+| `--blue-dark` | `#3558a8` | Hover states |
+| `--blue-light` | `#7093d4` | Lighter accents |
+| `--blue-pale` | `#eef3fc` | Backgrounds |
+| `--blue-soft` | `rgba(74,112,194,0.10)` | Subtle highlights |
+| `--red` | `#FF6161` | Alerts / destructive |
+| `--black` | `#1B1B1B` | Body text |
+| `--mid` | `#4a4a4a` | Secondary text |
+| `--muted` | `#7a7a8a` | Tertiary / captions |
+| `--cream` | `#f8f7f4` | Page background |
+| `--warm-white` | `#fdfcfa` | Card/section background |
+| `--border` | `#e5e1db` | Standard borders |
+| `--patron-gold` | `#b8924a` | Patron tier accent |
 
 ### Links
 - **Never hardcode external URLs in components or pages.**

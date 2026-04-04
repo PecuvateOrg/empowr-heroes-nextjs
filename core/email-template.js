@@ -123,7 +123,7 @@ ${tierData.desc}
 
 Your Hero badge has been included in the HTML version of this email.
 
-If you have any questions, reach us at hero@empowr-cic.org.
+If you have any questions, reach us at hero@empowrcic.org.
 
 With gratitude,
 The Empowr Team
