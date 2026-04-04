@@ -14,7 +14,7 @@
 const Stripe = require('stripe')
 const { Resend } = require('resend')
 const { Client } = require('@notionhq/client')
-const { buildEmailHtml, buildEmailText } = require('./email-template')
+const { buildEmailHtml, buildEmailText, buildOneTimeEmailHtml, buildOneTimeEmailText } = require('./email-template')
 
 // ---------------------------------------------------------------------------
 // Tier config
@@ -163,7 +163,23 @@ async function handleDonation({
   // 4. Send welcome email
   let emailStatus = 'Failed'
 
-  if (email && tier && TIER_CONFIG[tier]) {
+  if (email && tier === 'onetime') {
+    try {
+      const resend = new Resend(resendApiKey)
+      await resend.emails.send({
+        from: 'Empowr Heroes <heroes@hero.empowrcic.org>',
+        to: email,
+        subject: 'Thank You for Supporting Empowr',
+        html: buildOneTimeEmailHtml({ name, siteUrl }),
+        text: buildOneTimeEmailText({ name, siteUrl }),
+      })
+      emailStatus = 'Sent'
+      console.log(`[donation-handler] One-time thank you email sent to ${email}`)
+    } catch (err) {
+      console.error('[donation-handler] Resend error:', err.message)
+      emailStatus = 'Failed'
+    }
+  } else if (email && tier && TIER_CONFIG[tier]) {
     try {
       const resend = new Resend(resendApiKey)
       await resend.emails.send({
