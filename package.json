@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:netlify": "netlify dev",
+    "dev:stripe": "stripe listen --forward-to http://localhost:8888/.netlify/functions/stripe-webhook",
     "build": "next build",
     "start": "next start"
   },
