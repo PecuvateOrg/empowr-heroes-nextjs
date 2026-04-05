@@ -26,7 +26,7 @@ exports.handler = async (event) => {
       resendApiKey: process.env.RESEND_API_KEY,
       notionApiKey: process.env.NOTION_API_KEY,
       notionDatabaseId: process.env.NOTION_DATABASE_ID,
-      siteUrl: process.env.SITE_URL || 'https://heroes.empowr-cic.org',
+      siteUrl: process.env.SITE_URL || 'https://hero.empowrcic.org',
     })
 
     if (result.ignored) {

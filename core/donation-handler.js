@@ -113,7 +113,7 @@ async function logToNotionWithStatus({ tier, amountTotal, currency, emailStatus,
  * @param {string} params.resendApiKey
  * @param {string} params.notionApiKey
  * @param {string} params.notionDatabaseId
- * @param {string} params.siteUrl          - Live site URL e.g. https://heroes.empowr-cic.org
+ * @param {string} params.siteUrl          - Live site URL e.g. https://hero.empowrcic.org
  */
 async function handleDonation({
   rawBody,
@@ -156,7 +156,7 @@ async function handleDonation({
     console.warn('[donation-handler] No email found on session:', session.id)
   }
 
-  if (!tier || !TIER_CONFIG[tier]) {
+  if (!tier || (tier !== 'onetime' && !TIER_CONFIG[tier])) {
     console.warn(`[donation-handler] Unknown or missing tier "${tier}" on session:`, session.id)
   }
 
@@ -186,8 +186,8 @@ async function handleDonation({
         from: 'Empowr Heroes <heroes@hero.empowrcic.org>',
         to: email,
         subject: "You're an Empowr Hero",
-        html: buildEmailHtml({ name, tier, siteUrl, tierData: TIER_CONFIG[tier] }),
-        text: buildEmailText({ name, tier, tierData: TIER_CONFIG[tier] }),
+        html: buildEmailHtml({ name, tierData: TIER_CONFIG[tier] }),
+        text: buildEmailText({ name, tierData: TIER_CONFIG[tier] }),
       })
       emailStatus = 'Sent'
       console.log(`[donation-handler] Welcome email sent to ${email}`)

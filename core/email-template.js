@@ -1,21 +1,22 @@
 /**
  * core/email-template.js
  *
- * Builds the HTML and plain text bodies for the donor welcome email.
+ * Builds the HTML and plain text bodies for donor emails.
  * Separated from donation-handler.js so the template can be updated
  * independently of the handler logic.
  *
- * Both functions receive { name, tier, siteUrl, tierData } and return a string.
+ * Hero email functions receive { name, tierData } and return a string.
+ * One-time email functions receive { name, siteUrl } and return a string.
  */
+
+const BADGE_BASE_URL = 'https://empowr-cic.s3.us-east-1.amazonaws.com/badges'
 
 /**
  * @param {object} params
  * @param {string} params.name      - Donor full name
- * @param {string} params.tier      - Tier key e.g. "community"
- * @param {string} params.siteUrl   - Live site URL for badge image URLs
  * @param {object} params.tierData  - Tier config object from TIER_CONFIG
  */
-function buildEmailHtml({ name, tier, siteUrl, tierData }) {
+function buildEmailHtml({ name, tierData }) {
   const firstName = name ? name.split(' ')[0] : 'Hero'
 
   return `<!DOCTYPE html>
@@ -34,14 +35,13 @@ function buildEmailHtml({ name, tier, siteUrl, tierData }) {
           <!-- Header -->
           <tr>
             <td style="background-color:#1a1a2e;padding:32px 40px;text-align:center;">
-              <img src="${siteUrl}/badges/${tierData.badge}" alt="${tierData.label} Badge" width="100" style="display:block;margin:0 auto 16px;" />
               <h1 style="color:#ffffff;font-size:26px;margin:0;font-weight:800;">You're an Empowr Hero ${tierData.emoji}</h1>
             </td>
           </tr>
 
           <!-- Body -->
           <tr>
-            <td style="padding:40px;">
+            <td style="padding:32px 40px 40px;">
               <p style="font-size:16px;color:#333333;line-height:1.6;margin:0 0 16px;">
                 Hi ${firstName},
               </p>
@@ -63,14 +63,16 @@ function buildEmailHtml({ name, tier, siteUrl, tierData }) {
                 </tr>
               </table>
 
-              <!-- Badge notice -->
-              <table width="100%" cellpadding="0" cellspacing="0" style="border:2px solid #e8e8e8;border-radius:8px;margin-bottom:24px;">
+              <!-- Badge -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
                 <tr>
-                  <td style="padding:20px 24px;">
-                    <p style="margin:0;font-size:15px;color:#333333;line-height:1.6;">
-                      <strong>Your Hero Badge</strong><br/>
-                      Your ${tierData.label} badge is included above. You're welcome to use it to show your support for the Empowr Heroes Programme.
-                    </p>
+                  <td style="text-align:center;padding-bottom:16px;">
+                    <img src="${BADGE_BASE_URL}/${tierData.badge}?ref=email" alt="${tierData.label} Badge" width="160" style="display:block;margin:0 auto;" />
+                  </td>
+                </tr>
+                <tr>
+                  <td style="text-align:center;">
+                    <a href="${BADGE_BASE_URL}/${tierData.badge}" style="display:inline-block;background-color:#4A70C2;color:#ffffff;font-size:14px;font-weight:700;padding:10px 24px;border-radius:8px;text-decoration:none;">Download your badge</a>
                   </td>
                 </tr>
               </table>
@@ -107,10 +109,9 @@ function buildEmailHtml({ name, tier, siteUrl, tierData }) {
 /**
  * @param {object} params
  * @param {string} params.name      - Donor full name
- * @param {string} params.tier      - Tier key e.g. "community"
  * @param {object} params.tierData  - Tier config object from TIER_CONFIG
  */
-function buildEmailText({ name, tier, tierData }) {
+function buildEmailText({ name, tierData }) {
   const firstName = name ? name.split(' ')[0] : 'Hero'
 
   return `Hi ${firstName},
@@ -121,7 +122,8 @@ You've joined as a ${tierData.label} (${tierData.price}).
 
 ${tierData.desc}
 
-Your Hero badge has been included in the HTML version of this email.
+Download your ${tierData.label} badge here:
+${BADGE_BASE_URL}/${tierData.badge}
 
 If you have any questions, reach us at hero@empowrcic.org.
 
