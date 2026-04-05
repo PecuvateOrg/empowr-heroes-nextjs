@@ -4,6 +4,87 @@ A running record of development sessions, changes made, and decisions taken.
 
 ---
 
+## Session — 5 April 2026
+
+### Production Go-Live Completion, GDPR Data Minimisation & Email Improvements
+
+---
+
+#### Stripe Payment Link Metadata
+All 5 Payment Links confirmed with `tier` metadata set in Stripe dashboard (seed, momentum, community, champion, legacy).
+
+---
+
+#### Email Address Fixes
+Corrected `hero@empowr-cic.org` → `hero@empowrcic.org` and `patron@empowr-cic.org` → `patron@empowrcic.org` across `core/email-template.js` and `lib/links.ts`.
+
+---
+
+#### Brand Rulebook Added to CLAUDE.md
+Added **Brand & Contact** section covering canonical email addresses and full colour palette. Rule: never use raw hex values — always `var(--variable-name)`.
+
+---
+
+#### Netlify CLI Setup
+Installed Netlify CLI, authenticated via GitHub, linked to `empowr-heroes` site. All Netlify env var changes can now be made from the terminal.
+
+---
+
+#### Production Environment Variables
+All 6 env vars set in Netlify via `netlify env:set`: `STRIPE_SECRET_KEY` (live), `STRIPE_WEBHOOK_SECRET`, `RESEND_API_KEY`, `NOTION_API_KEY`, `NOTION_DATABASE_ID`, `SITE_URL`.
+
+---
+
+#### Stripe Webhook Registered
+Live webhook registered at `https://hero.empowrcic.org/.netlify/functions/stripe-webhook` for `checkout.session.completed`. Signing secret saved to Netlify.
+
+---
+
+#### GDPR Data Minimisation — Notion
+Removed donor name and email from Notion. Notion now stores operational data only (tier, amount, currency, date, email status, Stripe Dashboard link). Personal data stays in Stripe.
+
+- `Name` field renamed to `Record` — populated with tier label (e.g. "Community Hero")
+- `Email` field removed
+- `Stripe Session ID` (text) replaced with `Stripe Dashboard` (URL) — clickable link direct to Stripe session, auto-detects test vs live from session ID prefix
+
+---
+
+#### One-Time Donor Flow
+- New thank you page at `/thankyou/onetime` — same layout as hero page, no badge, CTA to become a monthly Hero
+- New thank you email for one-time donors — no badge, includes "Become a Hero" card with benefits and CTA button
+- Handler updated to detect `onetime` tier and send the correct email
+
+**Still to do:** Set after-payment redirect on Stripe one-time Payment Link to `https://hero.empowrcic.org/thankyou/onetime`
+
+---
+
+#### Badge Images Moved to S3
+- All 5 badge PNGs uploaded to `s3://empowr-cic/badges/`
+- `Content-Disposition: attachment` set on all files to trigger browser download
+- `BADGE_BASE_URL` constant added to `email-template.js` — single source of truth
+- Badge PNGs removed from `public/badges/` (SVGs kept for website use)
+- Badge repositioned in email — now appears between tier card and closing message, larger (160px)
+- Download button added below badge
+
+**Known issue:** Download button behaviour in email clients needs further investigation — deferred to next session.
+
+---
+
+#### Code Sweep Fixes
+- `tier` removed as unused param from `buildEmailHtml` and `buildEmailText`
+- `onetime` tier no longer incorrectly flagged as unknown tier in handler
+- JSDoc and fallback URL corrected from `heroes.empowr-cic.org` → `hero.empowrcic.org`
+
+---
+
+#### npm Scripts Added
+```
+npm run dev:netlify   ← starts Netlify dev server
+npm run dev:stripe    ← starts Stripe CLI webhook listener
+```
+
+---
+
 ## Session — 4 April 2026
 
 ### Production Deployment — Donation Automation Go-Live
