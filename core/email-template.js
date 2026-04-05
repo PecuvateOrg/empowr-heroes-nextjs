@@ -9,7 +9,6 @@
  * One-time email functions receive { name, siteUrl } and return a string.
  */
 
-const BADGE_BASE_URL = 'https://empowr-cic.s3.us-east-1.amazonaws.com/badges'
 
 /**
  * @param {object} params
@@ -67,12 +66,12 @@ function buildEmailHtml({ name, tierData }) {
               <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
                 <tr>
                   <td style="text-align:center;padding-bottom:16px;">
-                    <img src="${BADGE_BASE_URL}/${tierData.badge}?ref=email" alt="${tierData.label} Badge" width="160" style="display:block;margin:0 auto;" />
+                    <img src="${tierData.badgeUrl}?ref=email" alt="${tierData.label} Badge" width="160" style="display:block;margin:0 auto;" />
                   </td>
                 </tr>
                 <tr>
                   <td style="text-align:center;">
-                    <a href="${BADGE_BASE_URL}/${tierData.badge}" style="display:inline-block;background-color:#4A70C2;color:#ffffff;font-size:14px;font-weight:700;padding:10px 24px;border-radius:8px;text-decoration:none;">Download your badge</a>
+                    <a href="${tierData.badgeUrl}" style="display:inline-block;background-color:#4A70C2;color:#ffffff;font-size:14px;font-weight:700;padding:10px 24px;border-radius:8px;text-decoration:none;">Download your badge</a>
                   </td>
                 </tr>
               </table>
@@ -123,7 +122,7 @@ You've joined as a ${tierData.label} (${tierData.price}).
 ${tierData.desc}
 
 Download your ${tierData.label} badge here:
-${BADGE_BASE_URL}/${tierData.badge}
+${tierData.badgeUrl}
 
 If you have any questions, reach us at hero@empowrcic.org.
 

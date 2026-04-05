@@ -15,48 +15,8 @@ const Stripe = require('stripe')
 const { Resend } = require('resend')
 const { Client } = require('@notionhq/client')
 const { buildEmailHtml, buildEmailText, buildOneTimeEmailHtml, buildOneTimeEmailText } = require('./email-template')
-
-// ---------------------------------------------------------------------------
-// Tier config
-// ---------------------------------------------------------------------------
-
-const TIER_CONFIG = {
-  seed: {
-    label: 'Seed Hero',
-    emoji: '🌱',
-    price: '£10/month',
-    badge: 'seed-hero.png',
-    desc: 'Plant the seeds of change — your contribution helps keep our sessions affordable and accessible.',
-  },
-  momentum: {
-    label: 'Momentum Hero',
-    emoji: '🚀',
-    price: '£25/month',
-    badge: 'momentum-hero.png',
-    desc: 'Build momentum for growth — your support funds the infrastructure that enables sessions to happen consistently.',
-  },
-  community: {
-    label: 'Community Hero',
-    emoji: '🫂',
-    price: '£50/month',
-    badge: 'community-hero.png',
-    desc: 'Power community transformation — your support helps us expand our reach to new venues, schools, and communities.',
-  },
-  champion: {
-    label: 'Champion Hero',
-    emoji: '🏆',
-    price: '£250/month',
-    badge: 'champion-hero.png',
-    desc: 'Lead the movement — you\'re fuelling sustainable growth and long-term impact across the UK.',
-  },
-  legacy: {
-    label: 'Legacy Hero',
-    emoji: '💎',
-    price: '£500/month',
-    badge: 'legacy-hero.png',
-    desc: 'Power moves — your substantial commitment enables us to think and act more ambitiously.',
-  },
-}
+const { BADGES } = require('../lib/badges')
+const { TIER_CONFIG } = require('../lib/tier-config')
 
 // ---------------------------------------------------------------------------
 // Notion logger
@@ -186,8 +146,8 @@ async function handleDonation({
         from: 'Empowr Heroes <heroes@hero.empowrcic.org>',
         to: email,
         subject: "You're an Empowr Hero",
-        html: buildEmailHtml({ name, tierData: TIER_CONFIG[tier] }),
-        text: buildEmailText({ name, tierData: TIER_CONFIG[tier] }),
+        html: buildEmailHtml({ name, tierData: { ...TIER_CONFIG[tier], badgeUrl: BADGES[tier] } }),
+        text: buildEmailText({ name, tierData: { ...TIER_CONFIG[tier], badgeUrl: BADGES[tier] } }),
       })
       emailStatus = 'Sent'
       console.log(`[donation-handler] Welcome email sent to ${email}`)
@@ -217,4 +177,4 @@ async function handleDonation({
   return { success: true, email, tier, emailStatus }
 }
 
-module.exports = { handleDonation, TIER_CONFIG }
+module.exports = { handleDonation }
