@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Mantra from '@/components/Mantra'
 
 export const metadata = {
   title: 'Champion Hero — Empowr Heroes',
@@ -78,7 +79,7 @@ export default function ChampionHeroPage() {
           <Link href="/tiers" className="btn btn-outline">← All Hero Tiers</Link>
           <Link href="/become" className="btn btn-blue">Become a Hero</Link>
         </div>
-
+        <Mantra />
       </div>
     </main>
   )

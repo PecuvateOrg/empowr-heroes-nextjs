@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Mantra from '@/components/Mantra'
 
 export const metadata = {
   title: 'Become a Hero — Empowr Heroes',
@@ -142,7 +143,7 @@ export default function BecomePage() {
             <Link href="/patron" className="btn-patron">Find Out More →</Link>
           </div>
         </div>
-
+        <Mantra />
       </div>
     </main>
   )

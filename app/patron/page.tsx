@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Mantra from '@/components/Mantra'
 import { LINKS } from '@/lib/links'
 
 export const metadata = {
@@ -117,6 +118,7 @@ export default function PatronPage() {
           </div>
         </div>
 
+      <Mantra />
       </div>
     </main>
   )

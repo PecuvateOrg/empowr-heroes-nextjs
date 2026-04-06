@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Mantra from '@/components/Mantra'
 import { LINKS } from '@/lib/links'
 
 export const metadata = {
@@ -119,7 +120,7 @@ export default function TiersPage() {
           Want to understand more about how your specific contribution would be used, or to just have a chat — we're happy to discuss.
         </p>
         <a href={LINKS.email.hero} className="btn btn-outline">Contact Us →</a>
-
+        <Mantra />
       </div>
     </main>
   )

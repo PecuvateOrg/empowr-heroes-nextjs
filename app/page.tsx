@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Mantra from '@/components/Mantra'
 
 export default function Home() {
   return (
@@ -125,7 +126,7 @@ export default function Home() {
         <div className="btn-row-inline">
           <Link href="/become" className="btn btn-blue">🏆 Become a Hero →</Link>
         </div>
-
+        <Mantra />
       </div>
     </main>
   )
