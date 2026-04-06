@@ -117,7 +117,6 @@ export default function PatronPage() {
           </div>
         </div>
 
-        <p className="patron-tagline">Live by growing. Grow by learning. Learn by doing.</p>
       </div>
     </main>
   )

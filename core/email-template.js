@@ -11,6 +11,27 @@
 
 
 /**
+ * Shared brand mantra block — appears at the bottom of all emails.
+ * @returns {string} HTML string
+ */
+function buildMantraHtml() {
+  return `
+              <!-- Mantra -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #e5e1db;padding-top:24px;">
+                <tr>
+                  <td style="text-align:center;">
+                    <p style="margin:0 0 8px;font-size:15px;font-style:italic;line-height:1.8;">
+                      <span style="color:#FF6161;">Live by growing.</span>
+                      <span style="color:#4A70C2;"> Grow by learning.</span>
+                      <span style="color:#1B1B1B;"> Learn by doing.</span>
+                    </p>
+                    <p style="margin:0;font-size:14px;font-weight:700;color:#1B1B1B;">Together, we move wellbeing forward—one action at a time.</p>
+                  </td>
+                </tr>
+              </table>`
+}
+
+/**
  * @param {object} params
  * @param {string} params.name      - Donor full name
  * @param {object} params.tierData  - Tier config object from TIER_CONFIG
@@ -45,19 +66,16 @@ function buildEmailHtml({ name, tierData }) {
                 Hi ${firstName},
               </p>
               <p style="font-size:16px;color:#333333;line-height:1.6;margin:0 0 16px;">
-                Thank you so much for becoming an <strong>Empowr Hero</strong>. Your support means the world to us and to every young person whose life is shaped by the sessions you're helping to make possible.
+                Thank you so much for becoming an <strong>Empowr Hero</strong>. Your support means the world to us and to every person whose life is shaped by the sessions you're helping to make possible.
               </p>
-              <p style="font-size:16px;color:#333333;line-height:1.6;margin:0 0 24px;">
-                You've joined as a <strong>${tierData.label}</strong> — ${tierData.desc}
-              </p>
-
               <!-- Tier card -->
               <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f0f4ff;border-radius:8px;margin-bottom:24px;">
                 <tr>
                   <td style="padding:24px;text-align:center;">
                     <p style="margin:0 0 4px;font-size:13px;color:#666666;text-transform:uppercase;letter-spacing:1px;">Your Hero Tier</p>
-                    <p style="margin:0;font-size:22px;font-weight:800;color:#1a1a2e;">${tierData.emoji} ${tierData.label}</p>
-                    <p style="margin:4px 0 0;font-size:15px;color:#555555;">${tierData.price}</p>
+                    <p style="margin:0 0 8px;font-size:22px;font-weight:800;color:#1a1a2e;">${tierData.emoji} ${tierData.label}</p>
+                    <p style="margin:0 0 12px;font-size:15px;color:#333333;line-height:1.6;">${tierData.desc}</p>
+                    <p style="margin:0;font-size:15px;color:#555555;">${tierData.price}</p>
                   </td>
                 </tr>
               </table>
@@ -65,13 +83,8 @@ function buildEmailHtml({ name, tierData }) {
               <!-- Badge -->
               <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
                 <tr>
-                  <td style="text-align:center;padding-bottom:16px;">
-                    <img src="${tierData.badgeUrl}?ref=email" alt="${tierData.label} Badge" width="160" style="display:block;margin:0 auto;" />
-                  </td>
-                </tr>
-                <tr>
                   <td style="text-align:center;">
-                    <a href="${tierData.badgeUrl}" style="display:inline-block;background-color:#4A70C2;color:#ffffff;font-size:14px;font-weight:700;padding:10px 24px;border-radius:8px;text-decoration:none;">Download your badge</a>
+                    <a href="${tierData.badgeUrl}" style="display:inline-block;background-color:#4A70C2;color:#ffffff;font-size:14px;font-weight:700;padding:10px 24px;border-radius:8px;text-decoration:none;">View your badge →</a>
                   </td>
                 </tr>
               </table>
@@ -79,10 +92,11 @@ function buildEmailHtml({ name, tierData }) {
               <p style="font-size:16px;color:#333333;line-height:1.6;margin:0 0 16px;">
                 If you ever have questions or just want to say hello, you can reach us at <a href="mailto:hero@empowrcic.org" style="color:#4f6ef7;">hero@empowrcic.org</a>.
               </p>
-              <p style="font-size:16px;color:#333333;line-height:1.6;margin:0;">
+              <p style="font-size:16px;color:#333333;line-height:1.6;margin:0 0 24px;">
                 With gratitude,<br/>
                 <strong>The Empowr Team</strong>
               </p>
+              ${buildMantraHtml()}
             </td>
           </tr>
 
@@ -121,13 +135,17 @@ You've joined as a ${tierData.label} (${tierData.price}).
 
 ${tierData.desc}
 
-Download your ${tierData.label} badge here:
+View your ${tierData.label} badge here:
 ${tierData.badgeUrl}
 
 If you have any questions, reach us at hero@empowrcic.org.
 
 With gratitude,
 The Empowr Team
+
+---
+Live by growing. Grow by learning. Learn by doing.
+Together, we move wellbeing forward — one action at a time.
 
 ---
 Empowr CIC · Registered in England and Wales
@@ -192,10 +210,11 @@ function buildOneTimeEmailHtml({ name, siteUrl }) {
               <p style="font-size:16px;color:#333333;line-height:1.6;margin:0 0 16px;">
                 If you ever have questions or just want to say hello, you can reach us at <a href="mailto:hero@empowrcic.org" style="color:#4f6ef7;">hero@empowrcic.org</a>.
               </p>
-              <p style="font-size:16px;color:#333333;line-height:1.6;margin:0;">
+              <p style="font-size:16px;color:#333333;line-height:1.6;margin:0 0 24px;">
                 With gratitude,<br/>
                 <strong>The Empowr Team</strong>
               </p>
+              ${buildMantraHtml()}
             </td>
           </tr>
 
@@ -250,6 +269,10 @@ If you have any questions, reach us at hero@empowrcic.org.
 
 With gratitude,
 The Empowr Team
+
+---
+Live by growing. Grow by learning. Learn by doing.
+Together, we move wellbeing forward — one action at a time.
 
 ---
 Empowr CIC · Registered in England and Wales

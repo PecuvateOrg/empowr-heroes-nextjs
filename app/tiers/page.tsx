@@ -120,7 +120,6 @@ export default function TiersPage() {
         </p>
         <a href={LINKS.email.hero} className="btn btn-outline">Contact Us →</a>
 
-        <p className="tagline">Live by growing. Grow by learning. Learn by doing.</p>
       </div>
     </main>
   )

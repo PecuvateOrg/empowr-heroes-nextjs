@@ -63,7 +63,6 @@ export default function SeedHeroPage() {
           <Link href="/become" className="btn btn-blue">Become a Hero</Link>
         </div>
 
-        <p className="tagline">Live by growing. Grow by learning. Learn by doing.</p>
       </div>
     </main>
   )

@@ -3,6 +3,7 @@ import { Nunito } from 'next/font/google'
 import './globals.css'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import Mantra from '@/components/Mantra'
 import CookieBanner from '@/components/CookieBanner'
 // import CookieBannerFull from '@/components/CookieBannerFull'
 
@@ -29,6 +30,7 @@ export default function RootLayout({
       <body>
         <Nav />
         {children}
+        <Mantra />
         <Footer />
         <CookieBanner />
         {/* <CookieBannerFull /> */}

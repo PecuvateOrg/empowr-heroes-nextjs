@@ -4,6 +4,20 @@ A running record of development sessions, changes made, and decisions taken.
 
 ---
 
+## Session — 5 April 2026 (continued)
+
+### Badge Email & Future Badge Page
+
+#### Badge removed from email
+Removed the badge image from the hero welcome email. Replaced the download button with a simple "View your badge →" link pointing directly to the S3 badge URL. S3 badges updated to `Content-Disposition: inline` so clicking the link opens the image in the browser.
+
+Reasoning: cleaner email, better user experience — the reveal of seeing the badge for the first time is more impactful as a separate moment after clicking through.
+
+#### Deferred — Dedicated badge page
+Future feature: create a `/badge/[tier]` page on the site that displays the donor's badge with options to share, copy the link, or save the image. The "View your badge →" email link would point here instead of directly to S3. This page could include social share buttons and a proper download button.
+
+---
+
 ## Session — 5 April 2026
 
 ### Production Go-Live Completion, GDPR Data Minimisation & Email Improvements
@@ -54,7 +68,7 @@ Removed donor name and email from Notion. Notion now stores operational data onl
 - New thank you email for one-time donors — no badge, includes "Become a Hero" card with benefits and CTA button
 - Handler updated to detect `onetime` tier and send the correct email
 
-**Still to do:** Set after-payment redirect on Stripe one-time Payment Link to `https://hero.empowrcic.org/thankyou/onetime`
+After-payment redirect on Stripe one-time Payment Link set to `https://hero.empowrcic.org/thankyou/onetime` ✓
 
 ---
 

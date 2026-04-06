@@ -126,10 +126,6 @@ export default function Home() {
           <Link href="/become" className="btn btn-blue">🏆 Become a Hero →</Link>
         </div>
 
-        <p className="tagline">
-          Live by growing. Grow by learning. Learn by doing.<br />
-          Together, we move wellbeing forward — one action at a time.
-        </p>
       </div>
     </main>
   )

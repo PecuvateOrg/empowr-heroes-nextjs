@@ -143,7 +143,6 @@ export default function BecomePage() {
           </div>
         </div>
 
-        <p className="tagline">Live by growing. Grow by learning. Learn by doing.</p>
       </div>
     </main>
   )

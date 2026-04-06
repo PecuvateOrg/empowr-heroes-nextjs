@@ -88,6 +88,11 @@ nav {
   margin: 0 auto;
   padding: 2.5rem 1.25rem 4rem;
 }
+.mantra-outer {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
 
 /* ─────────────────────────────────────────
    TYPOGRAPHY — mobile base
