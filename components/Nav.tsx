@@ -8,6 +8,8 @@ import { LINKS } from '@/lib/links'
 export default function Nav() {
   const pathname = usePathname()
 
+  if (pathname.startsWith('/thankyou')) return null
+
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/'
     return pathname.startsWith(href)
