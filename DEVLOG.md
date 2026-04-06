@@ -4,6 +4,43 @@ A running record of development sessions, changes made, and decisions taken.
 
 ---
 
+## Session — 6 April 2026
+
+### Email Overhaul, Brand Mantra Component & Email Preview Script
+
+---
+
+#### Email layout restructured
+- Tier description moved inside the tier card, directly below the label — card now contains all tier info in one place
+- Standalone "You've joined as a..." sentence removed — card does all the work
+- Brand mantra added to bottom of both hero and one-time emails (HTML and plain text versions)
+- Mantra uses brand colours in HTML: red, blue, black per phrase
+
+#### Brand mantra extracted into shared component
+- Created `components/Mantra.tsx` — single source of truth for mantra text, colours, and styling
+- Added to all 10 pages; removing from any one page or updating the copy only requires one file change
+- Home page shows full version (mantra + statement); all other pages show mantra only
+- Mantra placed inside each page's content container so it inherits the correct background
+- Text centred via `.tagline` CSS class
+
+#### Email preview script
+- Created `scripts/preview-email.js` — renders any email template to `scripts/preview.html` for instant browser preview
+- Run: `npm run preview:email` (defaults to community), `npm run preview:email -- seed`, etc.
+- Open output: `start scripts/preview.html`
+- `scripts/preview.html` added to `.gitignore`
+
+#### S3 badge Content-Disposition updated
+- All 5 badge PNGs switched from `attachment` to `inline` via AWS CLI
+- Clicking "View your badge →" in email now opens the image in the browser rather than downloading
+
+#### Stripe one-time redirect confirmed
+- After-payment redirect on Stripe one-time Payment Link set to `https://hero.empowrcic.org/thankyou/onetime` ✓
+
+#### Deferred — Dedicated badge page
+Future feature: create a `/badge/[tier]` page on the site that displays the donor's badge with options to share, copy the link, or save the image. The "View your badge →" email link would point here instead of directly to S3.
+
+---
+
 ## Session — 5 April 2026 (continued)
 
 ### Badge Email & Future Badge Page
