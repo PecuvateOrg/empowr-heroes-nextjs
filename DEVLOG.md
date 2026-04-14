@@ -4,6 +4,40 @@ A running record of development sessions, changes made, and decisions taken.
 
 ---
 
+## Session — 14 April 2026
+
+### Share Buttons, Research Page & Copy Corrections
+
+---
+
+#### Share buttons connected (thank you page)
+- Replaced placeholder `<button>` elements with working `<a>` tags
+- "Follow us on Instagram" → links to `instagram.com/empowr.cic`
+- "Share on LinkedIn" → LinkedIn share dialog pre-loaded with `hero.empowrcic.org/become`
+- "Refer a Friend" → `mailto:` with pre-written subject and body (includes main site URL)
+- All social URLs stored in `lib/links.ts` under `social`
+
+#### Mission and CIC copy corrections
+- Fixed all references from "charity" to "Community Interest Company" (CIC)
+- Fixed all references from "young people" to "people of all ages" (or equivalent)
+- Affected files: `CLAUDE.md`, `app/thankyou/onetime/page.tsx`, `core/email-template.js` (HTML + plain text), `lib/links.ts`
+- Mission statement added to `CLAUDE.md`: "To promote lifelong wellbeing through experiential learning. Works with people of all ages."
+
+#### New page: /why-experiential-learning
+- Standalone research page built from Empowr's 2025 report
+- Sections: stat strip, The Problem, The Science, The Evidence (cards), The Economic Case (cards), Conclusion
+- References collapsed behind a native `<details>` toggle — no JS required
+- CTA at bottom links to `/become` and `www.empowrcic.org`
+- Linked from: become, tiers, and patron pages
+- Patron page has a dedicated "Further Reading" section with both the internal page and a Notion doc placeholder (update `LINKS.research.notionDoc` in `lib/links.ts` when new link is provided)
+
+#### lib/links.ts additions
+- `social` — instagram, linkedinShare, referFriend
+- `site.main` — `https://www.empowrcic.org`
+- `research.notionDoc` — Notion placeholder (to be updated)
+
+---
+
 ## Session — 6 April 2026
 
 ### Email Overhaul, Brand Mantra Component & Email Preview Script
