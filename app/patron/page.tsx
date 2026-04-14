@@ -118,6 +118,21 @@ export default function PatronPage() {
           </div>
         </div>
 
+        <hr className="patron-hr" />
+
+        <span className="patron-eyebrow">Further Reading</span>
+        <div className="patron-research-box">
+          <p className="patron-partnership-text">
+            Founding Patrons are investing in an evidence-based approach. Empowr's 2025 report sets out the case for
+            experiential learning as a proven, cost-effective path to lifelong wellbeing — drawing on NHS data, peer-reviewed
+            studies, and the economic case for non-medical mental health intervention.
+          </p>
+          <div className="patron-research-links">
+            <Link href="/why-experiential-learning" className="btn btn-outline">Read the Research →</Link>
+            <a href={LINKS.research.notionDoc} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">View Source Document →</a>
+          </div>
+        </div>
+
       <Mantra />
       </div>
     </main>

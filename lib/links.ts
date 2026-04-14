@@ -19,4 +19,19 @@ export const LINKS = {
     logo: 'https://empowr-cic.s3.us-east-1.amazonaws.com/empowr_logo.png',
   },
 
+  social: {
+    instagram: 'https://www.instagram.com/empowr.cic',
+    linkedinShare: 'https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fhero.empowrcic.org%2Fbecome',
+    referFriend: 'mailto:?subject=I%20just%20became%20an%20Empowr%20Hero%20%E2%80%94%20you%20should%20too!&body=Hey%2C%0A%0AI%20just%20became%20an%20Empowr%20Hero%20%E2%80%94%20a%20monthly%20supporter%20of%20Empowr%20CIC%2C%20a%20Community%20Interest%20Company%20promoting%20lifelong%20wellbeing%20through%20experiential%20learning.%0A%0AI%20thought%20you%20might%20want%20to%20join%20me.%20You%20can%20become%20a%20Hero%20here%3A%20https%3A%2F%2Fhero.empowrcic.org%2Fbecome%0A%0AIt%20starts%20from%20just%20%C2%A310%2Fmonth%20and%20every%20contribution%20makes%20a%20real%20difference.%0A%0AFind%20out%20more%20about%20Empowr%20CIC%20at%20https%3A%2F%2Fwww.empowrcic.org',
+  },
+
+  site: {
+    main: 'https://www.empowrcic.org',
+  },
+
+  research: {
+    // Placeholder — replace with updated link when provided
+    notionDoc: 'https://blush-ash-1c6.notion.site/A-Non-Medical-Approach-to-Tackling-Mental-Health-233bcf94418480b68a34f2d3431982f6',
+  },
+
 }

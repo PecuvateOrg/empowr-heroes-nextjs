@@ -15,7 +15,7 @@ export default function ThankYouOneTimePage() {
         <div className="confetti">💝</div>
         <h1 className="ty-title">Thank you for your<br />generous gift.</h1>
         <p className="ty-sub">
-          Every contribution — no matter the size — helps make our sessions possible and puts wellbeing within reach for more young people.
+          Every contribution — no matter the size — helps make our sessions possible and puts wellbeing within reach for people of all ages.
         </p>
 
         <div className="tier-pill">

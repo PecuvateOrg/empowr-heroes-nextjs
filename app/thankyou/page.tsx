@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { TIERS } from '@/lib/tiers'
+import { LINKS } from '@/lib/links'
 
 export const metadata = {
   title: 'Thank You — Empowr Heroes',
@@ -64,9 +65,9 @@ export default async function ThankYouPage({
         </div>
 
         <div className="social-row">
-          <button type="button" className="btn btn-blue btn-sm">Share on Instagram</button>
-          <button type="button" className="btn btn-outline btn-sm">Share on LinkedIn</button>
-          <button type="button" className="btn btn-outline btn-sm">Refer a Friend</button>
+          <a href={LINKS.social.instagram} target="_blank" rel="noopener noreferrer" className="btn btn-blue btn-sm">Follow us on Instagram</a>
+          <a href={LINKS.social.linkedinShare} target="_blank" rel="noopener noreferrer" className="btn btn-outline btn-sm">Share on LinkedIn</a>
+          <a href={LINKS.social.referFriend} className="btn btn-outline btn-sm">Refer a Friend</a>
         </div>
 
         <div className="ty-nav">

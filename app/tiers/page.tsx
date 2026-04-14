@@ -108,6 +108,10 @@ export default function TiersPage() {
         <h2 className="h2">Your Choice, Real Impact</h2>
         <p className="body">No matter which tier resonates with you, your contribution joins a movement of people who believe wellbeing is built through action, not theory.</p>
         <p className="body">Every Hero level reflects different capacities — but equal commitment to a vision where everyone can access experiences that transform their wellbeing.</p>
+        <p className="body" style={{ fontSize: '0.9rem' }}>
+          Curious about why this approach works?{' '}
+          <Link href="/why-experiential-learning" style={{ color: 'var(--blue)', fontWeight: 700 }}>Read the evidence behind experiential learning →</Link>
+        </p>
         <div className="btn-row-inline">
           <Link href="/become" className="btn btn-blue">🏆 Become a Hero</Link>
           <Link href="/" className="btn btn-outline">← Back to Mission</Link>

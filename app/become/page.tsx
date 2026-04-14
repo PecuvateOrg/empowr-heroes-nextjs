@@ -113,6 +113,10 @@ export default function BecomePage() {
           <li><div className="tick">✓</div><span>Prove that experiential learning is the path to lifelong wellbeing</span></li>
         </ul>
         <p className="body">You're not just giving money. You're investing in a healthier, more capable society — one experience at a time.</p>
+        <p className="body" style={{ fontSize: '0.9rem' }}>
+          <strong>Want to understand the science behind our work?</strong>{' '}
+          <Link href="/why-experiential-learning" style={{ color: 'var(--blue)', fontWeight: 700 }}>Read our research on experiential learning and mental health →</Link>
+        </p>
 
         <hr className="div" />
 

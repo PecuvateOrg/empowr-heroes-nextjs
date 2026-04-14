@@ -7,7 +7,9 @@ Also read: `DEVLOG.md`, `lib/links.ts`, `lib/tiers.ts`.
 
 ## What This Project Is
 
-Next.js 14 site for the **Empowr Heroes Programme** by **Empowr CIC** (a UK charity).
+Next.js 14 site for the **Empowr Heroes Programme** by **Empowr CIC** (a UK Community Interest Company).
+
+**Empowr CIC mission:** To promote lifelong wellbeing through experiential learning. Empowr works with people of **all ages** — not just young people.
 Hosted on **Netlify**. Repo: `Pecuvate/empowr-heroes-nextjs` on GitHub (`main` branch).
 
 The site allows supporters to become "Heroes" by choosing a monthly giving tier,

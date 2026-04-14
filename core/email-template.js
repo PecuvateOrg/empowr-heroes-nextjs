@@ -187,7 +187,7 @@ function buildOneTimeEmailHtml({ name, siteUrl }) {
                 Hi ${firstName},
               </p>
               <p style="font-size:16px;color:#333333;line-height:1.6;margin:0 0 16px;">
-                Thank you so much for your generous contribution to Empowr CIC. Every gift — no matter the size — makes a real and immediate difference to the young people we work with.
+                Thank you so much for your generous contribution to Empowr CIC. Every gift — no matter the size — makes a real and immediate difference to the people and communities we work with.
               </p>
               <p style="font-size:16px;color:#333333;line-height:1.6;margin:0 0 24px;">
                 Your support helps us keep our sessions affordable, accessible, and impactful. We're grateful to have you in our corner.
@@ -247,7 +247,7 @@ function buildOneTimeEmailText({ name, siteUrl }) {
 
   return `Hi ${firstName},
 
-Thank you so much for your generous contribution to Empowr CIC. Every gift — no matter the size — makes a real and immediate difference to the young people we work with.
+Thank you so much for your generous contribution to Empowr CIC. Every gift — no matter the size — makes a real and immediate difference to the people and communities we work with.
 
 Your support helps us keep our sessions affordable, accessible, and impactful. We're grateful to have you in our corner.
 
