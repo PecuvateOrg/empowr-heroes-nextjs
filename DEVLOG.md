@@ -4,6 +4,30 @@ A running record of development sessions, changes made, and decisions taken.
 
 ---
 
+## Session — 17 April 2026
+
+### Notion Workspace Migration & Pre-Launch Code Review
+
+---
+
+#### Notion workspace migration completed
+- Donations DB moved to a new Notion workspace
+- New integration token updated in `.env.local` (`NOTION_API_KEY`)
+- New database ID confirmed via Notion MCP: `2d5e1485c4e1821baaed01000f3df0aa` (old: `9760dd1c24f0437d8b0bbae87524636a`)
+- Both `NOTION_DATABASE_ID` and `NOTION_API_KEY` updated in Netlify environment variables via CLI
+- Verified end-to-end in production using Stripe test mode — Notion row created successfully
+- `CLAUDE.md` updated with new database ID and workspace name
+
+#### Pre-launch code review
+- Fixed truncated Legacy Hero description in `lib/tier-config.js` — was missing "while maintaining financial stability." (email copy now matches `lib/tiers.ts`)
+- Removed stale placeholder comment from `lib/links.ts` (`research.notionDoc` — link is live)
+- No other breaking issues found; inline style cleanup deferred (cosmetic, not launch-blocking)
+
+#### Deferred to next session
+- Upload final badge PNGs to AWS S3 (`empowr-cic` bucket, `badges/` prefix) — this is the last remaining task before launch
+
+---
+
 ## Session — 14 April 2026
 
 ### Share Buttons, Research Page & Copy Corrections

@@ -30,7 +30,6 @@ export const LINKS = {
   },
 
   research: {
-    // Placeholder — replace with updated link when provided
     notionDoc: 'https://blush-ash-1c6.notion.site/A-Non-Medical-Approach-to-Tackling-Mental-Health-233bcf94418480b68a34f2d3431982f6',
   },
 
