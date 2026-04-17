@@ -143,8 +143,8 @@ All site contact links live in `lib/links.ts` — never hardcode.
 - Sending address: `heroes@hero.empowrcic.org`
 
 ### Notion
-- Donations database: `Empowr Heroes — Donor Hub` → `Donations`
-- Database ID: `9760dd1c24f0437d8b0bbae87524636a`
+- Donations database: `Empowr Heroes Donations DB` (moved to new Notion workspace April 2026)
+- Database ID: `2d5e1485c4e1821baaed01000f3df0aa`
 - Integration name: `Empowr Heroes Webhook`
 - Schema: Name, Donor ID (auto DON-xxx), Email, Tier, Amount, Currency, Date, Email Status, Stripe Session ID, Record Created, Last Updated
 
