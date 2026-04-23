@@ -72,4 +72,4 @@ empowr-heroes-nextjs/
 
 ## Status
 
-Active. Core donation flow is live on Netlify.
+**Launched.** Fully live in production as of 23 April 2026. Donation flow verified end-to-end. All pre-launch tasks complete. Now in post-launch maintenance and feature development.

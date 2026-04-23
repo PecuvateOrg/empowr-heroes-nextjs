@@ -39,9 +39,13 @@ Next.js natively supports the `src/` directory pattern — no config changes to 
 - `npx tsc --noEmit` — clean
 - `npm run build` — all 17 pages generated successfully
 
-#### PR raised
-Branch pushed to GitHub. PR open: `chore/workspace-restructure` → `main`.
-Pending: verify `npm run preview:email` and Netlify deploy after merge.
+#### PR raised and merged
+Branch pushed to GitHub. PR `chore/workspace-restructure` → `main` raised, reviewed, and merged.
+- `npm run preview:email` verified post-restructure — output correct
+- Netlify deploy triggered by merge — succeeded, all pages live
+
+#### Site officially launched
+Empowr Heroes is fully live in production as of 23 April 2026. All pre-launch tasks are complete. The project moves into post-launch maintenance and feature development from this point.
 
 ---
 
