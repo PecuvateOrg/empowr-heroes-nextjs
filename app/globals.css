@@ -1147,11 +1147,19 @@ details[open] .el-refs-toggle::before { transform: rotate(90deg); }
   margin-right: 2px;
 }
 .footer-section--open .footer-chevron { transform: rotate(-135deg); }
-.footer-section-body {
-  display: none;
-  padding-bottom: 1.25rem;
+.footer-section-body-outer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease;
 }
-.footer-section--open .footer-section-body { display: block; }
+.footer-section--open .footer-section-body-outer { grid-template-rows: 1fr; }
+.footer-section-body {
+  overflow: hidden;
+  min-height: 0;
+  padding-bottom: 0;
+  transition: padding-bottom 0.3s ease;
+}
+.footer-section--open .footer-section-body { padding-bottom: 1.25rem; }
 
 /* Legal links */
 .footer-links {
@@ -1216,7 +1224,11 @@ details[open] .el-refs-toggle::before { transform: rotate(90deg); }
     padding: 0 0 0.75rem;
   }
   .footer-chevron { display: none; }
-  .footer-section-body { display: block; }
+  .footer-section-body-outer {
+    grid-template-rows: 1fr;
+    transition: none;
+  }
+  .footer-section-body { padding-bottom: 0; }
 }
 
 /* ─────────────────────────────────────────

@@ -41,8 +41,10 @@ function FooterSection({ heading, children }: { heading: string; children: React
         {heading}
         <span className="footer-chevron" aria-hidden="true" />
       </button>
-      <div className="footer-section-body">
-        {children}
+      <div className="footer-section-body-outer">
+        <div className="footer-section-body">
+          {children}
+        </div>
       </div>
     </div>
   )
