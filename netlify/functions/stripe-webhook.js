@@ -9,7 +9,7 @@
  * Configure this URL as your Stripe webhook endpoint.
  */
 
-const { handleDonation } = require('../../core/donation-handler')
+const { handleDonation } = require('../../src/core/donation-handler')
 
 exports.handler = async (event) => {
   // Only accept POST requests

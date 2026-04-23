@@ -4,6 +4,80 @@ A running record of development sessions, changes made, and decisions taken.
 
 ---
 
+## Session — 23 April 2026
+
+### Workspace Restructure (agent-first folder architecture)
+
+---
+
+#### Branching practice established
+All future changes must go on a named branch before merging to `main`. Previous sessions committed directly to `main` — this session corrected that practice. Branch used: `chore/workspace-restructure`.
+
+#### Folder restructure
+Implemented a three-layer workspace architecture based on `_config/folder-architecture.md`:
+
+- `src/` — application code (`app/`, `components/`, `lib/`, `core/` moved inside)
+- `planning/` — pre-code specs and architectural decision records
+- `docs/` — process documentation (donation flow, email system)
+- `ops/` — infrastructure, runbooks, dev scripts (`scripts/` moved to `ops/scripts/`)
+
+Next.js natively supports the `src/` directory pattern — no config changes to `next.config.ts` required. `public/` must stay at root (Next.js hard requirement).
+
+#### Files updated
+- `tsconfig.json` — `@/*` alias updated from `"./*"` to `"./src/*"`
+- `netlify/functions/stripe-webhook.js` — require path updated to `../../src/core/donation-handler`
+- `ops/scripts/preview-email.js` — three require paths updated to `../../src/core/` and `../../src/lib/`
+- `package.json` — `preview:email` script updated to `node ops/scripts/preview-email.js`
+- `CLAUDE.md` — all path references updated, new workspace layers documented
+- `CONTEXT.md` — fully rewritten (was incomplete); now includes workspace routing table
+
+#### New files created
+- `src/CONTEXT.md`, `planning/CONTEXT.md`, `docs/CONTEXT.md`, `ops/CONTEXT.md`
+- `ops/runbooks/add-a-tier.md`, `ops/runbooks/deploy-checklist.md`, `ops/runbooks/rotate-secrets.md`
+
+#### Verified
+- `npx tsc --noEmit` — clean
+- `npm run build` — all 17 pages generated successfully
+
+#### PR raised
+Branch pushed to GitHub. PR open: `chore/workspace-restructure` → `main`.
+Pending: verify `npm run preview:email` and Netlify deploy after merge.
+
+---
+
+## Session — 23 April 2026
+
+### Footer Redesign, Social Icons & Mobile Accordion
+
+---
+
+#### Badge upload confirmed
+Final badge PNGs confirmed uploaded to AWS S3 (`empowr-cic` bucket, `badges/` prefix). This was the last outstanding pre-launch task — the site is now fully launch-ready.
+
+#### Footer redesigned
+Replaced the minimal single-bar footer with a structured 3-column layout:
+
+- **Brand column** — Empowr CIC name + tagline
+- **Legal column** — Legal Disclaimer, T&Cs, Privacy Policy, Cookie Policy
+- **Find Us column** — Instagram, LinkedIn, and website globe icon
+
+Desktop: 3-column CSS grid (`1.5fr 1fr 1fr`), always expanded, section headings non-interactive.
+Mobile: accordion — each section collapses/expands with a chevron toggle.
+
+#### Mobile accordion animation
+Added smooth slide open/close using the `grid-template-rows: 0fr → 1fr` CSS transition technique. Padding also transitions to avoid a flash on open. Desktop sections are unaffected (transition disabled, always expanded).
+
+#### Social icons added
+Inline SVG icons for Instagram and LinkedIn added to the Find Us section. Globe icon added for the main Empowr website (`www.empowrcic.org`). No new dependencies — all icons are self-contained SVG paths.
+
+#### lib/links.ts updated
+Added `LINKS.social.linkedin` (`https://www.linkedin.com/company/empowr-cic`). The existing `linkedinShare` key (used on the thank you page share button) is unchanged.
+
+#### CONTEXT.md
+A `CONTEXT.md` file was started for this project but is incomplete — deferred to a future session.
+
+---
+
 ## Session — 17 April 2026
 
 ### Notion Workspace Migration & Pre-Launch Code Review
