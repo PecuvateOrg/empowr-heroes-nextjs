@@ -4,6 +4,39 @@ A running record of development sessions, changes made, and decisions taken.
 
 ---
 
+## Session — 23 April 2026
+
+### Footer Redesign, Social Icons & Mobile Accordion
+
+---
+
+#### Badge upload confirmed
+Final badge PNGs confirmed uploaded to AWS S3 (`empowr-cic` bucket, `badges/` prefix). This was the last outstanding pre-launch task — the site is now fully launch-ready.
+
+#### Footer redesigned
+Replaced the minimal single-bar footer with a structured 3-column layout:
+
+- **Brand column** — Empowr CIC name + tagline
+- **Legal column** — Legal Disclaimer, T&Cs, Privacy Policy, Cookie Policy
+- **Find Us column** — Instagram, LinkedIn, and website globe icon
+
+Desktop: 3-column CSS grid (`1.5fr 1fr 1fr`), always expanded, section headings non-interactive.
+Mobile: accordion — each section collapses/expands with a chevron toggle.
+
+#### Mobile accordion animation
+Added smooth slide open/close using the `grid-template-rows: 0fr → 1fr` CSS transition technique. Padding also transitions to avoid a flash on open. Desktop sections are unaffected (transition disabled, always expanded).
+
+#### Social icons added
+Inline SVG icons for Instagram and LinkedIn added to the Find Us section. Globe icon added for the main Empowr website (`www.empowrcic.org`). No new dependencies — all icons are self-contained SVG paths.
+
+#### lib/links.ts updated
+Added `LINKS.social.linkedin` (`https://www.linkedin.com/company/empowr-cic`). The existing `linkedinShare` key (used on the thank you page share button) is unchanged.
+
+#### CONTEXT.md
+A `CONTEXT.md` file was started for this project but is incomplete — deferred to a future session.
+
+---
+
 ## Session — 17 April 2026
 
 ### Notion Workspace Migration & Pre-Launch Code Review

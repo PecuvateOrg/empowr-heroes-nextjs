@@ -1,7 +1,7 @@
 # Empowr Heroes — Claude Project Context
 
 Read this file at the start of every session before doing anything else.
-Also read: `DEVLOG.md`, `lib/links.ts`, `lib/tiers.ts`.
+Also read: `DEVLOG.md`, `src/lib/links.ts`, `src/lib/tiers.ts`.
 
 ---
 
@@ -34,22 +34,26 @@ in the future. Human readability is secondary, not an afterthought.
 ## Project Structure
 
 ```
-app/                          Pages (Next.js app router)
-components/                   Shared UI components
-lib/
-  links.ts                    ← ALL external URLs for the entire site (update here only)
-  tiers.ts                    ← ALL tier data: names, prices, descriptions, Stripe URLs
-core/
-  donation-handler.js         ← All webhook business logic (Stripe, Resend, Notion)
-  email-template.js           ← HTML and plain text email builders (separated for easy updates)
+src/                          Application code (read src/CONTEXT.md first)
+  app/                        Pages (Next.js app router)
+  components/                 Shared UI components
+  lib/
+    links.ts                  ← ALL external URLs for the entire site (update here only)
+    tiers.ts                  ← ALL tier data: names, prices, descriptions, Stripe URLs
+  core/
+    donation-handler.js       ← All webhook business logic (Stripe, Resend, Notion)
+    email-template.js         ← HTML and plain text email builders (separated for easy updates)
 netlify/
   functions/
-    stripe-webhook.js         ← Thin Netlify adapter — calls core/donation-handler.js
+    stripe-webhook.js         ← Thin Netlify adapter — calls src/core/donation-handler.js
 public/
   badges/                     ← Badge assets (SVG + PNG). PNG versions used in emails.
   empowr-favicon-logo.png     (large, unused — kept for reference)
   favicon.ico                 Favicon (also served statically at /favicon.ico)
-app/favicon.ico               Active favicon (ICO with 16×16 and 32×32 sizes)
+src/app/favicon.ico           Active favicon (ICO with 16×16 and 32×32 sizes)
+planning/                     Pre-code specs and architectural decision records
+docs/                         Process documentation — donation flow, email system
+ops/                          Infrastructure, runbooks, dev scripts
 DEVLOG.md                     ← Running log of every dev session and decisions made
 README.md                     ← Setup guide and Stripe CLI local testing instructions
 .env.example                  ← Documents all required environment variables
@@ -60,7 +64,7 @@ README.md                     ← Setup guide and Stripe CLI local testing instr
 ## Key Decisions & Rules
 
 ### Styling
-- No Tailwind. All CSS is custom, in `app/globals.css` using CSS variables.
+- No Tailwind. All CSS is custom, in `src/app/globals.css` using CSS variables.
 - Font: Nunito via `next/font/google`. Weights: 400, 500, 600, 700, 800, 900 + italic.
 - **Never use raw hex values in components — always reference colours via `var(--variable-name)`.**
 
@@ -74,9 +78,9 @@ README.md                     ← Setup guide and Stripe CLI local testing instr
 | Patron contact | `patron@empowrcic.org` |
 | Sending address (Resend, outbound emails) | `heroes@hero.empowrcic.org` |
 
-All site contact links live in `lib/links.ts` — never hardcode.
+All site contact links live in `src/lib/links.ts` — never hardcode.
 
-**Colour palette — all defined as CSS variables in `app/globals.css`:**
+**Colour palette — all defined as CSS variables in `src/app/globals.css`:**
 
 | Variable | Value | Usage |
 |---|---|---|
@@ -96,19 +100,19 @@ All site contact links live in `lib/links.ts` — never hardcode.
 
 ### Links
 - **Never hardcode external URLs in components or pages.**
-- All links live in `lib/links.ts` — import `LINKS` from there.
+- All links live in `src/lib/links.ts` — import `LINKS` from there.
 - Policy docs are hosted at `legalhub.pecuvate.com`.
 
 ### Tiers
-- All tier data lives in `lib/tiers.ts` — import `TIERS` from there.
-- Stripe URLs are in `lib/tiers.ts` too.
+- All tier data lives in `src/lib/tiers.ts` — import `TIERS` from there.
+- Stripe URLs are in `src/lib/tiers.ts` too.
 - Tier metadata (`tier: seed` etc.) must also be set on each Stripe Payment Link manually in the Stripe dashboard.
 
-### Donation Automation (core/)
-- Business logic lives in `core/donation-handler.js` — no platform-specific code here.
-- Email template lives in `core/email-template.js` — update this for any email copy or design changes.
+### Donation Automation (src/core/)
+- Business logic lives in `src/core/donation-handler.js` — no platform-specific code here.
+- Email template lives in `src/core/email-template.js` — update this for any email copy or design changes.
 - The Netlify function in `netlify/functions/stripe-webhook.js` is a thin adapter only — no logic belongs there.
-- This architecture is intentionally portable — `core/` can be extracted into a standalone Pecuvate service in future.
+- This architecture is intentionally portable — `src/core/` can be extracted into a standalone Pecuvate service in future.
 - Stripe metadata field `tier` must be set on each Payment Link for the handler to identify the donor's tier.
 
 ### Badge Assets
@@ -121,12 +125,12 @@ All site contact links live in `lib/links.ts` — never hardcode.
 ### Cookie Banner
 - **Active:** `CookieBanner` (simple — Accept/Decline only)
 - **Ready but inactive:** `CookieBannerFull` (expandable settings panel with toggles)
-- To swap: edit the two commented lines in `app/layout.tsx`
+- To swap: edit the two commented lines in `src/app/layout.tsx`
 - Only activate `CookieBannerFull` when optional cookies are actually in use AND the cookie policy doc has been updated. See `DEVLOG.md` for full details.
 
 ### Favicon
-- `app/favicon.ico` is the active favicon (Empowr logo, 16×16 and 32×32).
-- To update: replace `app/favicon.ico` with a new ICO file. Keep `public/favicon.ico` in sync.
+- `src/app/favicon.ico` is the active favicon (Empowr logo, 16×16 and 32×32).
+- To update: replace `src/app/favicon.ico` with a new ICO file. Keep `public/favicon.ico` in sync.
 
 ---
 
@@ -156,9 +160,9 @@ See `.env.example` for full list. All must be set in Netlify > Site configuratio
 ## Before Starting Work
 
 1. Read `DEVLOG.md` — check the latest session and the deferred issues list
-2. Check `lib/links.ts` if any policy or contact links are involved
-3. Check `lib/tiers.ts` if any tier data is involved
-4. Check `core/donation-handler.js` and `core/email-template.js` if anything touches the donation flow or email
+2. Check `src/lib/links.ts` if any policy or contact links are involved
+3. Check `src/lib/tiers.ts` if any tier data is involved
+4. Check `src/core/donation-handler.js` and `src/core/email-template.js` if anything touches the donation flow or email
 5. Run `npx tsc --noEmit` before committing anything to catch type errors early
 
 ## Before Ending a Session

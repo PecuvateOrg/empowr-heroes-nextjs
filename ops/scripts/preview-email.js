@@ -1,14 +1,14 @@
 /**
- * scripts/preview-email.js
+ * ops/scripts/preview-email.js
  *
  * Renders the email template to an HTML file for browser preview.
- * Run: node scripts/preview-email.js [tier]
+ * Run: node ops/scripts/preview-email.js [tier]
  *
  * Examples:
- *   node scripts/preview-email.js              → defaults to community
- *   node scripts/preview-email.js seed
- *   node scripts/preview-email.js champion
- *   node scripts/preview-email.js onetime
+ *   node ops/scripts/preview-email.js              → defaults to community
+ *   node ops/scripts/preview-email.js seed
+ *   node ops/scripts/preview-email.js champion
+ *   node ops/scripts/preview-email.js onetime
  *
  * Or via npm:
  *   npm run preview:email                  → defaults to community tier
@@ -20,16 +20,16 @@
  *   npm run preview:email -- onetime       → one-time donor email
  *
  * Then open the output in your browser:
- *   start scripts/preview.html
+ *   start ops/scripts/preview.html
  *
  * After that, just refresh the browser tab each time you regenerate.
  */
 
 const fs = require('fs')
 const path = require('path')
-const { buildEmailHtml, buildOneTimeEmailHtml } = require('../core/email-template')
-const { TIER_CONFIG } = require('../lib/tier-config')
-const { BADGES } = require('../lib/badges')
+const { buildEmailHtml, buildOneTimeEmailHtml } = require('../../src/core/email-template')
+const { TIER_CONFIG } = require('../../src/lib/tier-config')
+const { BADGES } = require('../../src/lib/badges')
 
 const VALID_TIERS = [...Object.keys(TIER_CONFIG), 'onetime']
 const tier = process.argv[2] || 'community'
@@ -60,5 +60,5 @@ if (tier === 'onetime') {
 
 const outputPath = path.join(__dirname, 'preview.html')
 fs.writeFileSync(outputPath, html, 'utf8')
-console.log(`Preview written to scripts/preview.html`)
+console.log(`Preview written to ops/scripts/preview.html`)
 console.log(`Tier: ${tier}`)
