@@ -64,6 +64,10 @@ async function logToNotionWithStatus({ tier, amountTotal, currency, emailStatus,
   })
 }
 
+// Notion data source ID for the Donations DB (collection ID, distinct from the database page ID)
+// Find this in CLAUDE.md under Infrastructure > Notion
+const NOTION_DONATIONS_DATA_SOURCE_ID = '86ae1485-c4e1-8269-ba31-870796a355e1'
+
 // ---------------------------------------------------------------------------
 // Cancellation handler
 // ---------------------------------------------------------------------------
@@ -102,14 +106,11 @@ async function handleCancellationEvent(event, { stripeSecretKey, resendApiKey, n
 
   const notion = new Client({ auth: notionApiKey })
 
-  const response = await notion.request({
-    path: `databases/${notionDatabaseId}/query`,
-    method: 'post',
-    body: {
-      filter: {
-        property: 'Subscription ID',
-        rich_text: { equals: subscriptionId },
-      },
+  const response = await notion.dataSources.query({
+    data_source_id: NOTION_DONATIONS_DATA_SOURCE_ID,
+    filter: {
+      property: 'Subscription ID',
+      rich_text: { equals: subscriptionId },
     },
   })
 
