@@ -149,8 +149,9 @@ All site contact links live in `src/lib/links.ts` — never hardcode.
 ### Notion
 - Donations database: `Empowr Heroes Donations DB` (moved to new Notion workspace April 2026)
 - Database ID: `2d5e1485c4e1821baaed01000f3df0aa`
+- Data Source ID: `86ae1485-c4e1-8269-ba31-870796a355e1` (collection ID — used in `donation-handler.js` for querying; distinct from the database page ID)
 - Integration name: `Empowr Heroes Webhook`
-- Schema: Name, Donor ID (auto DON-xxx), Email, Tier, Amount, Currency, Date, Email Status, Stripe Session ID, Record Created, Last Updated
+- Schema: Name, Donor ID (auto DON-xxx), Email, Tier, Amount, Currency, Date, Email Status, Stripe Session ID, Record Created, Last Updated, Subscription ID, Status, Cancellation Reason
 
 ### Environment Variables
 See `.env.example` for full list. All must be set in Netlify > Site configuration > Environment variables for production.
