@@ -14,7 +14,7 @@
 const Stripe = require('stripe')
 const { Resend } = require('resend')
 const { Client } = require('@notionhq/client')
-const { buildEmailHtml, buildEmailText, buildOneTimeEmailHtml, buildOneTimeEmailText, buildInternalNotificationHtml, buildInternalNotificationText } = require('./email-template')
+const { buildEmailHtml, buildEmailText, buildOneTimeEmailHtml, buildOneTimeEmailText, buildInternalNotificationHtml, buildInternalNotificationText, buildCancellationNotificationHtml, buildCancellationNotificationText } = require('./email-template')
 const { BADGES } = require('../lib/badges')
 const { TIER_CONFIG } = require('../lib/tier-config')
 
@@ -79,7 +79,7 @@ const CANCELLATION_FEEDBACK_LABELS = {
   unused: 'No longer using it',
 }
 
-async function handleCancellationEvent(event, { notionApiKey, notionDatabaseId }) {
+async function handleCancellationEvent(event, { stripeSecretKey, resendApiKey, notionApiKey, notionDatabaseId }) {
   const subscription = event.data.object
   const subscriptionId = subscription.id
   const details = subscription.cancellation_details || {}
@@ -88,31 +88,63 @@ async function handleCancellationEvent(event, { notionApiKey, notionDatabaseId }
   const comment = details.comment || ''
   const cancellationReason = [feedbackLabel, comment].filter(Boolean).join(' — ') || 'Not provided'
 
+  // Fetch customer name and email from Stripe
+  let name = 'Unknown'
+  let email = ''
+  try {
+    const stripe = new Stripe(stripeSecretKey)
+    const customer = await stripe.customers.retrieve(subscription.customer)
+    name = customer.name || 'Unknown'
+    email = customer.email || ''
+  } catch (err) {
+    console.error('[donation-handler] Could not fetch Stripe customer:', err.message)
+  }
+
   const notion = new Client({ auth: notionApiKey })
 
-  const response = await notion.databases.query({
-    database_id: notionDatabaseId,
-    filter: {
-      property: 'Subscription ID',
-      rich_text: { equals: subscriptionId },
+  const response = await notion.request({
+    path: `databases/${notionDatabaseId}/query`,
+    method: 'post',
+    body: {
+      filter: {
+        property: 'Subscription ID',
+        rich_text: { equals: subscriptionId },
+      },
     },
   })
 
   if (response.results.length === 0) {
     console.warn(`[donation-handler] No Notion record found for subscription ${subscriptionId}`)
-    return { handled: true, event: 'customer.subscription.deleted', subscriptionId, warning: 'No matching Notion record' }
+  } else {
+    const pageId = response.results[0].id
+    const tier = response.results[0].properties?.Tier?.select?.name || 'Unknown'
+
+    await notion.pages.update({
+      page_id: pageId,
+      properties: {
+        'Status': { select: { name: 'Cancelled' } },
+        'Cancellation Reason': { rich_text: [{ text: { content: cancellationReason } }] },
+      },
+    })
+
+    console.log(`[donation-handler] Marked subscription ${subscriptionId} as cancelled in Notion. Reason: ${cancellationReason}`)
+
+    // Send internal cancellation notification
+    try {
+      const resend = new Resend(resendApiKey)
+      await resend.emails.send({
+        from: 'Empowr Heroes <heroes@hero.empowrcic.org>',
+        to: 'hero@empowrcic.org',
+        subject: `Cancellation: ${name} — ${tier}`,
+        html: buildCancellationNotificationHtml({ name, email, tier, cancellationReason, subscriptionId }),
+        text: buildCancellationNotificationText({ name, email, tier, cancellationReason, subscriptionId }),
+      })
+      console.log(`[donation-handler] Cancellation notification sent for ${name} (${subscriptionId})`)
+    } catch (err) {
+      console.error('[donation-handler] Cancellation notification error:', err.message)
+    }
   }
 
-  const pageId = response.results[0].id
-  await notion.pages.update({
-    page_id: pageId,
-    properties: {
-      'Status': { select: { name: 'Cancelled' } },
-      'Cancellation Reason': { rich_text: [{ text: { content: cancellationReason } }] },
-    },
-  })
-
-  console.log(`[donation-handler] Marked subscription ${subscriptionId} as cancelled in Notion. Reason: ${cancellationReason}`)
   return { handled: true, event: 'customer.subscription.deleted', subscriptionId }
 }
 
@@ -157,7 +189,7 @@ async function handleDonation({
 
   // 2. Route based on event type
   if (event.type === 'customer.subscription.deleted') {
-    return await handleCancellationEvent(event, { notionApiKey, notionDatabaseId })
+    return await handleCancellationEvent(event, { stripeSecretKey, resendApiKey, notionApiKey, notionDatabaseId })
   }
 
   if (event.type !== 'checkout.session.completed') {
