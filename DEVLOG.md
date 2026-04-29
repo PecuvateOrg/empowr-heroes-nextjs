@@ -6,6 +6,25 @@ A running record of development sessions, changes made, and decisions taken.
 
 ## Session — 29 April 2026
 
+### Subscription Management, Cancellation Logging, Notifications & 404 Page
+
+---
+
+#### 404 page
+Custom `src/app/not-found.tsx` added — replaces Next.js bare default. Shows branded 404 with CTAs to home and `/become`. Gets Nav and Footer from root layout automatically.
+
+#### Cancellation notification email
+When a subscription is cancelled, a notification is sent to `hero@empowrcic.org` with subscriber name (fetched from Stripe customer), email, tier, cancellation reason, date, and Stripe link. Red header to distinguish from new subscriber notifications.
+
+#### Notion SDK v5 compatibility fix
+`notion.databases.query` does not exist in `@notionhq/client` v5. Fixed by switching to `notion.dataSources.query` with the collection ID (`86ae1485-c4e1-8269-ba31-870796a355e1`), stored as `NOTION_DONATIONS_DATA_SOURCE_ID` constant in `donation-handler.js`. Documented in `CLAUDE.md`.
+
+#### Deferred
+- `invoice.payment_failed` webhook — worth adding to catch failed renewals and update Notion status automatically
+- Stripe Customer Portal custom domain (`manage.hero.empowrcic.org`) — low priority, can be added when needed
+
+---
+
 ### Subscription Management — Customer Portal, Cancellation Logging & Notifications
 
 ---
