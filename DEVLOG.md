@@ -4,6 +4,28 @@ A running record of development sessions, changes made, and decisions taken.
 
 ---
 
+## Session — 29 April 2026
+
+### Internal Notification Email & Live Payment Confirmed
+
+---
+
+#### Live payment confirmed
+First real payment tested end-to-end in production — confirmed working correctly.
+
+#### Internal notification email (new subscriptions)
+When a new subscription Hero signs up, an internal notification email is now sent to `hero@empowrcic.org` via the existing Resend setup (no new infrastructure needed).
+
+The email includes: donor name, email, tier, amount/month, date (UK timezone), Stripe session ID, and a direct link to the session in the Stripe Dashboard.
+
+**Files changed:**
+- `src/core/email-template.js` — added `buildInternalNotificationHtml` and `buildInternalNotificationText`; moved Resend instantiation out of the per-branch blocks so a single instance is shared across all sends
+- `src/core/donation-handler.js` — added step 4b (internal notification) after the welcome email send; scoped to subscription tiers only (not one-time); non-critical — failure is logged but does not break the webhook response
+
+**Verified:** `npx tsc --noEmit` clean, `npm run build` all 17 pages.
+
+---
+
 ## Session — 23 April 2026
 
 ### Workspace Restructure (agent-first folder architecture)

@@ -279,4 +279,118 @@ Empowr CIC · Registered in England and Wales
 Privacy Policy: https://legalhub.pecuvate.com/share/empowr/empowr-privacy-policy`
 }
 
-module.exports = { buildEmailHtml, buildEmailText, buildOneTimeEmailHtml, buildOneTimeEmailText }
+/**
+ * @param {object} params
+ * @param {string} params.name           - Donor full name
+ * @param {string} params.email          - Donor email address
+ * @param {string} params.tierLabel      - Human-readable tier name e.g. "Seed Hero"
+ * @param {string} params.amountFormatted - Pre-formatted amount string e.g. "5.00"
+ * @param {string} params.currency       - Uppercase currency code e.g. "GBP"
+ * @param {string} params.sessionId      - Stripe checkout session ID
+ * @param {string} [params.period]       - Amount period label e.g. "/ month" or "(one-time)"
+ */
+function buildInternalNotificationHtml({ name, email, tierLabel, amountFormatted, currency, sessionId, period = '/ month' }) {
+  const currencySymbol = currency === 'GBP' ? '£' : currency + ' '
+  const stripeUrl = sessionId
+    ? `https://dashboard.stripe.com/${sessionId.startsWith('cs_test_') ? 'test/' : ''}checkout/sessions/${sessionId}`
+    : 'https://dashboard.stripe.com/subscriptions'
+  const date = new Date().toLocaleString('en-GB', { timeZone: 'Europe/London', dateStyle: 'long', timeStyle: 'short' })
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Empowr Hero</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f5f5f5;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f5f5;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:12px;overflow:hidden;max-width:600px;width:100%;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background-color:#4A70C2;padding:24px 40px;">
+              <h1 style="color:#ffffff;font-size:20px;margin:0;font-weight:700;">New Empowr Hero</h1>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px 40px;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+                <tr>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:13px;color:#7a7a8a;text-transform:uppercase;letter-spacing:0.5px;width:130px;">Name</td>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:15px;color:#1B1B1B;font-weight:600;">${name}</td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:13px;color:#7a7a8a;text-transform:uppercase;letter-spacing:0.5px;">Email</td>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:15px;color:#1B1B1B;"><a href="mailto:${email}" style="color:#4A70C2;text-decoration:none;">${email}</a></td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:13px;color:#7a7a8a;text-transform:uppercase;letter-spacing:0.5px;">Tier</td>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:15px;color:#1B1B1B;font-weight:600;">${tierLabel}</td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:13px;color:#7a7a8a;text-transform:uppercase;letter-spacing:0.5px;">Amount</td>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:15px;color:#1B1B1B;">${currencySymbol}${amountFormatted} ${period}</td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:13px;color:#7a7a8a;text-transform:uppercase;letter-spacing:0.5px;">Date</td>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:15px;color:#1B1B1B;">${date}</td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 0;font-size:13px;color:#7a7a8a;text-transform:uppercase;letter-spacing:0.5px;vertical-align:top;">Session</td>
+                  <td style="padding:12px 0;font-size:13px;color:#7a7a8a;word-break:break-all;">${sessionId || '—'}</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color:#f9f9f9;padding:16px 40px;text-align:center;border-top:1px solid #eeeeee;">
+              <a href="${stripeUrl}" style="font-size:13px;color:#4A70C2;text-decoration:none;font-weight:600;">View in Stripe Dashboard →</a>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`
+}
+
+/**
+ * @param {object} params
+ * @param {string} params.name           - Donor full name
+ * @param {string} params.email          - Donor email address
+ * @param {string} params.tierLabel      - Human-readable tier name e.g. "Seed Hero"
+ * @param {string} params.amountFormatted - Pre-formatted amount string e.g. "5.00"
+ * @param {string} params.currency       - Uppercase currency code e.g. "GBP"
+ * @param {string} params.sessionId      - Stripe checkout session ID
+ * @param {string} [params.period]       - Amount period label e.g. "/ month" or "(one-time)"
+ */
+function buildInternalNotificationText({ name, email, tierLabel, amountFormatted, currency, sessionId, period = '/ month' }) {
+  const currencySymbol = currency === 'GBP' ? '£' : currency + ' '
+  const stripeUrl = sessionId
+    ? `https://dashboard.stripe.com/${sessionId.startsWith('cs_test_') ? 'test/' : ''}checkout/sessions/${sessionId}`
+    : 'https://dashboard.stripe.com/subscriptions'
+  const date = new Date().toLocaleString('en-GB', { timeZone: 'Europe/London', dateStyle: 'long', timeStyle: 'short' })
+
+  return `New Empowr Hero
+
+Name:    ${name}
+Email:   ${email}
+Tier:    ${tierLabel}
+Amount:  ${currencySymbol}${amountFormatted} ${period}
+Date:    ${date}
+Session: ${sessionId || '—'}
+
+View in Stripe Dashboard:
+${stripeUrl}`
+}
+
+module.exports = { buildEmailHtml, buildEmailText, buildOneTimeEmailHtml, buildOneTimeEmailText, buildInternalNotificationHtml, buildInternalNotificationText }

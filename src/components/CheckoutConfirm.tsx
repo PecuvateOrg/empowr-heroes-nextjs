@@ -30,8 +30,6 @@ export default function CheckoutConfirm({ stripeUrl }: { stripeUrl: string }) {
 
       <a
         href={agreed ? stripeUrl : undefined}
-        target="_blank"
-        rel="noopener noreferrer"
         className={`btn btn-blue checkout-btn${!agreed ? ' btn-disabled' : ''}`}
         aria-disabled={!agreed}
         onClick={e => { if (!agreed) e.preventDefault() }}

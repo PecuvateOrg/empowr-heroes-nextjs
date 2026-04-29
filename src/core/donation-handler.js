@@ -14,7 +14,7 @@
 const Stripe = require('stripe')
 const { Resend } = require('resend')
 const { Client } = require('@notionhq/client')
-const { buildEmailHtml, buildEmailText, buildOneTimeEmailHtml, buildOneTimeEmailText } = require('./email-template')
+const { buildEmailHtml, buildEmailText, buildOneTimeEmailHtml, buildOneTimeEmailText, buildInternalNotificationHtml, buildInternalNotificationText } = require('./email-template')
 const { BADGES } = require('../lib/badges')
 const { TIER_CONFIG } = require('../lib/tier-config')
 
@@ -122,10 +122,10 @@ async function handleDonation({
 
   // 4. Send welcome email
   let emailStatus = 'Failed'
+  const resend = new Resend(resendApiKey)
 
   if (email && tier === 'onetime') {
     try {
-      const resend = new Resend(resendApiKey)
       await resend.emails.send({
         from: 'Empowr Heroes <heroes@hero.empowrcic.org>',
         to: email,
@@ -141,7 +141,6 @@ async function handleDonation({
     }
   } else if (email && tier && TIER_CONFIG[tier]) {
     try {
-      const resend = new Resend(resendApiKey)
       await resend.emails.send({
         from: 'Empowr Heroes <heroes@hero.empowrcic.org>',
         to: email,
@@ -155,6 +154,37 @@ async function handleDonation({
       console.error('[donation-handler] Resend error:', err.message)
       emailStatus = 'Failed'
     }
+  }
+
+  // 4b. Send internal notification
+  try {
+    const amountFormatted = amountTotal ? (amountTotal / 100).toFixed(2) : '0.00'
+    const currencyUpper = (currency || 'gbp').toUpperCase()
+    let notificationSubject, notificationTierLabel, notificationPeriod
+
+    if (tier === 'onetime') {
+      notificationSubject = `New One-Time Donation: ${name}`
+      notificationTierLabel = 'One-Time Donation'
+      notificationPeriod = '(one-time)'
+    } else if (tier && TIER_CONFIG[tier]) {
+      const tierData = TIER_CONFIG[tier]
+      notificationSubject = `New Hero: ${name} — ${tierData.label}`
+      notificationTierLabel = tierData.label
+      notificationPeriod = '/ month'
+    }
+
+    if (notificationSubject) {
+      await resend.emails.send({
+        from: 'Empowr Heroes <heroes@hero.empowrcic.org>',
+        to: 'hero@empowrcic.org',
+        subject: notificationSubject,
+        html: buildInternalNotificationHtml({ name, email, tierLabel: notificationTierLabel, amountFormatted, currency: currencyUpper, sessionId: stripeSessionId, period: notificationPeriod }),
+        text: buildInternalNotificationText({ name, email, tierLabel: notificationTierLabel, amountFormatted, currency: currencyUpper, sessionId: stripeSessionId, period: notificationPeriod }),
+      })
+      console.log(`[donation-handler] Internal notification sent for ${name} (${tier})`)
+    }
+  } catch (err) {
+    console.error('[donation-handler] Internal notification error:', err.message)
   }
 
   // 5. Log to Notion
