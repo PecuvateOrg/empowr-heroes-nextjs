@@ -34,4 +34,8 @@ export const LINKS = {
     notionDoc: 'https://blush-ash-1c6.notion.site/A-Non-Medical-Approach-to-Tackling-Mental-Health-233bcf94418480b68a34f2d3431982f6',
   },
 
+  stripe: {
+    portal: 'https://billing.stripe.com/p/login/28E00iavGdHc0r3gfM18c00',
+  },
+
 }
