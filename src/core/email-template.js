@@ -95,7 +95,7 @@ function buildEmailHtml({ name, tierData }) {
                 If you ever have questions or just want to say hello, you can reach us at <a href="mailto:hero@empowrcic.org" style="color:#4f6ef7;">hero@empowrcic.org</a>.
               </p>
               <p style="font-size:14px;color:#7a7a8a;line-height:1.6;margin:0 0 24px;">
-                To manage or cancel your subscription at any time, visit your <a href="${STRIPE_PORTAL_URL}" style="color:#7a7a8a;">Subscriber Portal</a>.
+                To manage or cancel your subscription at any time, visit your <a href="${STRIPE_PORTAL_URL}" style="color:#4f6ef7;">Subscriber Portal</a>.
               </p>
               <p style="font-size:16px;color:#333333;line-height:1.6;margin:0 0 24px;">
                 With gratitude,<br/>
