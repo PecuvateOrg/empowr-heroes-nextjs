@@ -22,7 +22,7 @@ const { TIER_CONFIG } = require('../lib/tier-config')
 // Notion logger
 // ---------------------------------------------------------------------------
 
-async function logToNotionWithStatus({ tier, amountTotal, currency, emailStatus, stripeSessionId, notionApiKey, notionDatabaseId }) {
+async function logToNotionWithStatus({ tier, amountTotal, currency, emailStatus, stripeSessionId, subscriptionId, status, notionApiKey, notionDatabaseId }) {
   const notion = new Client({ auth: notionApiKey })
   const tierData = TIER_CONFIG[tier] || {}
   const amount = amountTotal ? (amountTotal / 100).toFixed(2) : '0.00'
@@ -54,8 +54,66 @@ async function logToNotionWithStatus({ tier, amountTotal, currency, emailStatus,
           ? `https://dashboard.stripe.com/${stripeSessionId.startsWith('cs_test_') ? 'test/' : ''}checkout/sessions/${stripeSessionId}`
           : null,
       },
+      ...(subscriptionId && {
+        'Subscription ID': { rich_text: [{ text: { content: subscriptionId } }] },
+      }),
+      ...(status && {
+        'Status': { select: { name: status } },
+      }),
     },
   })
+}
+
+// ---------------------------------------------------------------------------
+// Cancellation handler
+// ---------------------------------------------------------------------------
+
+const CANCELLATION_FEEDBACK_LABELS = {
+  customer_service: 'Customer service',
+  low_quality: 'Low quality',
+  missing_features: 'Missing features',
+  other: 'Other',
+  switched_service: 'Switched to another service',
+  too_complex: 'Too complex',
+  too_expensive: 'Too expensive',
+  unused: 'No longer using it',
+}
+
+async function handleCancellationEvent(event, { notionApiKey, notionDatabaseId }) {
+  const subscription = event.data.object
+  const subscriptionId = subscription.id
+  const details = subscription.cancellation_details || {}
+
+  const feedbackLabel = CANCELLATION_FEEDBACK_LABELS[details.feedback] || details.feedback || ''
+  const comment = details.comment || ''
+  const cancellationReason = [feedbackLabel, comment].filter(Boolean).join(' — ') || 'Not provided'
+
+  const notion = new Client({ auth: notionApiKey })
+
+  const response = await notion.databases.query({
+    database_id: notionDatabaseId,
+    filter: {
+      property: 'Subscription ID',
+      rich_text: { equals: subscriptionId },
+    },
+  })
+
+  if (response.results.length === 0) {
+    console.warn(`[donation-handler] No Notion record found for subscription ${subscriptionId}`)
+    return { handled: true, event: 'customer.subscription.deleted', subscriptionId, warning: 'No matching Notion record' }
+  }
+
+  const pageId = response.results[0].id
+  await notion.pages.update({
+    page_id: pageId,
+    properties: {
+      'Status': { select: { name: 'Cancelled' } },
+      'Cancellation Reason': { rich_text: [{ text: { content: cancellationReason } }] },
+    },
+  })
+
+  console.log(`[donation-handler] Marked subscription ${subscriptionId} as cancelled in Notion. Reason: ${cancellationReason}`)
+  return { handled: true, event: 'customer.subscription.deleted', subscriptionId }
 }
 
 // ---------------------------------------------------------------------------
@@ -97,7 +155,11 @@ async function handleDonation({
     throw error
   }
 
-  // 2. Only handle checkout.session.completed
+  // 2. Route based on event type
+  if (event.type === 'customer.subscription.deleted') {
+    return await handleCancellationEvent(event, { notionApiKey, notionDatabaseId })
+  }
+
   if (event.type !== 'checkout.session.completed') {
     return { ignored: true, eventType: event.type }
   }
@@ -111,6 +173,8 @@ async function handleDonation({
   const amountTotal = session.amount_total
   const currency = session.currency
   const stripeSessionId = session.id
+  const subscriptionId = session.subscription || null
+  const notionStatus = tier === 'onetime' ? 'One-Time' : 'Active'
 
   if (!email) {
     console.warn('[donation-handler] No email found on session:', session.id)
@@ -195,6 +259,8 @@ async function handleDonation({
       currency,
       emailStatus,
       stripeSessionId,
+      subscriptionId,
+      status: notionStatus,
       notionApiKey,
       notionDatabaseId,
     })
