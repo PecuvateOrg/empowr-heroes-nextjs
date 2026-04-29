@@ -6,6 +6,41 @@ A running record of development sessions, changes made, and decisions taken.
 
 ## Session — 29 April 2026
 
+### Subscription Management — Customer Portal, Cancellation Logging & Notifications
+
+---
+
+#### Stripe Customer Portal configured
+Stripe Customer Portal enabled at `https://billing.stripe.com/p/login/28E00iavGdHc0r3gfM18c00`.
+Settings: portal header "Empowr Heroes", redirect to `https://hero.empowrcic.org`, custom domain skipped (default Stripe domain used).
+Cancellation reasons enabled (8 Stripe preset options + free text).
+
+Portal URL stored in `LINKS.stripe.portal` in `src/lib/links.ts`.
+
+#### Welcome email updated
+Subscription welcome email now includes a muted "manage or cancel your subscription" line linking to the portal. One-time email unaffected.
+
+#### Cancellation logging (Notion + webhook)
+Three new fields added to the Notion Donations DB via MCP:
+- **Subscription ID** — Stripe `sub_xxx` ID, used to match cancellation events to existing records
+- **Status** — Select: Active / Cancelled / One-Time, set on record creation and updated on cancellation
+- **Cancellation Reason** — free text populated from Stripe's cancellation feedback + comment
+
+New `handleCancellationEvent` function added to `src/core/donation-handler.js`:
+- Handles `customer.subscription.deleted` webhook events
+- Queries Notion by Subscription ID to find the matching record
+- Updates Status → Cancelled and logs the cancellation reason
+- Non-matching subscriptions (pre-code records) log a warning and continue cleanly
+
+`checkout.session.completed` handler updated to populate Subscription ID and Status on new records.
+
+`customer.subscription.deleted` added to the live Stripe webhook endpoint (done via Stripe Dashboard — CLI key lacked permission).
+
+#### Deferred
+- `invoice.payment_failed` webhook — worth adding in future to catch failed renewals and update Notion status automatically
+
+---
+
 ### Internal Notification Email & Live Payment Confirmed
 
 ---
