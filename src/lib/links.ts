@@ -31,7 +31,7 @@ export const LINKS = {
   },
 
   research: {
-    notionDoc: 'https://blush-ash-1c6.notion.site/A-Non-Medical-Approach-to-Tackling-Mental-Health-233bcf94418480b68a34f2d3431982f6',
+    notionDoc: 'https://empowr-cic.notion.site/A-Non-Medical-Approach-to-Tackling-Mental-Health-b74d6983ad4683699b790169fce98458?source=copy_link',
   },
 
   stripe: {
