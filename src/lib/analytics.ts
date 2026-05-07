@@ -42,11 +42,16 @@ async function fetchMostPopularTier(): Promise<string | null> {
     const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1])
     if (sorted.length === 0) return null
 
-    // Only award the badge if there's a clear leader
     const [topKey, topCount] = sorted[0]
-    if (sorted.length > 1 && sorted[1][1] === topCount) return null
+    const secondCount = sorted.length > 1 ? sorted[1][1] : 0
 
-    return topKey
+    // Tied — no clear winner
+    if (topCount === secondCount) return null
+
+    // Badge only shows when the leader has 20+ signups AND leads the next tier by 20+
+    if (topCount >= 20 && (topCount - secondCount) >= 20) return topKey
+
+    return null
   } catch (err) {
     console.error('[analytics] Could not fetch tier counts from Notion:', err)
     return null
