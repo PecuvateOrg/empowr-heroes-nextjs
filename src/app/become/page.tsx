@@ -1,11 +1,16 @@
 import Link from 'next/link'
 import Mantra from '@/components/Mantra'
+import { getMostPopularTier } from '@/lib/analytics'
 
 export const metadata = {
   title: 'Become a Hero — Empowr Heroes',
 }
 
-export default function BecomePage() {
+export const revalidate = 3600
+
+export default async function BecomePage() {
+  const popularTier = await getMostPopularTier()
+
   return (
     <main className="page-content page-become">
       <div className="wrap">
@@ -21,7 +26,7 @@ export default function BecomePage() {
         <p className="body">Select the contribution that feels right for you. Every level makes a real difference.</p>
 
         <div className="tiers-grid">
-          <div className="tc">
+          <div className={`tc${popularTier === 'seed' ? ' popular' : ''}`}>
             <div className="tc-emoji">🌱</div>
             <div className="tc-name">Seed Hero</div>
             <div className="tc-price">£10/month</div>
@@ -32,7 +37,7 @@ export default function BecomePage() {
             </div>
           </div>
 
-          <div className="tc">
+          <div className={`tc${popularTier === 'momentum' ? ' popular' : ''}`}>
             <div className="tc-emoji">🚀</div>
             <div className="tc-name">Momentum Hero</div>
             <div className="tc-price">£25/month</div>
@@ -43,7 +48,7 @@ export default function BecomePage() {
             </div>
           </div>
 
-          <div className="tc popular">
+          <div className={`tc${popularTier === 'community' ? ' popular' : ''}`}>
             <div className="tc-emoji">🫂</div>
             <div className="tc-name">Community Hero</div>
             <div className="tc-price">£50/month</div>
@@ -54,7 +59,7 @@ export default function BecomePage() {
             </div>
           </div>
 
-          <div className="tc">
+          <div className={`tc${popularTier === 'champion' ? ' popular' : ''}`}>
             <div className="tc-emoji">🏆</div>
             <div className="tc-name">Champion Hero</div>
             <div className="tc-price">£250/month</div>
@@ -65,7 +70,7 @@ export default function BecomePage() {
             </div>
           </div>
 
-          <div className="tc">
+          <div className={`tc${popularTier === 'legacy' ? ' popular' : ''}`}>
             <div className="tc-emoji">💎</div>
             <div className="tc-name">Legacy Hero</div>
             <div className="tc-price">£500/month</div>
