@@ -509,4 +509,126 @@ View in Stripe Dashboard:
 ${stripeUrl}`
 }
 
-module.exports = { buildEmailHtml, buildEmailText, buildOneTimeEmailHtml, buildOneTimeEmailText, buildInternalNotificationHtml, buildInternalNotificationText, buildCancellationNotificationHtml, buildCancellationNotificationText }
+/**
+ * @param {object} params
+ * @param {string} params.name           - Subscriber full name
+ * @param {string} params.email          - Subscriber email address
+ * @param {string} params.tier           - Tier label e.g. "Seed Hero"
+ * @param {string} params.amountFormatted - Pre-formatted amount string e.g. "10.00"
+ * @param {string} params.currency       - Uppercase currency code e.g. "GBP"
+ * @param {number} params.attemptCount   - Number of payment attempts so far
+ * @param {string} params.subscriptionId - Stripe subscription ID
+ */
+function buildPaymentFailedNotificationHtml({ name, email, tier, amountFormatted, currency, attemptCount, subscriptionId }) {
+  const currencySymbol = currency === 'GBP' ? '£' : currency + ' '
+  const stripeUrl = subscriptionId
+    ? `https://dashboard.stripe.com/subscriptions/${subscriptionId}`
+    : 'https://dashboard.stripe.com/subscriptions'
+  const date = new Date().toLocaleString('en-GB', { timeZone: 'Europe/London', dateStyle: 'long', timeStyle: 'short' })
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Failed</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f5f5f5;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f5f5;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:12px;overflow:hidden;max-width:600px;width:100%;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background-color:#e07b00;padding:24px 40px;">
+              <h1 style="color:#ffffff;font-size:20px;margin:0;font-weight:700;">Payment Failed</h1>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px 40px;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+                <tr>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:13px;color:#7a7a8a;text-transform:uppercase;letter-spacing:0.5px;width:130px;">Name</td>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:15px;color:#1B1B1B;font-weight:600;">${name}</td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:13px;color:#7a7a8a;text-transform:uppercase;letter-spacing:0.5px;">Email</td>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:15px;color:#1B1B1B;"><a href="mailto:${email}" style="color:#4A70C2;text-decoration:none;">${email}</a></td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:13px;color:#7a7a8a;text-transform:uppercase;letter-spacing:0.5px;">Tier</td>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:15px;color:#1B1B1B;font-weight:600;">${tier}</td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:13px;color:#7a7a8a;text-transform:uppercase;letter-spacing:0.5px;">Amount</td>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:15px;color:#1B1B1B;">${currencySymbol}${amountFormatted} / month</td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:13px;color:#7a7a8a;text-transform:uppercase;letter-spacing:0.5px;">Attempt</td>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:15px;color:#1B1B1B;">${attemptCount} of 4</td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:13px;color:#7a7a8a;text-transform:uppercase;letter-spacing:0.5px;">Date</td>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:15px;color:#1B1B1B;">${date}</td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 0;font-size:13px;color:#7a7a8a;text-transform:uppercase;letter-spacing:0.5px;vertical-align:top;">Subscription</td>
+                  <td style="padding:12px 0;font-size:13px;color:#7a7a8a;word-break:break-all;">${subscriptionId || '—'}</td>
+                </tr>
+              </table>
+              <p style="margin:24px 0 0;font-size:13px;color:#7a7a8a;">Stripe will retry automatically. If all retries fail, the subscription will be cancelled and you'll receive a separate cancellation notification.</p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color:#f9f9f9;padding:16px 40px;text-align:center;border-top:1px solid #eeeeee;">
+              <a href="${stripeUrl}" style="font-size:13px;color:#4A70C2;text-decoration:none;font-weight:600;">View Subscription in Stripe →</a>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`
+}
+
+/**
+ * @param {object} params
+ * @param {string} params.name           - Subscriber full name
+ * @param {string} params.email          - Subscriber email address
+ * @param {string} params.tier           - Tier label e.g. "Seed Hero"
+ * @param {string} params.amountFormatted - Pre-formatted amount string e.g. "10.00"
+ * @param {string} params.currency       - Uppercase currency code e.g. "GBP"
+ * @param {number} params.attemptCount   - Number of payment attempts so far
+ * @param {string} params.subscriptionId - Stripe subscription ID
+ */
+function buildPaymentFailedNotificationText({ name, email, tier, amountFormatted, currency, attemptCount, subscriptionId }) {
+  const currencySymbol = currency === 'GBP' ? '£' : currency + ' '
+  const stripeUrl = subscriptionId
+    ? `https://dashboard.stripe.com/subscriptions/${subscriptionId}`
+    : 'https://dashboard.stripe.com/subscriptions'
+  const date = new Date().toLocaleString('en-GB', { timeZone: 'Europe/London', dateStyle: 'long', timeStyle: 'short' })
+
+  return `Payment Failed
+
+Name:         ${name}
+Email:        ${email}
+Tier:         ${tier}
+Amount:       ${currencySymbol}${amountFormatted} / month
+Attempt:      ${attemptCount} of 4
+Date:         ${date}
+Subscription: ${subscriptionId || '—'}
+
+Stripe will retry automatically. If all retries fail, the subscription will be cancelled.
+
+View Subscription in Stripe:
+${stripeUrl}`
+}
+
+module.exports = { buildEmailHtml, buildEmailText, buildOneTimeEmailHtml, buildOneTimeEmailText, buildInternalNotificationHtml, buildInternalNotificationText, buildCancellationNotificationHtml, buildCancellationNotificationText, buildPaymentFailedNotificationHtml, buildPaymentFailedNotificationText }

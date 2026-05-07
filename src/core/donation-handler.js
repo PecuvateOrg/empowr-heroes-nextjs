@@ -14,7 +14,7 @@
 const Stripe = require('stripe')
 const { Resend } = require('resend')
 const { Client } = require('@notionhq/client')
-const { buildEmailHtml, buildEmailText, buildOneTimeEmailHtml, buildOneTimeEmailText, buildInternalNotificationHtml, buildInternalNotificationText, buildCancellationNotificationHtml, buildCancellationNotificationText } = require('./email-template')
+const { buildEmailHtml, buildEmailText, buildOneTimeEmailHtml, buildOneTimeEmailText, buildInternalNotificationHtml, buildInternalNotificationText, buildCancellationNotificationHtml, buildCancellationNotificationText, buildPaymentFailedNotificationHtml, buildPaymentFailedNotificationText } = require('./email-template')
 const { BADGES } = require('../lib/badges')
 const { TIER_CONFIG } = require('../lib/tier-config')
 
@@ -150,6 +150,75 @@ async function handleCancellationEvent(event, { stripeSecretKey, resendApiKey, n
 }
 
 // ---------------------------------------------------------------------------
+// Payment failed handler
+// ---------------------------------------------------------------------------
+
+async function handlePaymentFailedEvent(event, { stripeSecretKey, resendApiKey, notionApiKey, notionDatabaseId }) {
+  const invoice = event.data.object
+  const subscriptionId = invoice.subscription
+  const amountFormatted = invoice.amount_due ? (invoice.amount_due / 100).toFixed(2) : '0.00'
+  const currency = (invoice.currency || 'gbp').toUpperCase()
+  const attemptCount = invoice.attempt_count || 1
+
+  // Fetch customer name and email from Stripe
+  let name = 'Unknown'
+  let email = ''
+  try {
+    const stripe = new Stripe(stripeSecretKey)
+    const customer = await stripe.customers.retrieve(invoice.customer)
+    name = customer.name || 'Unknown'
+    email = customer.email || ''
+  } catch (err) {
+    console.error('[donation-handler] Could not fetch Stripe customer:', err.message)
+  }
+
+  const notion = new Client({ auth: notionApiKey })
+
+  const response = await notion.dataSources.query({
+    data_source_id: NOTION_DONATIONS_DATA_SOURCE_ID,
+    filter: {
+      property: 'Subscription ID',
+      rich_text: { equals: subscriptionId },
+    },
+  })
+
+  let tier = 'Unknown'
+
+  if (response.results.length === 0) {
+    console.warn(`[donation-handler] No Notion record found for subscription ${subscriptionId} (payment failed)`)
+  } else {
+    const pageId = response.results[0].id
+    tier = response.results[0].properties?.Tier?.select?.name || 'Unknown'
+
+    await notion.pages.update({
+      page_id: pageId,
+      properties: {
+        'Status': { select: { name: 'Payment Failed' } },
+      },
+    })
+
+    console.log(`[donation-handler] Marked subscription ${subscriptionId} as Payment Failed in Notion (attempt ${attemptCount})`)
+  }
+
+  // Send internal notification
+  try {
+    const resend = new Resend(resendApiKey)
+    await resend.emails.send({
+      from: 'Empowr Heroes <heroes@hero.empowrcic.org>',
+      to: 'hero@empowrcic.org',
+      subject: `Payment Failed: ${name} — ${tier} (attempt ${attemptCount})`,
+      html: buildPaymentFailedNotificationHtml({ name, email, tier, amountFormatted, currency, attemptCount, subscriptionId }),
+      text: buildPaymentFailedNotificationText({ name, email, tier, amountFormatted, currency, attemptCount, subscriptionId }),
+    })
+    console.log(`[donation-handler] Payment failed notification sent for ${name} (${subscriptionId})`)
+  } catch (err) {
+    console.error('[donation-handler] Payment failed notification error:', err.message)
+  }
+
+  return { handled: true, event: 'invoice.payment_failed', subscriptionId }
+}
+
+// ---------------------------------------------------------------------------
 // Main handler
 // ---------------------------------------------------------------------------
 
@@ -191,6 +260,10 @@ async function handleDonation({
   // 2. Route based on event type
   if (event.type === 'customer.subscription.deleted') {
     return await handleCancellationEvent(event, { stripeSecretKey, resendApiKey, notionApiKey, notionDatabaseId })
+  }
+
+  if (event.type === 'invoice.payment_failed') {
+    return await handlePaymentFailedEvent(event, { stripeSecretKey, resendApiKey, notionApiKey, notionDatabaseId })
   }
 
   if (event.type !== 'checkout.session.completed') {

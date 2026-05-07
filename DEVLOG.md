@@ -4,6 +4,53 @@ A running record of development sessions, changes made, and decisions taken.
 
 ---
 
+## Session — 7 May 2026
+
+### Payment Failed Webhook & Data-Driven "Most Popular" Badge
+
+---
+
+#### invoice.payment_failed webhook
+
+New `handlePaymentFailedEvent` function added to `src/core/donation-handler.js`:
+- Handles `invoice.payment_failed` Stripe webhook events
+- Fetches subscriber name and email from Stripe customer
+- Queries Notion by Subscription ID to find the matching record
+- Updates Notion Status → "Payment Failed"
+- Sends an orange-header internal notification email to `hero@empowrcic.org` with name, email, tier, amount, attempt count (x of 4), date, and Stripe link
+- Non-matching subscriptions (pre-code records) log a warning and continue cleanly
+
+New email template functions in `src/core/email-template.js`:
+- `buildPaymentFailedNotificationHtml` — orange header to distinguish from blue (new hero) and red (cancellation)
+- `buildPaymentFailedNotificationText`
+
+**Action required:** Add `invoice.payment_failed` to the live Stripe webhook endpoint in the Stripe Dashboard (same endpoint as `checkout.session.completed` and `customer.subscription.deleted`).
+
+Note: If a payment fails but then succeeds on Stripe's retry, the Notion Status will remain "Payment Failed". A `invoice.payment_succeeded` handler could be added later to revert this — deferred.
+
+---
+
+#### Data-driven "Most Popular" tier badge
+
+Removed the hardcoded `popular` class from the Community Hero tier card — it was not based on real data.
+
+New `src/lib/analytics.ts`:
+- `getMostPopularTier()` — queries the Notion Donations DB, counts donations by tier, returns the leading tier key
+- Uses `unstable_cache` (1-hour TTL) so Notion is queried at most once per hour, not on every page load
+- Returns `null` if there are no donations yet, if the query fails, or if two tiers are tied — no badge is shown in these cases
+
+`src/app/become/page.tsx` updated:
+- Now `async`, with `export const revalidate = 3600` (ISR — page regenerates hourly)
+- All 5 tier cards now apply `popular` class dynamically based on `getMostPopularTier()` result
+- The `.tc.popular` CSS styling in `globals.css` is unchanged
+
+**Result:** The badge is truthful and self-maintaining. As real donation data accumulates, the badge migrates automatically to whichever tier is genuinely most popular.
+
+#### Verified
+- `npx tsc --noEmit` — clean
+
+---
+
 ## Session — 29 April 2026
 
 ### Subscription Management, Cancellation Logging, Notifications & 404 Page
