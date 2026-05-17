@@ -134,7 +134,7 @@ async function handleCancellationEvent(event, { stripeSecretKey, resendApiKey, n
     try {
       const resend = new Resend(resendApiKey)
       await resend.emails.send({
-        from: 'Empowr Heroes <heroes@hero.empowrcic.org>',
+        from: 'Empowr Heroes <hero@empowrcic.org>',
         to: 'hero@empowrcic.org',
         subject: `Cancellation: ${name} — ${tier}`,
         html: buildCancellationNotificationHtml({ name, email, tier, cancellationReason, subscriptionId }),
@@ -204,7 +204,7 @@ async function handlePaymentFailedEvent(event, { stripeSecretKey, resendApiKey, 
   try {
     const resend = new Resend(resendApiKey)
     await resend.emails.send({
-      from: 'Empowr Heroes <heroes@hero.empowrcic.org>',
+      from: 'Empowr Heroes <hero@empowrcic.org>',
       to: 'hero@empowrcic.org',
       subject: `Payment Failed: ${name} — ${tier} (attempt ${attemptCount})`,
       html: buildPaymentFailedNotificationHtml({ name, email, tier, amountFormatted, currency, attemptCount, subscriptionId }),
@@ -297,7 +297,7 @@ async function handleDonation({
   if (email && tier === 'onetime') {
     try {
       await resend.emails.send({
-        from: 'Empowr Heroes <heroes@hero.empowrcic.org>',
+        from: 'Empowr Heroes <hero@empowrcic.org>',
         to: email,
         subject: 'Thank You for Supporting Empowr',
         html: buildOneTimeEmailHtml({ name, siteUrl }),
@@ -312,7 +312,7 @@ async function handleDonation({
   } else if (email && tier && TIER_CONFIG[tier]) {
     try {
       await resend.emails.send({
-        from: 'Empowr Heroes <heroes@hero.empowrcic.org>',
+        from: 'Empowr Heroes <hero@empowrcic.org>',
         to: email,
         subject: "You're an Empowr Hero",
         html: buildEmailHtml({ name, tierData: { ...TIER_CONFIG[tier], badgeUrl: BADGES[tier] } }),
@@ -345,7 +345,7 @@ async function handleDonation({
 
     if (notificationSubject) {
       await resend.emails.send({
-        from: 'Empowr Heroes <heroes@hero.empowrcic.org>',
+        from: 'Empowr Heroes <hero@empowrcic.org>',
         to: 'hero@empowrcic.org',
         subject: notificationSubject,
         html: buildInternalNotificationHtml({ name, email, tierLabel: notificationTierLabel, amountFormatted, currency: currencyUpper, sessionId: stripeSessionId, period: notificationPeriod }),
