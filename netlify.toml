@@ -14,6 +14,12 @@
   status = 200
   force  = true
 
+[[redirects]]
+  from   = "/_next/*"
+  to     = "https://legalhub.pecuvate.com/_next/:splat"
+  status = 200
+  force  = true
+
 [[headers]]
   for = "/*"
   [headers.values]
