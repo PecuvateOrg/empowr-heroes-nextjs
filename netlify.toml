@@ -8,6 +8,12 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
+[[redirects]]
+  from   = "/legal/*"
+  to     = "https://legalhub.pecuvate.com/share/empowr/heroes/:splat"
+  status = 200
+  force  = true
+
 [[headers]]
   for = "/*"
   [headers.values]

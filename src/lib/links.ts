@@ -4,10 +4,10 @@
 export const LINKS = {
 
   policy: {
-    legalDisclaimer:   'https://legalhub.pecuvate.com/share/empowr/empowr-donor-legal-disclaimer',
-    termsAndConditions:'https://legalhub.pecuvate.com/share/empowr/empowr-donor-terms-and-conditions',
-    privacyPolicy:     'https://legalhub.pecuvate.com/share/empowr/empowr-privacy-policy',
-    cookiePolicy:      'https://legalhub.pecuvate.com/share/empowr/empowr-cookie-policy',
+    legalDisclaimer:   '/legal/disclaimer',
+    termsAndConditions:'/legal/terms-and-conditions',
+    privacyPolicy:     '/legal/privacy-policy',
+    cookiePolicy:      '/legal/cookie-policy',
   },
 
   email: {
