@@ -128,7 +128,7 @@ export default function PatronPage() {
             studies, and the economic case for non-medical mental health intervention.
           </p>
           <div className="patron-research-links">
-            <Link href="/why-experiential-learning" className="btn btn-outline">Read the Research →</Link>
+            <a href={LINKS.site.elReport} target="_blank" rel="noopener noreferrer" className="btn btn-outline">Read the Research →</a>
             <a href={LINKS.research.notionDoc} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">View Source Document →</a>
           </div>
         </div>

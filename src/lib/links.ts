@@ -27,7 +27,8 @@ export const LINKS = {
   },
 
   site: {
-    main: 'https://www.empowrcic.org',
+    main:     'https://www.empowrcic.org',
+    elReport: 'https://www.empowrcic.org/experiential-learning/report',
   },
 
   research: {
