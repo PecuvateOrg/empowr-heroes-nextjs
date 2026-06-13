@@ -28,6 +28,7 @@ export const LINKS = {
 
   site: {
     main:     'https://www.empowrcic.org',
+    el:       'https://www.empowrcic.org/experiential-learning',
     elReport: 'https://www.empowrcic.org/experiential-learning/report',
   },
 

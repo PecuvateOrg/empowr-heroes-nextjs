@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Mantra from '@/components/Mantra'
+import { LINKS } from '@/lib/links'
 
 export default function Home() {
   return (
@@ -58,6 +59,11 @@ export default function Home() {
           </div>
         </div>
         <p className="body">At Empowr, we're not just running activities. We're laying the groundwork for a more capable, healthier, and economically resilient society.</p>
+        <p className="body" style={{ fontSize: '0.9rem' }}>
+          <a href={LINKS.site.el} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--blue)', fontWeight: 700 }}>
+            Discover our approach to experiential learning →
+          </a>
+        </p>
 
         <hr className="div" />
 
