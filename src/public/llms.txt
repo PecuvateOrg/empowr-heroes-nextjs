@@ -1,0 +1,20 @@
+# Empowr Heroes
+
+> Empowr Heroes is the fundraising and donation platform for Empowr CIC, enabling individuals and organisations to support community programmes through direct giving.
+
+Empowr Heroes provides a transparent, mission-aligned giving experience — connecting donors to the real impact of Empowr CIC's work in education, employment, and community empowerment. Every donation directly funds programmes that create opportunity for people in underserved communities.
+
+## Key Pages
+
+- [Home](https://heroes.empowrcic.org): Overview of Empowr Heroes and featured campaigns
+- [Donate](https://heroes.empowrcic.org/donate): Make a donation to support Empowr CIC's programmes
+- [Impact](https://heroes.empowrcic.org/impact): How donations are used and the difference they make
+
+## About
+
+Empowr Heroes is operated by Empowr CIC (empowrcic.org), a UK-based Community Interest Company. All funds raised through Empowr Heroes support Empowr CIC's community programmes.
+
+## Contact
+
+- Website: https://heroes.empowrcic.org
+- Parent organisation: https://empowrcic.org
