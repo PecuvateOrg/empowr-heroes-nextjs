@@ -4,6 +4,7 @@ import './globals.css'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import CookieBanner from '@/components/CookieBanner'
+import PostHogProvider from '@/components/PostHogProvider'
 // import CookieBannerFull from '@/components/CookieBannerFull'
 
 const nunito = Nunito({
@@ -65,11 +66,13 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <Nav />
-        {children}
-        <Footer />
-        <CookieBanner />
-        {/* <CookieBannerFull /> */}
+        <PostHogProvider>
+          <Nav />
+          {children}
+          <Footer />
+          <CookieBanner />
+          {/* <CookieBannerFull /> */}
+        </PostHogProvider>
       </body>
     </html>
   )
