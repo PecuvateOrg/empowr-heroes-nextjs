@@ -22,4 +22,4 @@ Allow: /
 User-agent: FacebookBot
 Allow: /
 
-Sitemap: https://heroes.empowrcic.org/sitemap.xml
+Sitemap: https://hero.empowrcic.org/sitemap.xml

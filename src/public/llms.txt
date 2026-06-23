@@ -6,9 +6,9 @@ Empowr Heroes provides a transparent, mission-aligned giving experience — conn
 
 ## Key Pages
 
-- [Home](https://heroes.empowrcic.org): Overview of Empowr Heroes and featured campaigns
-- [Donate](https://heroes.empowrcic.org/donate): Make a donation to support Empowr CIC's programmes
-- [Impact](https://heroes.empowrcic.org/impact): How donations are used and the difference they make
+- [Home](https://hero.empowrcic.org): Overview of Empowr Heroes and featured campaigns
+- [Donate](https://hero.empowrcic.org/donate): Make a donation to support Empowr CIC's programmes
+- [Impact](https://hero.empowrcic.org/impact): How donations are used and the difference they make
 
 ## About
 
@@ -16,5 +16,5 @@ Empowr Heroes is operated by Empowr CIC (empowrcic.org), a UK-based Community In
 
 ## Contact
 
-- Website: https://heroes.empowrcic.org
+- Website: https://hero.empowrcic.org
 - Parent organisation: https://empowrcic.org

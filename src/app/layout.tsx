@@ -45,7 +45,7 @@ const jsonLd = [
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "Empowr Heroes",
-    "url": "https://heroes.empowrcic.org",
+    "url": "https://hero.empowrcic.org",
     "description": "Empowr Heroes is the fundraising and donation platform for Empowr CIC, enabling individuals and organisations to support community programmes through direct giving."
   }
 ];

@@ -18,7 +18,7 @@ export default function PostHogProvider({ children }: { children: React.ReactNod
       org: 'empowr-cic',
       brand: 'Empowr CIC',
       site_name: 'Empowr Heroes',
-      site_url: 'https://heroes.empowrcic.org',
+      site_url: 'https://hero.empowrcic.org',
     })
   }, [])
 
