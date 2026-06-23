@@ -9,6 +9,7 @@ export default function PostHogProvider({ children }: { children: React.ReactNod
     posthog.init('phc_mtVbW9nET3w5qybzT6PmfbJLMPYy4Yv69wjmrnhxMJSf', {
       api_host: 'https://us.i.posthog.com',
       person_profiles: 'identified_only',
+      persistence: 'memory',
       capture_pageview: true,
       capture_pageleave: true,
     })
