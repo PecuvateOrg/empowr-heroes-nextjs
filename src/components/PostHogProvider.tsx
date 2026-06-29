@@ -13,6 +13,7 @@ export default function PostHogProvider({ children }: { children: React.ReactNod
       capture_pageview: true,
       capture_pageleave: true,
       before_send: (event) => {
+        if (window.location.hostname === 'localhost') return null
         const ua = navigator?.userAgent?.toLowerCase() ?? ''
         if (/headless|phantomjs|selenium|webdriver|puppeteer|playwright/.test(ua)) return null
         return event
