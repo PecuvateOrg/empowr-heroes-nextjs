@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --hostname 0.0.0.0",
     "dev:netlify": "netlify dev",
     "dev:stripe": "stripe listen --forward-to http://localhost:8888/.netlify/functions/stripe-webhook",
     "build": "next build",
