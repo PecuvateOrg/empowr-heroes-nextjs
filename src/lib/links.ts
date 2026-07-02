@@ -16,7 +16,7 @@ export const LINKS = {
   },
 
   assets: {
-    logo: 'https://empowr-cic.s3.us-east-1.amazonaws.com/empowr_logo.png',
+    logo: '/logo.png',
   },
 
   social: {
