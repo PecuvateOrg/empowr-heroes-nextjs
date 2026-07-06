@@ -41,3 +41,6 @@ deno.lock
 
 # Email preview output
 scripts/preview.html
+
+# Local env backups
+.env.local.bak
