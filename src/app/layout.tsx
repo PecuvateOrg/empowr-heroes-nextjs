@@ -14,6 +14,7 @@ const nunito = Nunito({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://hero.empowrcic.org'),
   title: 'Empowr Heroes — Be the Change',
   description: 'Support Empowr\'s mission of lifelong wellbeing through experiential learning. Become an Empowr Hero today.',
   icons: {
@@ -25,6 +26,21 @@ export const metadata: Metadata = {
     apple: { url: '/apple-touch-icon.png' },
   },
   manifest: '/site.webmanifest',
+  openGraph: {
+    title: 'Empowr Heroes — Be the Change',
+    description: 'Support Empowr\'s mission of lifelong wellbeing through experiential learning. Become an Empowr Hero today.',
+    url: 'https://hero.empowrcic.org',
+    siteName: 'Empowr Heroes',
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+    locale: 'en_GB',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Empowr Heroes — Be the Change',
+    description: 'Support Empowr\'s mission of lifelong wellbeing through experiential learning. Become an Empowr Hero today.',
+    images: ['/og-image.png'],
+  },
 }
 
 const jsonLd = [
