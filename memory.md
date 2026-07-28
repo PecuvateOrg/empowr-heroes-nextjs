@@ -27,5 +27,5 @@ All tier data lives in `src/lib/tiers.ts`. Each Stripe Payment Link must have `t
 ## Current State
 
 - src/ migration complete (2026-06-23)
-- PostHog analytics instrumented
+- PostHog analytics instrumented — cookieless server hash mode (`cookieless_mode: 'always'`) since 2026-07-28, replacing memory-mode persistence; fixes donation-funnel bounce rate/session data
 - Cookie banner: simple CookieBanner active; CookieBannerFull ready but inactive
