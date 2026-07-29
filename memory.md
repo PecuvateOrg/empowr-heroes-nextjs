@@ -29,3 +29,4 @@ All tier data lives in `src/lib/tiers.ts`. Each Stripe Payment Link must have `t
 - src/ migration complete (2026-06-23)
 - PostHog analytics instrumented — cookieless server hash mode (`cookieless_mode: 'always'`) since 2026-07-28, replacing memory-mode persistence; fixes donation-funnel bounce rate/session data
 - Cookie banner: simple CookieBanner active; CookieBannerFull ready but inactive
+- **2026-07-29:** Found this repo was never covered by an earlier Main Site/EELA referrer-restoration pass — all 6 links back to empowrcic.org (`src/lib/links.ts`'s `site.main`/`site.el`/`site.elReport`) had `rel="noopener noreferrer"`, stripping the referrer. Fixed to `noopener` + added `?utm_source=empowr-heroes&utm_medium=internal`. Commit `81d2b09`.

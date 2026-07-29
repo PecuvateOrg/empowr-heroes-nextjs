@@ -4,6 +4,14 @@ A running record of development sessions, changes made, and decisions taken.
 
 ---
 
+## 2026-07-29 — Referrer fix (missed by earlier sweep) + cross-site UTM tagging
+
+- Found this repo was never covered by the Main Site/EELA referrer-restoration sweep from a prior session — every link back to `empowrcic.org` (`src/lib/links.ts`'s `site.main`/`site.el`/`site.elReport`, used in `become/page.tsx`, `Footer.tsx`, `page.tsx`, `patron/page.tsx`, `tiers/page.tsx`, `why-experiential-learning/page.tsx`) had `rel="noopener noreferrer"`, stripping the referrer. Fixed to `noopener`.
+- Same 3 links now also carry `?utm_source=empowr-heroes&utm_medium=internal` — the practical alternative to full cross-domain session linking, ruled out this session as incompatible with `cookieless_mode: 'always'` (full reasoning in AnalyticsHub DEVLOG)
+- Commit `81d2b09`, pushed to `main`, Netlify auto-deployed
+
+---
+
 ## 2026-07-28
 
 - Switched PostHog from `persistence: 'memory'` to `cookieless_mode: 'always'` in `src/components/PostHogProvider.tsx` (`0713504`) — part of the Empowr CIC-wide cookieless rollout (see AnalyticsHub DEVLOG); fixes the donation-funnel bounce rate and session data being invalid under memory mode
@@ -134,48 +142,7 @@ The email includes: donor name, email, tier, amount/month, date (UK timezone), S
 
 ---
 
-## Session — 23 April 2026
-
-### Workspace Restructure (agent-first folder architecture)
-
----
-
-#### Branching practice established
-All future changes must go on a named branch before merging to `main`. Previous sessions committed directly to `main` — this session corrected that practice. Branch used: `chore/workspace-restructure`.
-
-#### Folder restructure
-Implemented a three-layer workspace architecture based on `_config/folder-architecture.md`:
-
-- `src/` — application code (`app/`, `components/`, `lib/`, `core/` moved inside)
-- `planning/` — pre-code specs and architectural decision records
-- `docs/` — process documentation (donation flow, email system)
-- `ops/` — infrastructure, runbooks, dev scripts (`scripts/` moved to `ops/scripts/`)
-
-Next.js natively supports the `src/` directory pattern — no config changes to `next.config.ts` required. `public/` must stay at root (Next.js hard requirement).
-
-#### Files updated
-- `tsconfig.json` — `@/*` alias updated from `"./*"` to `"./src/*"`
-- `netlify/functions/stripe-webhook.js` — require path updated to `../../src/core/donation-handler`
-- `ops/scripts/preview-email.js` — three require paths updated to `../../src/core/` and `../../src/lib/`
-- `package.json` — `preview:email` script updated to `node ops/scripts/preview-email.js`
-- `CLAUDE.md` — all path references updated, new workspace layers documented
-- `CONTEXT.md` — fully rewritten (was incomplete); now includes workspace routing table
-
-#### New files created
-- `src/CONTEXT.md`, `planning/CONTEXT.md`, `docs/CONTEXT.md`, `ops/CONTEXT.md`
-- `ops/runbooks/add-a-tier.md`, `ops/runbooks/deploy-checklist.md`, `ops/runbooks/rotate-secrets.md`
-
-#### Verified
-- `npx tsc --noEmit` — clean
-- `npm run build` — all 17 pages generated successfully
-
-#### PR raised and merged
-Branch pushed to GitHub. PR `chore/workspace-restructure` → `main` raised, reviewed, and merged.
-- `npm run preview:email` verified post-restructure — output correct
-- Netlify deploy triggered by merge — succeeded, all pages live
-
-#### Site officially launched
-Empowr Heroes is fully live in production as of 23 April 2026. All pre-launch tasks are complete. The project moves into post-launch maintenance and feature development from this point.
+## Session — 23 April 2026 — Workspace restructured to agent-first architecture (src/planning/docs/ops layers); PR merged; Empowr Heroes officially launched to production
 
 ---
 
