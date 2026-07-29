@@ -201,7 +201,7 @@ export default function ExperientialLearningPage() {
           </p>
           <div className="btn-row-inline">
             <Link href="/become" className="btn btn-blue">Become a Hero →</Link>
-            <a href={LINKS.site.main} target="_blank" rel="noopener noreferrer" className="btn btn-outline">Visit Our Main Site →</a>
+            <a href={LINKS.site.main} target="_blank" rel="noopener" className="btn btn-outline">Visit Our Main Site →</a>
           </div>
         </div>
 

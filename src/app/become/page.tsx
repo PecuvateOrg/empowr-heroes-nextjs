@@ -121,7 +121,7 @@ export default async function BecomePage() {
         <p className="body">You're not just giving money. You're investing in a healthier, more capable society — one experience at a time.</p>
         <p className="body" style={{ fontSize: '0.9rem' }}>
           <strong>Want to understand the science behind our work?</strong>{' '}
-          <a href={LINKS.site.elReport} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--blue)', fontWeight: 700 }}>Read our research on experiential learning and mental health →</a>
+          <a href={LINKS.site.elReport} target="_blank" rel="noopener" style={{ color: 'var(--blue)', fontWeight: 700 }}>Read our research on experiential learning and mental health →</a>
         </p>
 
         <hr className="div" />

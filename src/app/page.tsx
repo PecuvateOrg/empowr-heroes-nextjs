@@ -60,7 +60,7 @@ export default function Home() {
         </div>
         <p className="body">At Empowr, we're not just running activities. We're laying the groundwork for a more capable, healthier, and economically resilient society.</p>
         <p className="body" style={{ fontSize: '0.9rem' }}>
-          <a href={LINKS.site.el} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--blue)', fontWeight: 700 }}>
+          <a href={LINKS.site.el} target="_blank" rel="noopener" style={{ color: 'var(--blue)', fontWeight: 700 }}>
             Discover our approach to experiential learning →
           </a>
         </p>

@@ -110,7 +110,7 @@ export default function TiersPage() {
         <p className="body">Every Hero level reflects different capacities — but equal commitment to a vision where everyone can access experiences that transform their wellbeing.</p>
         <p className="body" style={{ fontSize: '0.9rem' }}>
           Curious about why this approach works?{' '}
-          <a href={LINKS.site.elReport} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--blue)', fontWeight: 700 }}>Read the evidence behind experiential learning →</a>
+          <a href={LINKS.site.elReport} target="_blank" rel="noopener" style={{ color: 'var(--blue)', fontWeight: 700 }}>Read the evidence behind experiential learning →</a>
         </p>
         <div className="btn-row-inline">
           <Link href="/become" className="btn btn-blue">🏆 Become a Hero</Link>

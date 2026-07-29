@@ -77,7 +77,7 @@ export default function Footer() {
             <a href={LINKS.social.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
               <LinkedInIcon />
             </a>
-            <a href={LINKS.site.main} target="_blank" rel="noopener noreferrer" aria-label="Empowr CIC website">
+            <a href={LINKS.site.main} target="_blank" rel="noopener" aria-label="Empowr CIC website">
               <GlobeIcon />
             </a>
           </div>

@@ -27,9 +27,9 @@ export const LINKS = {
   },
 
   site: {
-    main:     'https://www.empowrcic.org',
-    el:       'https://www.empowrcic.org/experiential-learning',
-    elReport: 'https://www.empowrcic.org/experiential-learning/report',
+    main:     'https://www.empowrcic.org/?utm_source=empowr-heroes&utm_medium=internal',
+    el:       'https://www.empowrcic.org/experiential-learning?utm_source=empowr-heroes&utm_medium=internal',
+    elReport: 'https://www.empowrcic.org/experiential-learning/report?utm_source=empowr-heroes&utm_medium=internal',
   },
 
   research: {
