@@ -15,6 +15,9 @@
   status = 200
   force  = true
 
+# These cover CDN-served static files only (favicons, badges, og-image).
+# Runtime-rendered HTML bypasses this block entirely — those headers are set in
+# src/next.config.ts. Both copies are required; keep the values identical.
 [[headers]]
   for = "/*"
   [headers.values]

@@ -10,7 +10,7 @@ export default function PostHogProvider({ children }: { children: React.ReactNod
       api_host: 'https://us.i.posthog.com',
       person_profiles: 'identified_only',
       cookieless_mode: 'always',
-      capture_pageview: true,
+      capture_pageview: 'history_change',
       capture_pageleave: true,
       before_send: (event) => {
         if (window.location.hostname === 'localhost') return null

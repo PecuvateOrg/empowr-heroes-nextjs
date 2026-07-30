@@ -117,7 +117,7 @@ export default function Home() {
 
         <h2 className="h2">🎁 Choose Your Hero Tier</h2>
         <p className="body">
-          Each Hero level helps us go further — and shows what your support makes possible. Whether you sponsor at £5 a month or £100+,
+          Each Hero level helps us go further — and shows what your support makes possible. Whether it's a one-off fiver or £500 a month,
           you're investing in a movement that transforms lives through the power of experience.
         </p>
         <div className="btn-row-inline">

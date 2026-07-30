@@ -27,6 +27,11 @@ All tier data lives in `src/lib/tiers.ts`. Each Stripe Payment Link must have `t
 ## Current State
 
 - src/ migration complete (2026-06-23)
-- PostHog analytics instrumented — cookieless server hash mode (`cookieless_mode: 'always'`) since 2026-07-28, replacing memory-mode persistence; fixes donation-funnel bounce rate/session data
-- Cookie banner: simple CookieBanner active; CookieBannerFull ready but inactive
+- PostHog analytics instrumented — cookieless server hash mode (`cookieless_mode: 'always'`) since 2026-07-28, replacing memory-mode persistence
+- **2026-07-30:** `capture_pageview` was `true`, which disables posthog-js `HistoryAutocapture` — so no client-side route change ever produced a pageview and the whole funnel was invisible. Fixed to `'history_change'` here and fleet-wide. **All PostHog data before 2026-07-30 is landing-page-only:** bounce rate (~96%) and pages/session (1.04) are artefacts, and `/checkout` having zero views is an artefact too. Do not treat pre-30-July numbers as behaviour.
+- **Zero donations** since instrumentation began (22 Jun 2026) — confirmed against the Notion DB, not an analytics gap. `/thankyou` is a hard load from Stripe so it would have recorded.
+- **Open:** the Stripe post-payment redirect to `/thankyou` has never been exercised (no completed donations). Verify on all 6 Payment Links before campaign launch.
+- Security headers live in **both** `netlify.toml` (static assets) and `src/next.config.ts` (runtime-rendered HTML). Both are required — netlify.toml headers do not apply to Next.js runtime responses. Keep the values identical.
+- Cookie banner: **neither `CookieBanner` nor `CookieBannerFull` is mounted anywhere** — both are dead code (Variant A cookieless needs no banner). CLAUDE.md previously claimed CookieBanner was active; corrected 2026-07-30.
+- Campaign UTM taxonomy: `planning/specs/campaign-utm-taxonomy_spec.md`
 - **2026-07-29:** Found this repo was never covered by an earlier Main Site/EELA referrer-restoration pass — all 6 links back to empowrcic.org (`src/lib/links.ts`'s `site.main`/`site.el`/`site.elReport`) had `rel="noopener noreferrer"`, stripping the referrer. Fixed to `noopener` + added `?utm_source=empowr-heroes&utm_medium=internal`. Commit `81d2b09`.

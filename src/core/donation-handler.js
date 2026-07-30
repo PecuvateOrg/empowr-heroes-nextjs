@@ -324,6 +324,25 @@ async function handleDonation({
       console.error('[donation-handler] Resend error:', err.message)
       emailStatus = 'Failed'
     }
+  } else if (email) {
+    // Tier could not be resolved — almost always a Payment Link in the Stripe
+    // dashboard that is missing its `tier` metadata. The donor has paid, so
+    // they must still hear from us; fall back to the generic thank-you rather
+    // than sending nothing. The team is alerted separately below.
+    try {
+      await resend.emails.send({
+        from: 'Empowr Heroes <hero@empowrcic.org>',
+        to: email,
+        subject: 'Thank You for Supporting Empowr',
+        html: buildOneTimeEmailHtml({ name, siteUrl }),
+        text: buildOneTimeEmailText({ name, siteUrl }),
+      })
+      emailStatus = 'Sent'
+      console.warn(`[donation-handler] Fallback thank-you sent to ${email} — unresolved tier "${tier}" on session ${stripeSessionId}`)
+    } catch (err) {
+      console.error('[donation-handler] Resend error:', err.message)
+      emailStatus = 'Failed'
+    }
   }
 
   // 4b. Send internal notification
@@ -341,6 +360,14 @@ async function handleDonation({
       notificationSubject = `New Hero: ${name} — ${tierData.label}`
       notificationTierLabel = tierData.label
       notificationPeriod = '/ month'
+    } else {
+      // Unresolved tier. This previously left notificationSubject undefined,
+      // so the donation was taken, the donor got nothing, and nobody was told.
+      // Always alert — an unrecognised tier needs a human to fix the Payment
+      // Link metadata in Stripe.
+      notificationSubject = `ACTION NEEDED — donation with unrecognised tier: ${name}`
+      notificationTierLabel = `Unrecognised tier "${tier || '(none)'}" — check Payment Link metadata in Stripe`
+      notificationPeriod = '(unknown)'
     }
 
     if (notificationSubject) {

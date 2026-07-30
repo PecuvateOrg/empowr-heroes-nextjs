@@ -70,7 +70,9 @@ This file is the map. Workspace detail lives in each CONTEXT.md. Also read `DEVL
 - **Never hardcode URLs** — all external links via `src/lib/links.ts`
 - **Never hardcode tier data** — all tier info via `src/lib/tiers.ts`
 - **`src/core/` is platform-agnostic** — no Netlify-specific code belongs there
-- **Cookie banner** — `CookieBanner` (simple) is active; `CookieBannerFull` ready but inactive — only swap when optional cookies are actually in use
+- **Cookie banner** — neither banner is mounted; both `CookieBanner` and `CookieBannerFull` are dead code. Variant A (`cookieless_mode: 'always'`) needs no banner. Only wire one in if optional cookies are actually introduced.
+- **`capture_pageview` must stay `'history_change'`** — `true` silently disables client-side route-change tracking and makes the entire funnel invisible. See `_config/guides/posthog-consent.md`.
+- **Security headers live in two places** — `netlify.toml` (static assets) and `src/next.config.ts` (runtime-rendered HTML). Both required; keep values identical.
 - Run `npx tsc --noEmit` before committing to catch type errors early
 
 ---
