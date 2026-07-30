@@ -27,7 +27,7 @@ export default async function CheckoutPage({
           <div className="checkout-emoji">{tierInfo.emoji}</div>
           <h1 className="checkout-title">You're becoming a<br /><strong>{tierInfo.name}</strong></h1>
           <div className="checkout-price">{tierInfo.price}</div>
-          <p className="checkout-desc">{tierInfo.desc}</p>
+          <p className="checkout-desc">{tierInfo.lead} — {tierInfo.body}</p>
         </div>
 
         <CheckoutConfirm stripeUrl={tierInfo.stripeUrl} />

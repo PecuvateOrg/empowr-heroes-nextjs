@@ -4,6 +4,45 @@ A running record of development sessions, changes made, and decisions taken.
 
 ---
 
+## 2026-07-30 (session 2) — Cleanup batch: tier data centralised, dead code removed, SEO gaps closed
+
+### `tiers.ts` is now the single source of tier copy
+
+Tier data was hardcoded in **three** places with **three different copy variants** per tier, already drifted:
+
+| Where | Variant |
+|---|---|
+| `lib/tiers.ts` | full sentence (used by `/checkout`) |
+| `become/page.tsx` | full sentence with bolded lead — drifted from `tiers.ts` (e.g. "contributes to the practical infrastructure" vs "funds the infrastructure") |
+| `tiers/page.tsx` | terse one-liner — deliberately different register, but had no home |
+
+`TIERS` now carries `lead` / `body` / `short` so all three registers live in one place, plus `TIER_ORDER` for display order and a `tierDesc()` helper. Removed the old `desc` field — `/checkout` composes `lead — body` instead, so the full sentence cannot drift from its parts.
+
+`become/page.tsx` and `tiers/page.tsx` now map over `TIER_ORDER`. That deletes ~90 lines of duplicated markup and restores the project's own "never hardcode tier data" rule, which both pages had been violating.
+
+Adding a tier is now: one entry in `tiers.ts`, one `/tiers/<key>` detail page, one Stripe Payment Link. (Detail pages stay bespoke — they carry unique long-form impact content, not tier metadata.)
+
+Two copy consequences, both intentional: `/become` now says **"One-Time Hero"** rather than "One-Time Hero Contribution", and its lowercase-after-dash phrasing now matches `tiers.ts` rather than the drifted capitalised variant.
+
+Verified against the built HTML: `/become` renders 6 cards and `/tiers` 6 rows, correct names, prices and order.
+
+### Removed dead cookie banners
+
+`CookieBanner.tsx` and `CookieBannerFull.tsx` were mounted **nowhere** — confirmed by grep before deleting. Variant A (`cookieless_mode: 'always'`) sets no cookies and needs no banner. `CLAUDE.md` had claimed CookieBanner was active; corrected in the previous commit.
+
+Recoverable: `git checkout 02dd085 -- src/components/CookieBanner.tsx src/components/CookieBannerFull.tsx`
+
+### SEO / AI-crawler gaps
+
+- **`sitemap.xml` was returning 404** while `robots.txt` had been advertising it all along. Added `app/sitemap.ts`, with tier detail pages derived from `TIER_ORDER` so it can't go stale. `/checkout` and `/thankyou` deliberately excluded — transient flow steps, not landing pages.
+- **`llms.txt` pointed at two pages that don't exist** (`/donate`, `/impact` — both 404). Since `robots.txt` explicitly welcomes GPTBot, ClaudeBot and PerplexityBot, this was the map being handed to them. Rewritten against the real routes, with the tier ladder and both contact addresses added.
+
+### Verified
+
+`npx tsc --noEmit` clean · `npm run build` clean · `/sitemap.xml` present in the build output and well-formed
+
+---
+
 ## 2026-07-30 — Platform review: funnel tracking was never working, plus pre-campaign fixes
 
 Full review of source + live site + PostHog. Headline: **the donation funnel has been invisible since instrumentation began.**

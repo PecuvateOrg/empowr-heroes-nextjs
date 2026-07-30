@@ -32,6 +32,8 @@ All tier data lives in `src/lib/tiers.ts`. Each Stripe Payment Link must have `t
 - **Zero donations** since instrumentation began (22 Jun 2026) — confirmed against the Notion DB, not an analytics gap. `/thankyou` is a hard load from Stripe so it would have recorded.
 - **Open:** the Stripe post-payment redirect to `/thankyou` has never been exercised (no completed donations). Verify on all 6 Payment Links before campaign launch.
 - Security headers live in **both** `netlify.toml` (static assets) and `src/next.config.ts` (runtime-rendered HTML). Both are required — netlify.toml headers do not apply to Next.js runtime responses. Keep the values identical.
-- Cookie banner: **neither `CookieBanner` nor `CookieBannerFull` is mounted anywhere** — both are dead code (Variant A cookieless needs no banner). CLAUDE.md previously claimed CookieBanner was active; corrected 2026-07-30.
+- Cookie banner: **none, by design.** Both unused banner components deleted 2026-07-30 (Variant A cookieless sets no cookies). CLAUDE.md had wrongly claimed one was active.
+- Tier copy centralised in `src/lib/tiers.ts` 2026-07-30 (`lead`/`body`/`short` + `TIER_ORDER`); `/become` and `/tiers` map over it. Previously hardcoded in 3 places with 3 drifted variants.
+- `sitemap.xml` added 2026-07-30 (was 404 while `robots.txt` advertised it); `llms.txt` rewritten — it had pointed at `/donate` and `/impact`, neither of which exists.
 - Campaign UTM taxonomy: `planning/specs/campaign-utm-taxonomy_spec.md`
 - **2026-07-29:** Found this repo was never covered by an earlier Main Site/EELA referrer-restoration pass — all 6 links back to empowrcic.org (`src/lib/links.ts`'s `site.main`/`site.el`/`site.elReport`) had `rel="noopener noreferrer"`, stripping the referrer. Fixed to `noopener` + added `?utm_source=empowr-heroes&utm_medium=internal`. Commit `81d2b09`.

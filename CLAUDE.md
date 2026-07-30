@@ -70,7 +70,8 @@ This file is the map. Workspace detail lives in each CONTEXT.md. Also read `DEVL
 - **Never hardcode URLs** — all external links via `src/lib/links.ts`
 - **Never hardcode tier data** — all tier info via `src/lib/tiers.ts`
 - **`src/core/` is platform-agnostic** — no Netlify-specific code belongs there
-- **Cookie banner** — neither banner is mounted; both `CookieBanner` and `CookieBannerFull` are dead code. Variant A (`cookieless_mode: 'always'`) needs no banner. Only wire one in if optional cookies are actually introduced.
+- **No cookie banner** — Variant A (`cookieless_mode: 'always'`) sets no cookies and needs none. The two unused banner components were deleted 2026-07-30; only reintroduce one if optional cookies are actually added.
+- **Tier copy lives only in `src/lib/tiers.ts`** — `lead`/`body` (full sentence, used by `/become` + `/checkout`) and `short` (compact rows, used by `/tiers`). Both pages map over `TIER_ORDER`; never inline tier copy into a page again. `src/lib/tier-config.js` is a separate CommonJS copy for the email/webhook path — sync by hand.
 - **`capture_pageview` must stay `'history_change'`** — `true` silently disables client-side route-change tracking and makes the entire funnel invisible. See `_config/guides/posthog-consent.md`.
 - **Security headers live in two places** — `netlify.toml` (static assets) and `src/next.config.ts` (runtime-rendered HTML). Both required; keep values identical.
 - Run `npx tsc --noEmit` before committing to catch type errors early

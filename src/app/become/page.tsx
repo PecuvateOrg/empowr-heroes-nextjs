@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Mantra from '@/components/Mantra'
 import { getMostPopularTier } from '@/lib/analytics'
 import { LINKS } from '@/lib/links'
+import { TIERS, TIER_ORDER } from '@/lib/tiers'
 
 export const metadata = {
   title: 'Become a Hero — Empowr Heroes',
@@ -27,71 +28,21 @@ export default async function BecomePage() {
         <p className="body">Select the contribution that feels right for you. Every level makes a real difference.</p>
 
         <div className="tiers-grid">
-          <div className={`tc${popularTier === 'seed' ? ' popular' : ''}`}>
-            <div className="tc-emoji">🌱</div>
-            <div className="tc-name">Seed Hero</div>
-            <div className="tc-price">£10/month</div>
-            <div className="tc-desc"><strong>Plant the seeds of change</strong> — Your contribution helps keep our sessions affordable and accessible.</div>
-            <div className="tc-btns">
-              <Link href="/checkout?tier=seed" className="tca tca-main">Choose This Tier</Link>
-              <Link href="/tiers/seed" className="tca tca-ghost">Find out more →</Link>
-            </div>
-          </div>
-
-          <div className={`tc${popularTier === 'momentum' ? ' popular' : ''}`}>
-            <div className="tc-emoji">🚀</div>
-            <div className="tc-name">Momentum Hero</div>
-            <div className="tc-price">£25/month</div>
-            <div className="tc-desc"><strong>Build momentum for growth</strong> — Your support contributes to the practical infrastructure that enables sessions to happen consistently.</div>
-            <div className="tc-btns">
-              <Link href="/checkout?tier=momentum" className="tca tca-main">Choose This Tier</Link>
-              <Link href="/tiers/momentum" className="tca tca-ghost">Find out more →</Link>
-            </div>
-          </div>
-
-          <div className={`tc${popularTier === 'community' ? ' popular' : ''}`}>
-            <div className="tc-emoji">🫂</div>
-            <div className="tc-name">Community Hero</div>
-            <div className="tc-price">£50/month</div>
-            <div className="tc-desc"><strong>Power community transformation</strong> — Your support helps us expand our reach, enabling us to bring programs to new venues, schools and communities.</div>
-            <div className="tc-btns">
-              <Link href="/checkout?tier=community" className="tca tca-main">Choose This Tier</Link>
-              <Link href="/tiers/community" className="tca tca-ghost">Find out more →</Link>
-            </div>
-          </div>
-
-          <div className={`tc${popularTier === 'champion' ? ' popular' : ''}`}>
-            <div className="tc-emoji">🏆</div>
-            <div className="tc-name">Champion Hero</div>
-            <div className="tc-price">£250/month</div>
-            <div className="tc-desc"><strong>Lead the movement</strong> — You're fueling sustainable growth and long-term impact across the UK.</div>
-            <div className="tc-btns">
-              <Link href="/checkout?tier=champion" className="tca tca-main">Choose This Tier</Link>
-              <Link href="/tiers/champion" className="tca tca-ghost">Find out more →</Link>
-            </div>
-          </div>
-
-          <div className={`tc${popularTier === 'legacy' ? ' popular' : ''}`}>
-            <div className="tc-emoji">💎</div>
-            <div className="tc-name">Legacy Hero</div>
-            <div className="tc-price">£500/month</div>
-            <div className="tc-desc"><strong>Power moves</strong> — Your substantial commitment enables us to think and act more ambitiously while maintaining financial stability.</div>
-            <div className="tc-btns">
-              <Link href="/checkout?tier=legacy" className="tca tca-main">Choose This Tier</Link>
-              <Link href="/tiers/legacy" className="tca tca-ghost">Find out more →</Link>
-            </div>
-          </div>
-
-          <div className="tc">
-            <div className="tc-emoji">💝</div>
-            <div className="tc-name">One-Time Hero Contribution</div>
-            <div className="tc-price">Your Choice</div>
-            <div className="tc-desc"><strong>Make a one-off impact.</strong> Every contribution — no matter the size — supports our mission.</div>
-            <div className="tc-btns">
-              <Link href="/checkout?tier=onetime" className="tca tca-main">Choose This Tier</Link>
-              <Link href="/tiers/onetime" className="tca tca-ghost">Find out more →</Link>
-            </div>
-          </div>
+          {TIER_ORDER.map((key) => {
+            const tier = TIERS[key]
+            return (
+              <div key={key} className={`tc${popularTier === key ? ' popular' : ''}`}>
+                <div className="tc-emoji">{tier.emoji}</div>
+                <div className="tc-name">{tier.name}</div>
+                <div className="tc-price">{tier.price}</div>
+                <div className="tc-desc"><strong>{tier.lead}</strong> — {tier.body}</div>
+                <div className="tc-btns">
+                  <Link href={`/checkout?tier=${key}`} className="tca tca-main">Choose This Tier</Link>
+                  <Link href={`/tiers/${key}`} className="tca tca-ghost">Find out more →</Link>
+                </div>
+              </div>
+            )
+          })}
         </div>
 
         <div className="fp-anchor-wrap">

@@ -2,13 +2,24 @@
 
 > Empowr Heroes is the fundraising and donation platform for Empowr CIC, enabling individuals and organisations to support community programmes through direct giving.
 
-Empowr Heroes provides a transparent, mission-aligned giving experience — connecting donors to the real impact of Empowr CIC's work in education, employment, and community empowerment. Every donation directly funds programmes that create opportunity for people in underserved communities.
+Empowr Heroes provides a transparent, mission-aligned giving experience — connecting donors to the real impact of Empowr CIC's work in education, employment, and community empowerment. Supporters choose a monthly Hero tier or make a one-off contribution; every donation directly funds experiential learning programmes that create opportunity for people in underserved communities.
 
 ## Key Pages
 
-- [Home](https://hero.empowrcic.org): Overview of Empowr Heroes and featured campaigns
-- [Donate](https://hero.empowrcic.org/donate): Make a donation to support Empowr CIC's programmes
-- [Impact](https://hero.empowrcic.org/impact): How donations are used and the difference they make
+- [Home](https://hero.empowrcic.org): Empowr's mission, why experiential learning matters, and what supporter contributions make possible
+- [Become a Hero](https://hero.empowrcic.org/become): Choose a Hero tier and give — the main donation page
+- [Hero Tiers](https://hero.empowrcic.org/tiers): Side-by-side comparison of every giving level and its impact
+- [Founding Patron](https://hero.empowrcic.org/patron): Transformational giving programme (£100,000+ annual or multi-year commitment, by enquiry)
+- [Why Experiential Learning](https://hero.empowrcic.org/why-experiential-learning): The evidence and reasoning behind Empowr's approach
+
+## Giving Levels
+
+- Seed Hero — £10/month: keeps sessions affordable and accessible
+- Momentum Hero — £25/month: funds the infrastructure behind consistent sessions
+- Community Hero — £50/month: expands reach into new venues, schools and communities
+- Champion Hero — £250/month: drives sustainability and strategic development
+- Legacy Hero — £500/month: enables ambitious, long-term growth with stability
+- One-Time Hero — any amount: a one-off contribution of the supporter's choosing
 
 ## About
 
@@ -17,4 +28,6 @@ Empowr Heroes is operated by Empowr CIC (empowrcic.org), a UK-based Community In
 ## Contact
 
 - Website: https://hero.empowrcic.org
+- Supporter enquiries: hero@empowrcic.org
+- Founding Patron enquiries: patron@empowrcic.org
 - Parent organisation: https://empowrcic.org
