@@ -111,7 +111,7 @@ function buildEmailHtml({ name, tierData }) {
               <p style="margin:0;font-size:12px;color:#999999;line-height:1.6;">
                 Empowr CIC · Registered in England and Wales<br/>
                 You're receiving this because you signed up as an Empowr Hero.<br/>
-                <a href="https://legalhub.pecuvate.com/share/empowr/empowr-privacy-policy" style="color:#999999;">Privacy Policy</a>
+                <a href="https://legalhub.pecuvate.com/share/empowr/heroes/privacy-policy" style="color:#999999;">Privacy Policy</a>
               </p>
             </td>
           </tr>
@@ -157,7 +157,7 @@ Together, we move wellbeing forward — one action at a time.
 
 ---
 Empowr CIC · Registered in England and Wales
-Privacy Policy: https://legalhub.pecuvate.com/share/empowr/empowr-privacy-policy`
+Privacy Policy: https://legalhub.pecuvate.com/share/empowr/heroes/privacy-policy`
 }
 
 /**
@@ -232,7 +232,7 @@ function buildOneTimeEmailHtml({ name, siteUrl }) {
               <p style="margin:0;font-size:12px;color:#999999;line-height:1.6;">
                 Empowr CIC · Registered in England and Wales<br/>
                 You're receiving this because you made a one-time contribution to Empowr CIC.<br/>
-                <a href="https://legalhub.pecuvate.com/share/empowr/empowr-privacy-policy" style="color:#999999;">Privacy Policy</a>
+                <a href="https://legalhub.pecuvate.com/share/empowr/heroes/privacy-policy" style="color:#999999;">Privacy Policy</a>
               </p>
             </td>
           </tr>
@@ -284,7 +284,7 @@ Together, we move wellbeing forward — one action at a time.
 
 ---
 Empowr CIC · Registered in England and Wales
-Privacy Policy: https://legalhub.pecuvate.com/share/empowr/empowr-privacy-policy`
+Privacy Policy: https://legalhub.pecuvate.com/share/empowr/heroes/privacy-policy`
 }
 
 /**
