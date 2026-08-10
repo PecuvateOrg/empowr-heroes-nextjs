@@ -96,7 +96,7 @@ Removing dead code first shrinks the migration surface by roughly a fifth:
 | `@keyframes fadeUp` | 793 | referenced nowhere |
 | `.el-*` / `.page-el` rules | ~911–1078 | orphaned page — see the 2026-08-10 audit |
 
-⚠️ **`.eyebrow` (line 102) must be kept** — `/patron` uses it. It reads as part of the `.el-*` family and is not. Exact block boundaries to be confirmed at execution time.
+⚠️ **Check class usage with exact matches, not word boundaries.** During the 2026-08-10 removal, a `\b…\b` grep reported `/patron` as a consumer of `.eyebrow`; it is not. `-` counts as a word boundary, so `patron-eyebrow` matched the token `eyebrow`. `/patron` uses `.patron-eyebrow` and `.patron-contact-eyebrow`, which are separately defined. Grep for `className="x"` exactly. Exact block boundaries to be confirmed at execution time — the same pass also missed an indented `.el-*` block nested inside a media query, which a top-level `^\.` scan cannot see.
 
 **Phase 2 — Tokens**
 Install Tailwind v4 + `postcss.config.mjs`; register the 22 custom properties in `@theme`; both systems run side by side.
