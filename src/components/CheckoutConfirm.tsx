@@ -1,9 +1,17 @@
 'use client'
 
 import { useState } from 'react'
+import posthog from 'posthog-js'
 import { LINKS } from '@/lib/links'
+import { TIERS, type TierKey } from '@/lib/tiers'
 
-export default function CheckoutConfirm({ stripeUrl }: { stripeUrl: string }) {
+export default function CheckoutConfirm({
+  stripeUrl,
+  tierKey,
+}: {
+  stripeUrl: string
+  tierKey: TierKey
+}) {
   const [agreed, setAgreed] = useState(false)
 
   return (
@@ -32,7 +40,20 @@ export default function CheckoutConfirm({ stripeUrl }: { stripeUrl: string }) {
         href={agreed ? stripeUrl : undefined}
         className={`btn btn-blue checkout-btn${!agreed ? ' btn-disabled' : ''}`}
         aria-disabled={!agreed}
-        onClick={e => { if (!agreed) e.preventDefault() }}
+        onClick={e => {
+          if (!agreed) { e.preventDefault(); return }
+          // The last thing we can observe before the donor leaves for Stripe.
+          // Without it the funnel ends at the /checkout pageview and there is
+          // no way to tell "abandoned on Stripe" from "never clicked".
+          // Deliberately fire-and-forget: never delay navigation on the money
+          // path to wait for analytics.
+          posthog.capture('donation_started', {
+            tier: tierKey,
+            tier_name: TIERS[tierKey].name,
+            price: TIERS[tierKey].price,
+            is_recurring: tierKey !== 'onetime',
+          })
+        }}
       >
         Proceed to Payment →
       </a>

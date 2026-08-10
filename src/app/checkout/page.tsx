@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import CheckoutConfirm from '@/components/CheckoutConfirm'
-import { TIERS } from '@/lib/tiers'
+import { TIERS, type TierKey } from '@/lib/tiers'
 
 export const metadata = {
   title: 'Confirm Your Contribution — Empowr Heroes',
@@ -30,7 +30,7 @@ export default async function CheckoutPage({
           <p className="checkout-desc">{tierInfo.lead} — {tierInfo.body}</p>
         </div>
 
-        <CheckoutConfirm stripeUrl={tierInfo.stripeUrl} />
+        <CheckoutConfirm stripeUrl={tierInfo.stripeUrl} tierKey={tier as TierKey} />
       </div>
     </main>
   )
