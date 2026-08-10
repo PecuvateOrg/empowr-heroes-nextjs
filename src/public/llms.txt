@@ -10,7 +10,6 @@ Empowr Heroes provides a transparent, mission-aligned giving experience — conn
 - [Become a Hero](https://hero.empowrcic.org/become): Choose a Hero tier and give — the main donation page
 - [Hero Tiers](https://hero.empowrcic.org/tiers): Side-by-side comparison of every giving level and its impact
 - [Founding Patron](https://hero.empowrcic.org/patron): Transformational giving programme (£100,000+ annual or multi-year commitment, by enquiry)
-- [Why Experiential Learning](https://hero.empowrcic.org/why-experiential-learning): The evidence and reasoning behind Empowr's approach
 
 ## Giving Levels
 
