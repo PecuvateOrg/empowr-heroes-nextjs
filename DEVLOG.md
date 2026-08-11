@@ -61,6 +61,10 @@ Fixed to `capture_pageview: 'history_change'` here **and fleet-wide** — Main S
 
 `/thankyou` has **zero** pageviews since instrumentation began (22 Jun 2026). It is reached by a hard load from stripe.com, so it would record regardless of the bug. User confirmed the Notion DB is working and nobody has donated — so this is an acquisition problem, not a plumbing one. **Still outstanding:** the Stripe post-payment redirect has therefore never been exercised. Needs verifying on all 6 Payment Links before campaign launch.
 
+> **CORRECTION 2026-08-11.** "Nobody has donated" was wrong. Querying the Notion Donations DB directly returned **5 donations totalling £165**, between 2026-04-29 and 2026-06-10 — four one-time (£100/£20/£15/£20) and one Seed Hero monthly (£10) that later cancelled. All five carry `Email Status = Sent`, so the webhook, Resend delivery, Notion logging and cancellation path are proven in production, and the post-payment redirect **has** been exercised by real donors.
+>
+> The zero-pageview observation above was accurate and remains so: every donation predates instrumentation, so it evidences no donations **since 10 June**, not "never". The original entry is left intact — the error was the premise, not the reasoning built on it.
+
 ### Security headers — HTML pages had none
 
 `netlify.toml` `[[headers]]` only apply to CDN-served static files. This site runs through the Next.js runtime (`publish = ".next"` + plugin-nextjs), and runtime-rendered responses bypass them. Verified: `/favicon-32x32.png` carried all five, `/` and `/become` carried none.
