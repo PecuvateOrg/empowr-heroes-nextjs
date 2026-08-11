@@ -107,7 +107,7 @@ Convert `Nav`, `Footer`, `Mantra`, `CheckoutConfirm`, `PostHogProvider` wrapper 
 **Phase 4 — Routes, in ascending risk order**
 `/why-experiential-learning` *(if retained)* → `/patron` → `/` → `/tiers` → `/tiers/[key]` → `/become` → **`/checkout` → `/thankyou` → `/thankyou/onetime` last**.
 
-The final three are the money path. They are also the least exercised — zero donations means zero production validation — so they get converted last, individually, with manual verification each time.
+The final three are the money path, so they get converted last, individually, with manual verification each time. They are **not** unvalidated: 5 real donations (£165, 2026-04-29 → 2026-06-10) completed through this flow with emails sent and Notion rows written, so there is a known-good baseline to regress against.
 
 **Phase 5 — Close out**
 Delete `globals.css`; amend `Empowr CIC/CLAUDE.md` Shared Constraints; update `CLAUDE.md` Key Rules (the "No Tailwind" rule inverts); DEVLOG entry.
@@ -118,7 +118,7 @@ Delete `globals.css`; amend `Empowr CIC/CLAUDE.md` Shared Constraints; update `C
 
 | Risk | Mitigation |
 |---|---|
-| **Donation path has never run in production** — zero donations means a regression would not surface through real traffic | Convert last, one route at a time; manually walk `/become → /checkout → Stripe` on a deploy preview after each |
+| **Donation volume is too low for a regression to surface on its own** — the path works (5 donations, £165, Apr–Jun 2026) but nothing has come through since 10 June, so a break could sit unnoticed for weeks | Convert last, one route at a time; manually walk `/become → /checkout → Stripe` on a branch deploy after each. Watch `donation_started` (added 2026-08-11) as the leading indicator rather than waiting for a donation |
 | **No test suite anywhere** (estate-wide, not Heroes-specific) | eslint + `tsc` in Phase 0 are the only automated guards; lean on deploy previews |
 | **No `prefers-reduced-motion` handling exists** — `.confetti` runs an infinite animation unguarded | Add the guard during Phase 3; the only `transition: none` in the file today is a desktop breakpoint rule, not an accessibility one |
 | Netlify `base = "src"` — a root-only commit can cancel as "no content change" | Known estate gotcha; verify each deploy actually built |
