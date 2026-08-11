@@ -13,7 +13,7 @@ export default function Home() {
              <strong><h2>💡Our mission is simple</h2></strong>
             <b>To lead, promote, and scale Experiential Learning as the path to lifelong wellbeing for everyone.</b>
           </div>
-          <h1 className="h1">Real Change<br /><em>Starts Here</em></h1>
+          <h1 className="h1">Wellbeing, Built<br /><em>by Doing</em></h1>
           <p className="hero-sub">
             At Empowr, we don't just talk about wellbeing — we build it. Through hands-on experiences that strengthen body and mind,
             we're proving that experiential learning isn't just beneficial, it's essential to a healthier, more capable society.

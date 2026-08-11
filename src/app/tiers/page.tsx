@@ -11,8 +11,10 @@ export default function TiersPage() {
   return (
     <main className="page-content page-tiers">
       <div className="wrap">
-        <h2 className="h2">Understanding Your Impact</h2>
-        <p className="body">Every Hero tier represents a meaningful contribution to our mission. Here's what your support helps make possible at each level.</p>
+        <div className="tiers-intro">
+          <h2 className="h2">Understanding Your Impact</h2>
+          <p className="body">Every Hero tier represents a meaningful contribution to our mission. Here's what your support helps make possible at each level.</p>
+        </div>
 
         {TIER_ORDER.map((key) => {
           const tier = TIERS[key]

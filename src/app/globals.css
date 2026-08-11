@@ -210,13 +210,16 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 2.2rem 0; }
   position: relative; z-index: 1;
   max-width: 880px; margin: 0 auto;
   padding: 3rem 1.25rem 2rem;
+  text-align: center;
 }
 .hero-sub {
   font-size: clamp(0.92rem, 2vw, 1.1rem); line-height: 1.8;
-  color: var(--mid); margin-bottom: 2rem; font-weight: 500;
+  color: var(--mid); margin: 0 auto 2rem; font-weight: 500;
+  max-width: 640px;
 }
 .hero-btns {
   display: flex; flex-direction: column;
+  align-items: center;
   gap: 0.7rem;
 }
 .hero-btns .btn { justify-content: center; }
@@ -439,7 +442,10 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 2.2rem 0; }
 }
 .td-hero-inner {
   max-width: 880px; margin: 0 auto;
+  text-align: center;
 }
+.td-hero-inner .back-btn { display: inline-block; }
+.td-tagline { margin-left: auto; margin-right: auto; }
 .td-emoji-lg { font-size: 2.8rem; margin-bottom: 0.7rem; }
 .td-tier-name {
   font-size: clamp(1.6rem, 4vw, 3rem); font-weight: 900;
@@ -538,27 +544,30 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 2.2rem 0; }
   padding: 3rem 1.25rem 4rem;
 }
 .patron-hero-badge {
-  display: inline-flex; align-items: center; gap: 0.4rem;
+  display: flex; width: fit-content; align-items: center; gap: 0.4rem;
   background: var(--patron-gold-s); border: 1px solid var(--patron-border);
   border-radius: 100px; padding: 0.34rem 0.88rem;
   font-size: 0.68rem; font-weight: 800; letter-spacing: 0.16em;
-  text-transform: uppercase; color: var(--patron-gold); margin-bottom: 1rem;
+  text-transform: uppercase; color: var(--patron-gold); margin: 0 auto 1rem;
 }
 .patron-h1 {
   font-size: clamp(1.9rem, 5vw, 4rem); font-weight: 900;
   line-height: 1.07; letter-spacing: -0.02em;
   color: var(--patron-deep); margin-bottom: 0.9rem;
+  text-align: center;
 }
 .patron-h1 em { font-style: italic; color: var(--patron-gold); }
 .patron-intro {
   font-size: 0.97rem; line-height: 1.8; color: var(--mid);
   font-weight: 500; margin-bottom: 1.5rem;
+  text-align: center;
 }
 .patron-intro-sub {
   font-size: 1rem; line-height: 1.85;
   color: var(--muted); font-weight: 400;
-  margin-top: 0.75rem; margin-bottom: 0;
+  margin: 0.75rem auto 0;
   max-width: 580px;
+  text-align: center;
 }
 .patron-hr {
   border: none; border-top: 1px solid var(--patron-border);
@@ -803,7 +812,9 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 2.2rem 0; }
   font-size: 0.82rem !important;
   padding: 0.6rem 1.2rem !important;
 }
-.callout-hero { margin-bottom: 2rem; }
+.callout-hero { margin-bottom: 2rem; text-align: center; }
+.tiers-intro { text-align: center; margin-bottom: 1.5rem; }
+.tiers-intro .body { max-width: 640px; margin: 0 auto; }
 .fp-anchor-wrap { text-align: center; margin: 0.5rem 0 0; }
 .fp-anchor-link {
   display: inline-flex; align-items: center; gap: 0.35rem;
@@ -835,8 +846,8 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 2.2rem 0; }
   /* Hero */
   .hero-inner { padding: 4rem 2rem 2.5rem; }
   .hero-sub { font-size: 1.05rem; }
-  .hero-btns { flex-direction: row; }
-  .hero-btns .btn { justify-content: flex-start; }
+  .hero-btns { flex-direction: row; justify-content: center; }
+  .hero-btns .btn { justify-content: center; }
 
   /* Grids — 2 col */
   .impact-grid { grid-template-columns: repeat(2, 1fr); gap: 0.9rem; }
@@ -1287,6 +1298,14 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 2.2rem 0; }
 .contact-success-text { font-size: 0.92rem; color: var(--mid); line-height: 1.6; }
 
 /* Patron enquiry form — dark gold background, inline on .patron-contact */
+/* Collapsed until the CTA is clicked, then grows open (grid-rows trick avoids needing measured heights) */
+.patron-form-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s ease;
+}
+.patron-form-collapse.open { grid-template-rows: 1fr; }
+.patron-form-collapse > div { overflow: hidden; min-height: 0; }
 .patron-form { text-align: left; margin-top: 0.5rem; }
 .patron-form .ef-label { color: var(--patron-gold-lt); }
 .patron-form input, .patron-form select, .patron-form textarea {

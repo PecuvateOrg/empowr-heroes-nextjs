@@ -20,7 +20,16 @@ const COMMITMENT_OPTIONS = [
 type Status = 'idle' | 'submitting' | 'success' | 'error'
 
 export default function PatronEnquiryForm() {
+  const [expanded, setExpanded] = useState(false)
+  const [animateIn, setAnimateIn] = useState(false)
   const [status, setStatus] = useState<Status>('idle')
+
+  function openForm() {
+    setExpanded(true)
+    // Mount collapsed first, then flip to open on the next frame so the
+    // height transition actually has something to animate from.
+    requestAnimationFrame(() => requestAnimationFrame(() => setAnimateIn(true)))
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -69,66 +78,78 @@ export default function PatronEnquiryForm() {
     )
   }
 
-  return (
-    <form onSubmit={handleSubmit} className="patron-form">
-      <div className="ef-honeypot" aria-hidden="true">
-        <label htmlFor="website">Website (leave this blank)</label>
-        <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
-      </div>
-
-      <div className="ef-field">
-        <label htmlFor="name" className="ef-label">Full name</label>
-        <input id="name" name="name" type="text" required autoComplete="name" />
-      </div>
-
-      <div className="ef-field">
-        <label htmlFor="email" className="ef-label">Email</label>
-        <input id="email" name="email" type="email" required autoComplete="email" />
-      </div>
-
-      <div className="ef-field">
-        <label htmlFor="organisation" className="ef-label">Organisation / foundation (optional)</label>
-        <input id="organisation" name="organisation" type="text" autoComplete="organization" />
-      </div>
-
-      <div className="ef-field">
-        <label htmlFor="phone" className="ef-label">Phone (optional)</label>
-        <input id="phone" name="phone" type="tel" autoComplete="tel" />
-      </div>
-
-      <div className="ef-field">
-        <label htmlFor="interest" className="ef-label">Nature of interest</label>
-        <select id="interest" name="interest" required defaultValue="">
-          <option value="" disabled>Select an option</option>
-          {INTEREST_OPTIONS.map((o) => (
-            <option key={o} value={o}>{o}</option>
-          ))}
-        </select>
-      </div>
-
-      <div className="ef-field">
-        <label htmlFor="commitment" className="ef-label">Indicative commitment (optional)</label>
-        <select id="commitment" name="commitment" defaultValue={COMMITMENT_OPTIONS[0]}>
-          {COMMITMENT_OPTIONS.map((o) => (
-            <option key={o} value={o}>{o}</option>
-          ))}
-        </select>
-      </div>
-
-      <div className="ef-field">
-        <label htmlFor="message" className="ef-label">Message</label>
-        <textarea id="message" name="message" required rows={4} />
-      </div>
-
-      {status === 'error' && (
-        <p className="ef-error">
-          Something went wrong — please try again or email us directly at patron@empowrcic.org.
-        </p>
-      )}
-
-      <button type="submit" disabled={status === 'submitting'} className="ef-submit">
-        {status === 'submitting' ? 'Sending…' : '✉️ Get in Touch'}
+  if (!expanded) {
+    return (
+      <button type="button" className="btn-patron-contact" onClick={openForm}>
+        ✉️ Get in Touch
       </button>
-    </form>
+    )
+  }
+
+  return (
+    <div className={`patron-form-collapse${animateIn ? ' open' : ''}`}>
+      <div>
+        <form onSubmit={handleSubmit} className="patron-form">
+          <div className="ef-honeypot" aria-hidden="true">
+            <label htmlFor="website">Website (leave this blank)</label>
+            <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+          </div>
+
+          <div className="ef-field">
+            <label htmlFor="name" className="ef-label">Full name</label>
+            <input id="name" name="name" type="text" required autoComplete="name" />
+          </div>
+
+          <div className="ef-field">
+            <label htmlFor="email" className="ef-label">Email</label>
+            <input id="email" name="email" type="email" required autoComplete="email" />
+          </div>
+
+          <div className="ef-field">
+            <label htmlFor="organisation" className="ef-label">Organisation / foundation (optional)</label>
+            <input id="organisation" name="organisation" type="text" autoComplete="organization" />
+          </div>
+
+          <div className="ef-field">
+            <label htmlFor="phone" className="ef-label">Phone (optional)</label>
+            <input id="phone" name="phone" type="tel" autoComplete="tel" />
+          </div>
+
+          <div className="ef-field">
+            <label htmlFor="interest" className="ef-label">Nature of interest</label>
+            <select id="interest" name="interest" required defaultValue="">
+              <option value="" disabled>Select an option</option>
+              {INTEREST_OPTIONS.map((o) => (
+                <option key={o} value={o}>{o}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="ef-field">
+            <label htmlFor="commitment" className="ef-label">Indicative commitment (optional)</label>
+            <select id="commitment" name="commitment" defaultValue={COMMITMENT_OPTIONS[0]}>
+              {COMMITMENT_OPTIONS.map((o) => (
+                <option key={o} value={o}>{o}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="ef-field">
+            <label htmlFor="message" className="ef-label">Message</label>
+            <textarea id="message" name="message" required rows={4} />
+          </div>
+
+          {status === 'error' && (
+            <p className="ef-error">
+              Something went wrong — please try again or email us directly at patron@empowrcic.org.
+            </p>
+          )}
+
+          <button type="submit" disabled={status === 'submitting'} className="ef-submit">
+            {status === 'submitting' ? 'Sending…' : '✉️ Get in Touch'}
+          </button>
+        </form>
+      </div>
+    </div>
   )
 }

@@ -16,7 +16,7 @@ export default async function BecomePage() {
   return (
     <main className="page-content page-become">
       <div className="wrap">
-        <div className="callout">
+        <div className="callout callout-hero">
           <div style={{ fontSize: '1.2rem', fontWeight: 900, color: 'var(--blue)', marginBottom: '0.5rem' }}>
             Welcome, Empowr Hero 🏆
           </div>
