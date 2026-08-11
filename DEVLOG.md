@@ -4,6 +4,16 @@ A running record of development sessions, changes made, and decisions taken.
 
 ---
 
+## 2026-08-11 (session 2, part 2) — Design pass: patron form expand/collapse, centred heroes, new headline
+
+Follow-up polish after the enquiry forms shipped, done via a local production-build preview server (`next start` on a scratch port) rather than shipping blind.
+
+- **Patron form is now collapsed by default.** It sat open under the page copy on `/patron`, which read as pushy for a rare, high-value CTA. Now it's the original "✉️ Get in Touch" button until clicked, then grows open via a `grid-template-rows` transition (avoids needing a measured height in JS).
+- **Every hero/intro block centred**, not just the homepage: `/patron`'s badge+headline+intro, `/become`'s welcome callout, `/tiers`' intro line, and all six tier-detail pages' badge/name/price/tagline. Tier-detail pages centre the back-link too (it's one shared block there); `/patron` keeps its back-link left, matching how `/checkout` and other pages treat back-links.
+- **Homepage headline rewritten twice.** First pass replaced "Real Change Starts Here" with no headline at all — promoted the description to a bold `<h1>` instead. User feedback: too much text for a hero, doesn't read as a "quick hit." Reverted to a real two-line headline, new copy **"Wellbeing, Built *by Doing*"** — ties into the brand mantra already used sitewide instead of a generic line that didn't connect to the mission. Chosen from a set of options I drafted; kept the H1 tag throughout both passes for SEO/heading-hierarchy reasons (this page and `not-found.tsx` are the only two `.h1` users).
+
+---
+
 ## 2026-08-11 (session 2) — Two enquiry forms replace the site's last mailto links
 
 Both `patron-enquiry-form_spec.md` (written the previous session) and a new `general-enquiry-form_spec.md` are now built and applied. Both existed to fix the same problem: `mailto:` CTAs with no subject/body land in a Google Workspace inbox as unauthenticated mail from an unknown domain with no prior correspondence — a textbook spam classification, first diagnosed for `/patron` and structurally identical for the `/tiers` "Contact Us" link.
