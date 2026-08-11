@@ -4,12 +4,18 @@ import { unstable_cache } from 'next/cache'
 // Matches the collection ID in CLAUDE.md and donation-handler.js
 const NOTION_DONATIONS_DATA_SOURCE_ID = '86ae1485-c4e1-8269-ba31-870796a355e1'
 
+// Maps the Tier label stored in Notion back to a tier key. `onetime` carries
+// both forms: rows written before the tier-config fix hold the raw key, later
+// ones hold the label. The 4 historical rows (Apr–Jun 2026) are the raw form
+// and can be relabelled by hand in Notion if a single value is wanted.
 const TIER_LABEL_TO_KEY: Record<string, string> = {
   'Seed Hero': 'seed',
   'Momentum Hero': 'momentum',
   'Community Hero': 'community',
   'Champion Hero': 'champion',
   'Legacy Hero': 'legacy',
+  'One-Time Hero': 'onetime',
+  onetime: 'onetime',
 }
 
 async function fetchMostPopularTier(): Promise<string | null> {
