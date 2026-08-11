@@ -15,6 +15,18 @@
   status = 200
   force  = true
 
+# /why-experiential-learning was removed 2026-08-10. It duplicated the Main
+# Site report word for word — and per Main Site planning notes that copy was
+# ported FROM this page, so this URL is the original and is the one anything
+# external would reference. It also sat in sitemap.xml from 2026-07-30, so it
+# had time to be crawled. 301 rather than 404 so any accumulated ranking and
+# any external link land on the canonical copy instead of an error.
+[[redirects]]
+  from   = "/why-experiential-learning"
+  to     = "https://www.empowrcic.org/experiential-learning/report"
+  status = 301
+  force  = true
+
 # These cover CDN-served static files only (favicons, badges, og-image).
 # Runtime-rendered HTML bypasses this block entirely — those headers are set in
 # src/next.config.ts. Both copies are required; keep the values identical.
