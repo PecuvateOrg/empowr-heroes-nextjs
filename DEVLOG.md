@@ -81,62 +81,11 @@ Recoverable: `git checkout 02dd085 -- src/components/CookieBanner.tsx src/compon
 
 ---
 
-## 2026-07-30 — Platform review: funnel tracking was never working, plus pre-campaign fixes
-
-Full review of source + live site + PostHog. Headline: **the donation funnel has been invisible since instrumentation began.**
-
-### Root cause — `capture_pageview: true`
-
-`PostHogProvider.tsx` set `capture_pageview: true`. In posthog-js, `HistoryAutocapture` is gated on an exact string match — `isEnabled(){return"history_change"===this._instance.config.capture_pageview}` — so `true` means "hard page loads only". Every internal link here is a Next.js `<Link>`, so **no client-side navigation produced a pageview**.
-
-Evidence from PostHog (90d): 11 autocaptured clicks on "🏆 Become a Hero Today →" against **4** `/become` pageviews (3 of which were session entries); 4 "Choose This Tier" clicks against **0** `/checkout` pageviews ever recorded; 64 of 67 sessions with exactly one pageview; every page showing up as an entry page.
-
-So the 96% bounce rate and 1.04 pages/session were **artefacts**, not behaviour. The 2026-07-28 switch to `cookieless_mode: 'always'` fixed session identity but not this.
-
-Fixed to `capture_pageview: 'history_change'` here **and fleet-wide** — Main Site, EELA, Members, Landing Page, plus the canonical templates in `_config/guides/posthog-consent.md`, which is where all of them inherited it. Added a "never set this back to `true`" section to that guide with the gating code quoted.
-
-### Also confirmed real (not an artefact)
-
-`/thankyou` has **zero** pageviews since instrumentation began (22 Jun 2026). It is reached by a hard load from stripe.com, so it would record regardless of the bug. User confirmed the Notion DB is working and nobody has donated — so this is an acquisition problem, not a plumbing one. **Still outstanding:** the Stripe post-payment redirect has therefore never been exercised. Needs verifying on all 6 Payment Links before campaign launch.
-
-> **CORRECTION 2026-08-11.** "Nobody has donated" was wrong. Querying the Notion Donations DB directly returned **5 donations totalling £165**, between 2026-04-29 and 2026-06-10 — four one-time (£100/£20/£15/£20) and one Seed Hero monthly (£10) that later cancelled. All five carry `Email Status = Sent`, so the webhook, Resend delivery, Notion logging and cancellation path are proven in production, and the post-payment redirect **has** been exercised by real donors.
->
-> The zero-pageview observation above was accurate and remains so: every donation predates instrumentation, so it evidences no donations **since 10 June**, not "never". The original entry is left intact — the error was the premise, not the reasoning built on it.
-
-### Security headers — HTML pages had none
-
-`netlify.toml` `[[headers]]` only apply to CDN-served static files. This site runs through the Next.js runtime (`publish = ".next"` + plugin-nextjs), and runtime-rendered responses bypass them. Verified: `/favicon-32x32.png` carried all five, `/` and `/become` carried none.
-
-Moved into `src/next.config.ts` via `async headers()`, values identical to netlify.toml. Kept the netlify.toml block — it still covers static assets — with a comment on both sides explaining the split.
-
-Note: **Main Site is unaffected.** It is a static export (`output: "export"`, `publish = "out"`), so its netlify.toml headers do apply. An earlier check suggested otherwise; that was a `curl` against the apex domain reading the 301's headers rather than the destination's.
-
-### Silent failure on the money path
-
-`donation-handler.js`: if a Stripe Payment Link was missing its `tier` metadata (set by hand per link), the donor got **no email** and the team got **no internal notification** — money taken, nobody told, only a `console.warn` and a Notion row marked Failed.
-
-- donor now gets the generic thank-you as a fallback
-- internal notification is now unconditional, with an `ACTION NEEDED — donation with unrecognised tier` subject
-
-### Copy
-
-Homepage said *"Whether you sponsor at £5 a month or £100+"*. There is no £5 tier and no £100 tier (they are £10/25/50/250/500 plus one-time-any-amount). The £5 came from the one-time tier being open-ended. Reworded to *"Whether it's a one-off fiver or £500 a month"* — accurate at both ends and anchors on the real top tier rather than capping the ask at £100.
-
-### Added
-
-`planning/specs/campaign-utm-taxonomy_spec.md` — channel roster and UTM convention for the upcoming fundraising campaign (core: WhatsApp, Instagram, LinkedIn; Facebook/newsletter/QR defined but dormant). Includes ready-made tagged links per channel and a verified session-level attribution query, since `identified_only` + cookieless means UTMs land on the entry pageview only and PostHog's person-level `$initial_utm_*` cannot be relied on here.
-
-### Verified
-
-`npx tsc --noEmit` clean · `npm run build` clean (17 routes)
+## 2026-07-30 — Platform review: fixed `capture_pageview:true` breaking pageview tracking fleet-wide, added security headers to the Next.js runtime, fixed a silent failure on unresolved Stripe tier metadata, corrected inaccurate tier copy, and wrote the campaign UTM taxonomy spec (the "nobody has donated" finding here was corrected by the 2026-08-11 entry above)
 
 ---
 
-## 2026-07-29 — Referrer fix (missed by earlier sweep) + cross-site UTM tagging
-
-- Found this repo was never covered by the Main Site/EELA referrer-restoration sweep from a prior session — every link back to `empowrcic.org` (`src/lib/links.ts`'s `site.main`/`site.el`/`site.elReport`, used in `become/page.tsx`, `Footer.tsx`, `page.tsx`, `patron/page.tsx`, `tiers/page.tsx`, `why-experiential-learning/page.tsx`) had `rel="noopener noreferrer"`, stripping the referrer. Fixed to `noopener`.
-- Same 3 links now also carry `?utm_source=empowr-heroes&utm_medium=internal` — the practical alternative to full cross-domain session linking, ruled out this session as incompatible with `cookieless_mode: 'always'` (full reasoning in AnalyticsHub DEVLOG)
-- Commit `81d2b09`, pushed to `main`, Netlify auto-deployed
+## 2026-07-29 — Fixed referrer-stripping `rel="noopener noreferrer"` on 3 outbound links back to empowrcic.org (missed by an earlier sweep) and added UTM tags to them
 
 ---
 
