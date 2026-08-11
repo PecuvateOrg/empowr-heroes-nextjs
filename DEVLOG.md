@@ -4,6 +4,23 @@ A running record of development sessions, changes made, and decisions taken.
 
 ---
 
+## 2026-08-11 (session 2) — Two enquiry forms replace the site's last mailto links
+
+Both `patron-enquiry-form_spec.md` (written the previous session) and a new `general-enquiry-form_spec.md` are now built and applied. Both existed to fix the same problem: `mailto:` CTAs with no subject/body land in a Google Workspace inbox as unauthenticated mail from an unknown domain with no prior correspondence — a textbook spam classification, first diagnosed for `/patron` and structurally identical for the `/tiers` "Contact Us" link.
+
+**Shared plumbing, not a shared form.** `src/core/enquiry-handler.js` holds `handlePatronEnquiry()` and `handleGeneralEnquiry()` — two functions sharing `escapeHtml`, a honeypot check, and the Resend send shape, each with its own Netlify function (`patron-enquiry.js` / `general-enquiry.js`) so the client can never influence which inbox a submission reaches. The two forms themselves stay separate components (`PatronEnquiryForm.tsx`, `GeneralEnquiryForm.tsx`) — different required fields, different recipient, different tone; forcing both through one generic form would only have hidden the difference in a config object.
+
+- **`/patron`** — the `mailto:patron@empowrcic.org` CTA inside `.patron-contact` is now a form (name, email, organisation, phone, interest, indicative commitment, message). Styled for the dark gold `.patron-contact` background it sits inside.
+- **`/contact`** (new route) — replaces the bare `mailto:hero@empowrcic.org` on `/tiers`. Fields: name, email, topic (dropdown), message. Linked from `/tiers`, the footer, and added to `sitemap.ts` (a real landing page, not a transient flow step). Deliberately not added to the main nav — kept the primary nav conversion-focused.
+- **Topic taxonomy lives in its own file** (`src/lib/enquiry-topics.ts`) — the user wants to eventually route some enquiries into a Calendly/video-call flow, and this is the seam that lets a future topic branch into a scheduling embed without restructuring anything shipped here. No scheduling code was added — a "Book a call" option that doesn't book a call would be worse than not offering it.
+- **`PATRON_EMAIL`** and **`GENERAL_EMAIL`** env vars added to Netlify (production, deploy-preview, branch-deploy, dev) via CLI — both have hardcoded fallbacks in the handler so a missing var can't silently black-hole a submission.
+- **Verified for real, not just built:** ran `netlify dev` locally and hit both Netlify functions directly — honeypot-populated (200, no mail), required-field-missing (400, no mail), and one full success submission per form. Both success submissions used the org's own inboxes (`patron@empowrcic.org`, `hero@empowrcic.org`) as the "prospect" address too, so both the internal notification and the acknowledgement email landed only in inboxes the user already monitors — clearly marked as a Claude Code build-verification test, nothing sent externally.
+- `contact-routing.md` and `_config/registry/env-vars.md` updated. `LINKS.email.hero` / `LINKS.email.patron` in `links.ts` are no longer referenced in the UI but left in place, unchanged from the patron spec's original decision.
+
+**Open:** everything the original patron spec left open (the `?tier=` key-vs-label question, unsurfaced billing-portal link, YouTube `sameAs` 404, DMARC `p=none`) is untouched by this session.
+
+---
+
 ## 2026-08-11 — Platform audit: the "zero donations" premise was wrong, mail landmine cleared, duplicate page removed, first funnel event shipped
 
 - **This platform has converted. The "nobody has donated" claim in the 2026-07-30 entry below is wrong** — corrected inline there, and superseded here. The Notion DB holds **5 donations, £165 total**, 2026-04-29 → 2026-06-10: four one-time (£100/£20/£15/£20) and one Seed Hero monthly (£10) that later cancelled. Every record shows `Email Status = Sent`, so webhook → Resend → Notion → cancellation are all proven in production. All five predate instrumentation (22 Jun), which is why "zero `/thankyou` pageviews" was true *and* fully consistent with real donations. Correct framing: **no donations since 10 June**. Note the shape — 4 of 5 were one-time and the only monthly subscriber churned, while the site leads with the monthly ladder.

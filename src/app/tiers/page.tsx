@@ -54,7 +54,7 @@ export default function TiersPage() {
           <strong>Questions About Your Impact?</strong><br />
           Want to understand more about how your specific contribution would be used, or to just have a chat — we're happy to discuss.
         </p>
-        <a href={LINKS.email.hero} className="btn btn-outline">Contact Us →</a>
+        <Link href="/contact" className="btn btn-outline">Contact Us →</Link>
         <Mantra />
       </div>
     </main>

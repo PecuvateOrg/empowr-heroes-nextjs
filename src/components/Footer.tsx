@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { LINKS } from '@/lib/links'
 
 function InstagramIcon() {
@@ -59,6 +60,12 @@ export default function Footer() {
           <span className="footer-brand-name">Empowr CIC</span>
           <p className="footer-brand-tagline">Promoting lifelong wellbeing through experiential learning.</p>
         </div>
+
+        <FooterSection heading="Contact">
+          <div className="footer-links">
+            <Link href="/contact">Contact Us</Link>
+          </div>
+        </FooterSection>
 
         <FooterSection heading="Legal">
           <div className="footer-links">

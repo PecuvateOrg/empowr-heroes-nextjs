@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Mantra from '@/components/Mantra'
+import PatronEnquiryForm from '@/components/PatronEnquiryForm'
 import { LINKS } from '@/lib/links'
 
 export const metadata = {
@@ -114,7 +115,7 @@ export default function PatronPage() {
               Founding Patron conversations are handled personally by our leadership team. We'd love to hear about your vision and explore
               together what your investment could make possible for the future of wellbeing across the UK.
             </p>
-            <a href={LINKS.email.patron} className="btn-patron-contact">✉️ Get in Touch</a>
+            <PatronEnquiryForm />
           </div>
         </div>
 

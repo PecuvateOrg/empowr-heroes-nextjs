@@ -631,4 +631,326 @@ View Subscription in Stripe:
 ${stripeUrl}`
 }
 
-module.exports = { buildEmailHtml, buildEmailText, buildOneTimeEmailHtml, buildOneTimeEmailText, buildInternalNotificationHtml, buildInternalNotificationText, buildCancellationNotificationHtml, buildCancellationNotificationText, buildPaymentFailedNotificationHtml, buildPaymentFailedNotificationText }
+/**
+ * @param {object} params
+ * @param {string} params.name
+ * @param {string} params.email
+ * @param {string} [params.organisation]
+ * @param {string} [params.phone]
+ * @param {string} params.interest
+ * @param {string} [params.commitment]
+ * @param {string} params.message
+ * All fields must already be HTML-escaped by the caller.
+ */
+function buildPatronInternalNotificationHtml({ name, email, organisation, phone, interest, commitment, message }) {
+  const date = new Date().toLocaleString('en-GB', { timeZone: 'Europe/London', dateStyle: 'long', timeStyle: 'short' })
+  const row = (label, value) => value
+    ? `<tr><td style="padding:12px 0;border-bottom:1px solid #e8ddc8;font-size:13px;color:#8a7a5c;text-transform:uppercase;letter-spacing:0.5px;width:150px;vertical-align:top;">${label}</td><td style="padding:12px 0;border-bottom:1px solid #e8ddc8;font-size:15px;color:#2e2416;">${value}</td></tr>`
+    : ''
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Founding Patron enquiry</title>
+</head>
+<body style="margin:0;padding:0;background-color:#faf8f3;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#faf8f3;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:12px;overflow:hidden;max-width:600px;width:100%;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background-color:#2e2416;padding:24px 40px;">
+              <h1 style="color:#d4aa6a;font-size:20px;margin:0;font-weight:700;">⭐ Founding Patron Enquiry</h1>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px 40px;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+                ${row('Name', name)}
+                ${row('Email', `<a href="mailto:${email}" style="color:#b8924a;text-decoration:none;">${email}</a>`)}
+                ${row('Organisation', organisation)}
+                ${row('Phone', phone)}
+                ${row('Interest', interest)}
+                ${row('Commitment', commitment)}
+                ${row('Date', date)}
+              </table>
+              <p style="margin:24px 0 8px;font-size:13px;color:#8a7a5c;text-transform:uppercase;letter-spacing:0.5px;">Message</p>
+              <p style="margin:0;font-size:15px;color:#2e2416;line-height:1.7;white-space:pre-wrap;">${message}</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`
+}
+
+/**
+ * @param {object} params - same shape as buildPatronInternalNotificationHtml, already escaped
+ */
+function buildPatronInternalNotificationText({ name, email, organisation, phone, interest, commitment, message }) {
+  const date = new Date().toLocaleString('en-GB', { timeZone: 'Europe/London', dateStyle: 'long', timeStyle: 'short' })
+  const line = (label, value) => value ? `${label}: ${value}\n` : ''
+
+  return `Founding Patron Enquiry
+
+${line('Name', name)}${line('Email', email)}${line('Organisation', organisation)}${line('Phone', phone)}${line('Interest', interest)}${line('Commitment', commitment)}${line('Date', date)}
+Message:
+${message}`
+}
+
+/**
+ * @param {object} params
+ * @param {string} params.name - already escaped
+ */
+function buildPatronAcknowledgementHtml({ name }) {
+  const firstName = name ? name.split(' ')[0] : 'there'
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thank you for your enquiry</title>
+</head>
+<body style="margin:0;padding:0;background-color:#faf8f3;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#faf8f3;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:12px;overflow:hidden;max-width:600px;width:100%;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background-color:#2e2416;padding:32px 40px;text-align:center;">
+              <h1 style="color:#d4aa6a;font-size:24px;margin:0;font-weight:800;">Thank You, ${firstName}</h1>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px 40px 40px;">
+              <p style="font-size:16px;color:#333333;line-height:1.7;margin:0 0 16px;">
+                Thank you for your interest in becoming a Founding Patron of Empowr CIC. We've received your enquiry.
+              </p>
+              <p style="font-size:16px;color:#333333;line-height:1.7;margin:0 0 16px;">
+                Founding Patron conversations are handled personally by our leadership team — we'll be in touch within a few working days to begin the conversation.
+              </p>
+              <p style="font-size:16px;color:#333333;line-height:1.7;margin:0 0 24px;">
+                With gratitude,<br/>
+                <strong>The Empowr Team</strong>
+              </p>
+              ${buildMantraHtml()}
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color:#f9f9f9;padding:24px 40px;text-align:center;border-top:1px solid #eeeeee;">
+              <p style="margin:0;font-size:12px;color:#999999;line-height:1.6;">
+                Empowr CIC · Registered in England and Wales<br/>
+                <a href="https://legalhub.pecuvate.com/share/empowr/heroes/privacy-policy" style="color:#999999;">Privacy Policy</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`
+}
+
+/**
+ * @param {object} params
+ * @param {string} params.name - already escaped
+ */
+function buildPatronAcknowledgementText({ name }) {
+  const firstName = name ? name.split(' ')[0] : 'there'
+
+  return `Thank You, ${firstName}
+
+Thank you for your interest in becoming a Founding Patron of Empowr CIC. We've received your enquiry.
+
+Founding Patron conversations are handled personally by our leadership team — we'll be in touch within a few working days to begin the conversation.
+
+With gratitude,
+The Empowr Team
+
+---
+Empowr CIC · Registered in England and Wales
+Privacy Policy: https://legalhub.pecuvate.com/share/empowr/heroes/privacy-policy`
+}
+
+/**
+ * @param {object} params
+ * @param {string} params.name    - already escaped
+ * @param {string} params.email   - already escaped
+ * @param {string} params.topic   - already escaped
+ * @param {string} params.message - already escaped
+ */
+function buildGeneralInternalNotificationHtml({ name, email, topic, message }) {
+  const date = new Date().toLocaleString('en-GB', { timeZone: 'Europe/London', dateStyle: 'long', timeStyle: 'short' })
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>General enquiry</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f5f5f5;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f5f5;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:12px;overflow:hidden;max-width:600px;width:100%;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background-color:#4A70C2;padding:24px 40px;">
+              <h1 style="color:#ffffff;font-size:20px;margin:0;font-weight:700;">General Enquiry</h1>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px 40px;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+                <tr>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:13px;color:#7a7a8a;text-transform:uppercase;letter-spacing:0.5px;width:130px;">Name</td>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:15px;color:#1B1B1B;font-weight:600;">${name}</td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:13px;color:#7a7a8a;text-transform:uppercase;letter-spacing:0.5px;">Email</td>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:15px;color:#1B1B1B;"><a href="mailto:${email}" style="color:#4A70C2;text-decoration:none;">${email}</a></td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:13px;color:#7a7a8a;text-transform:uppercase;letter-spacing:0.5px;">Topic</td>
+                  <td style="padding:12px 0;border-bottom:1px solid #e5e1db;font-size:15px;color:#1B1B1B;font-weight:600;">${topic}</td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 0;font-size:13px;color:#7a7a8a;text-transform:uppercase;letter-spacing:0.5px;">Date</td>
+                  <td style="padding:12px 0;font-size:15px;color:#1B1B1B;">${date}</td>
+                </tr>
+              </table>
+              <p style="margin:24px 0 8px;font-size:13px;color:#7a7a8a;text-transform:uppercase;letter-spacing:0.5px;">Message</p>
+              <p style="margin:0;font-size:15px;color:#1B1B1B;line-height:1.7;white-space:pre-wrap;">${message}</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`
+}
+
+/**
+ * @param {object} params - same shape as buildGeneralInternalNotificationHtml, already escaped
+ */
+function buildGeneralInternalNotificationText({ name, email, topic, message }) {
+  const date = new Date().toLocaleString('en-GB', { timeZone: 'Europe/London', dateStyle: 'long', timeStyle: 'short' })
+
+  return `General Enquiry
+
+Name:  ${name}
+Email: ${email}
+Topic: ${topic}
+Date:  ${date}
+
+Message:
+${message}`
+}
+
+/**
+ * @param {object} params
+ * @param {string} params.name - already escaped
+ */
+function buildGeneralAcknowledgementHtml({ name }) {
+  const firstName = name ? name.split(' ')[0] : 'there'
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thanks for reaching out</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f5f5f5;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f5f5;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:12px;overflow:hidden;max-width:600px;width:100%;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background-color:#1a1a2e;padding:32px 40px;text-align:center;">
+              <h1 style="color:#ffffff;font-size:24px;margin:0;font-weight:800;">Thanks, ${firstName}</h1>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px 40px 40px;">
+              <p style="font-size:16px;color:#333333;line-height:1.6;margin:0 0 16px;">
+                Thanks for reaching out to Empowr Heroes. We've received your message and will get back to you shortly.
+              </p>
+              <p style="font-size:16px;color:#333333;line-height:1.6;margin:0 0 24px;">
+                With gratitude,<br/>
+                <strong>The Empowr Team</strong>
+              </p>
+              ${buildMantraHtml()}
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color:#f9f9f9;padding:24px 40px;text-align:center;border-top:1px solid #eeeeee;">
+              <p style="margin:0;font-size:12px;color:#999999;line-height:1.6;">
+                Empowr CIC · Registered in England and Wales<br/>
+                <a href="https://legalhub.pecuvate.com/share/empowr/heroes/privacy-policy" style="color:#999999;">Privacy Policy</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`
+}
+
+/**
+ * @param {object} params
+ * @param {string} params.name - already escaped
+ */
+function buildGeneralAcknowledgementText({ name }) {
+  const firstName = name ? name.split(' ')[0] : 'there'
+
+  return `Thanks, ${firstName}
+
+Thanks for reaching out to Empowr Heroes. We've received your message and will get back to you shortly.
+
+With gratitude,
+The Empowr Team
+
+---
+Live by growing. Grow by learning. Learn by doing.
+Together, we move wellbeing forward — one action at a time.
+
+---
+Empowr CIC · Registered in England and Wales
+Privacy Policy: https://legalhub.pecuvate.com/share/empowr/heroes/privacy-policy`
+}
+
+module.exports = { buildEmailHtml, buildEmailText, buildOneTimeEmailHtml, buildOneTimeEmailText, buildInternalNotificationHtml, buildInternalNotificationText, buildCancellationNotificationHtml, buildCancellationNotificationText, buildPaymentFailedNotificationHtml, buildPaymentFailedNotificationText, buildPatronInternalNotificationHtml, buildPatronInternalNotificationText, buildPatronAcknowledgementHtml, buildPatronAcknowledgementText, buildGeneralInternalNotificationHtml, buildGeneralInternalNotificationText, buildGeneralAcknowledgementHtml, buildGeneralAcknowledgementText }

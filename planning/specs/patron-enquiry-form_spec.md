@@ -1,6 +1,6 @@
 # Founding Patron Enquiry Form — Spec
 
-**Status:** proposed, not yet applied
+**Status:** applied 2026-08-11
 **Date:** 2026-08-10
 **Applies to:** `/patron` on `hero.empowrcic.org` — the Founding Patron (£100,000+) enquiry path only
 
@@ -64,9 +64,11 @@ Main Site's `contact.ts` is a single file holding transport, validation, and bus
 
 ```
 src/components/PatronEnquiryForm.tsx   client component — form state, validation, POST
-src/core/patron-enquiry-handler.js     all business logic, platform-agnostic
+src/core/enquiry-handler.js            all business logic, platform-agnostic — shared with general enquiries
 src/netlify/functions/patron-enquiry.js thin adapter — HTTP in, handler out
 ```
+
+**Shared with [`general-enquiry-form_spec.md`](general-enquiry-form_spec.md):** both enquiry types live in one `src/core/enquiry-handler.js`, exporting `handlePatronEnquiry()` and `handleGeneralEnquiry()` as two functions sharing small helpers (`escapeHtml`, honeypot check, the Resend send wrapper) — not a single generic config-driven function. The two enquiries have different required fields, recipients, and tone; forcing them through one parameterised function would just move the difference into a config object instead of removing it. Each keeps its own Netlify function (`patron-enquiry.js` / `general-enquiry.js`) so the client never controls which inbox a submission routes to.
 
 `src/core/` must stay free of Netlify-specific code, matching [`donation-handler.js`](../../src/core/donation-handler.js). Use CommonJS in `core/` and `netlify/functions/` to match the existing files there.
 
@@ -180,15 +182,15 @@ A cold session told only "copy the Main Site contact form" will get these wrong:
 
 ## Acceptance criteria
 
-- [ ] `/patron` renders the form; no `mailto:` CTA remains on the page
-- [ ] Submitting with the honeypot populated returns 200 and sends no mail
-- [ ] Submitting with a required field blank returns 400 and no mail
-- [ ] A valid submission delivers to the chosen inbox **and** to the prospect
-- [ ] Replying to the internal notification addresses the prospect, not `hero@`
-- [ ] HTML in any field arrives escaped, not rendered
-- [ ] `patron_enquiry_submitted` appears in PostHog with no PII
-- [ ] `npx tsc --noEmit` passes
-- [ ] `contact-routing.md` updated with the resolved recipient
+- [x] `/patron` renders the form; no `mailto:` CTA remains on the page
+- [x] Submitting with the honeypot populated returns 200 and sends no mail — verified locally via `netlify dev`
+- [x] Submitting with a required field blank returns 400 and no mail — verified locally
+- [x] A valid submission delivers to the chosen inbox **and** to the prospect — verified locally with a real Resend send to `patron@empowrcic.org` on both sides
+- [x] Replying to the internal notification addresses the prospect, not `hero@`
+- [x] HTML in any field arrives escaped, not rendered
+- [x] `patron_enquiry_submitted` appears in PostHog with no PII (`interest` + whether `commitment` was disclosed only)
+- [x] `npx tsc --noEmit` passes
+- [x] `contact-routing.md` updated with the resolved recipient
 
 ---
 
