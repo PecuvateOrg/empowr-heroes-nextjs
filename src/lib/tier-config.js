@@ -33,6 +33,20 @@ const TIER_CONFIG = {
     price: '£500/month',
     desc: 'Power moves — your substantial commitment enables us to think and act more ambitiously while maintaining financial stability.',
   },
+  // One-time is NOT a subscription tier, but it needs an entry here so the
+  // Notion logger can resolve a label. Without it `TIER_CONFIG[tier] || {}`
+  // fell through to the raw key and wrote "onetime" instead of "One-Time
+  // Hero" — visible on the 4 one-time rows recorded Apr–Jun 2026.
+  //
+  // Safe to add: every branch that distinguishes one-time from monthly tests
+  // `tier === 'onetime'` first, so the email path is unaffected and no badge
+  // is ever looked up for it.
+  onetime: {
+    label: 'One-Time Hero',
+    emoji: '💝',
+    price: 'Your Choice',
+    desc: 'Make a one-off impact — every contribution, no matter the size, supports our mission.',
+  },
 }
 
 module.exports = { TIER_CONFIG }
