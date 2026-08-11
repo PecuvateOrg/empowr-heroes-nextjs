@@ -4,6 +4,17 @@ A running record of development sessions, changes made, and decisions taken.
 
 ---
 
+## 2026-08-11 — Platform audit: the "zero donations" premise was wrong, mail landmine cleared, duplicate page removed, first funnel event shipped
+
+- **This platform has converted. The "nobody has donated" claim in the 2026-07-30 entry below is wrong** — corrected inline there, and superseded here. The Notion DB holds **5 donations, £165 total**, 2026-04-29 → 2026-06-10: four one-time (£100/£20/£15/£20) and one Seed Hero monthly (£10) that later cancelled. Every record shows `Email Status = Sent`, so webhook → Resend → Notion → cancellation are all proven in production. All five predate instrumentation (22 Jun), which is why "zero `/thankyou` pageviews" was true *and* fully consistent with real donations. Correct framing: **no donations since 10 June**. Note the shape — 4 of 5 were one-time and the only monthly subscriber churned, while the site leads with the monthly ladder.
+- **Mail landmine cleared.** `CLAUDE.md`, `memory.md` and `docs/donation-flow.md` all named `heroes@hero.empowrcic.org` as the Resend sender; that subdomain has no MX, SPF, DKIM or DMARC, so mail from it would fail outright. The code's `hero@empowrcic.org` was always right — the docs were wrong in the direction that breaks production if acted on. Same pass fixed webhook drift: the doc described `payment_intent.succeeded`, `customer.subscription.created` and `invoice.payment_action_required`, none of which the handler uses.
+- **`/why-experiential-learning` removed** (`bd8489e`, PR #12) — a word-for-word duplicate of `empowrcic.org/experiential-learning/report`, with no inbound links and two pageviews ever, while three "read the research" links sent people off-site to the Main Site copy. Main Site is canonical; the URL now 301s there (`4a34abc`), chosen over a 404 because Main Site planning notes record its copy as ported *from* this page. Took 181 lines of dead CSS with it; source preserved in `Empowr CIC/_trash/`.
+- **`donation_started` shipped** (`3c46ad4`) — the site's first custom event, on the Proceed-to-Payment click. Verified live with correct `tier`/`price`/`is_recurring`, and it immediately captured a Stripe abandonment, previously indistinguishable from never clicking.
+- **`TIER_CONFIG` gained an `onetime` entry** (`2f08701`, PR #14) — its absence made the Notion logger write the raw key, visible on all four one-time rows. This also corrected a claim committed hours earlier in `5c1f782`: the one-time Payment Link **already** redirects to `/thankyou/onetime`, so that flow was never broken. The error came from treating a memory note labelled "verified via Stripe MCP" as the verification itself.
+- **Two specs written** (`65f1e9f`), neither built: `patron-enquiry-form_spec.md` — replace the `/patron` mailto, since inbound Outlook mail is spam-filtered by the receiving Google Workspace mailbox and no DNS fix exists for mail composed on the sender's infrastructure; and `stack-revamp_spec.md` — Heroes is the only estate project still on plain CSS with no eslint, D1–D4 awaiting decisions. **Open:** whether `?tier=` carries the key or the label on the monthly redirect (the pill silently vanishes if it is the label), the unsurfaced billing-portal link, the YouTube `sameAs` 404, and DMARC still at `p=none`.
+
+---
+
 ## 2026-07-30 (session 2) — Cleanup batch: tier data centralised, dead code removed, SEO gaps closed
 
 ### `tiers.ts` is now the single source of tier copy
@@ -102,10 +113,7 @@ Homepage said *"Whether you sponsor at £5 a month or £100+"*. There is no £5 
 
 ---
 
-## 2026-07-28
-
-- Switched PostHog from `persistence: 'memory'` to `cookieless_mode: 'always'` in `src/components/PostHogProvider.tsx` (`0713504`) — part of the Empowr CIC-wide cookieless rollout (see AnalyticsHub DEVLOG); fixes the donation-funnel bounce rate and session data being invalid under memory mode
-- Netlify deploy verified `ready` post-push; no other code changes
+## 2026-07-28 — Switched PostHog from `persistence: 'memory'` to `cookieless_mode: 'always'` (`0713504`) as part of the Empowr CIC-wide cookieless rollout; deploy verified ready
 
 ---
 
