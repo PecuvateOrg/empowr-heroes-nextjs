@@ -10,7 +10,7 @@ Running state and persistent context for the Heroes donation platform.
 |---|---|
 | Hosting | Netlify — `hero.empowrcic.org` |
 | Payments | Stripe (Payment Links, webhooks) |
-| Email | Resend — sending domain `hero.empowrcic.org`, address `heroes@hero.empowrcic.org` |
+| Email | Resend — sending domain `empowrcic.org` (apex), address `hero@empowrcic.org` |
 | Donations DB | Notion — `Empowr Heroes Donations DB` (ID: `2d5e1485c4e1821baaed01000f3df0aa`) |
 | DNS | AWS Route 53 |
 
@@ -34,6 +34,7 @@ All tier data lives in `src/lib/tiers.ts`. Each Stripe Payment Link must have `t
 - **The constraint is traffic, not the funnel.** 70 pageviews/30d vs Main Site 1,634; ~0.1% click-through from Main Site despite a sitewide "Support Us" CTA. No campaign is driving traffic yet — one is being planned. Don't try to optimise conversion on ~50 real visitors/month.
 - Campaign UTM taxonomy ready at `planning/specs/campaign-utm-taxonomy_spec.md`. `utm_campaign=heroes-launch-2026` is a **placeholder** — rename before anything publishes.
 - Security headers live in **both** `netlify.toml` (static assets) and `src/next.config.ts` (runtime-rendered HTML). Both are required — netlify.toml headers do not apply to Next.js runtime responses. Keep the values identical.
+- **2026-08-10 — mail landmine cleared.** `CLAUDE.md`, this file, and `docs/donation-flow.md` all named `heroes@hero.empowrcic.org` as the sending address. DNS check: `hero.empowrcic.org` has **no MX, SPF, DKIM or DMARC** — mail from it would fail outright. The code has always used `hero@empowrcic.org` and is correct; the docs were wrong in the direction that breaks production if anyone "aligned" the code to them. All three corrected. Authentication lives on the apex: DKIM `resend._domainkey.empowrcic.org`, return-path `send.empowrcic.org` (Amazon SES), DMARC `p=none`.
 - Cookie banner: **none, by design.** Both unused banner components deleted 2026-07-30 (Variant A cookieless sets no cookies). CLAUDE.md had wrongly claimed one was active.
 - Tier copy centralised in `src/lib/tiers.ts` 2026-07-30 (`lead`/`body`/`short` + `TIER_ORDER`); `/become` and `/tiers` map over it. Previously hardcoded in 3 places with 3 drifted variants.
 - `sitemap.xml` added 2026-07-30 (was 404 while `robots.txt` advertised it); `llms.txt` rewritten — it had pointed at `/donate` and `/impact`, neither of which exists.

@@ -91,29 +91,30 @@ The Netlify Function is a thin adapter. It verifies the Stripe webhook signature
 
 ### Events Handled
 
-**`payment_intent.succeeded`** — New donation (monthly or one-time)
-1. Extract from event: donor name, email (from `billing_details`), amount, currency, tier (from Payment Link metadata), Stripe session ID
-2. Log record to Notion Donations DB:
-   - Record title: tier name
-   - Fields: Tier, Amount, Currency, Date, Email Status, Stripe Session URL, Subscription ID, Status
-3. Send welcome email via Resend (HTML + plain text):
+**`checkout.session.completed`** — New donation (monthly or one-time)
+1. Extract from event: donor name, email (from `customer_details`), amount, currency, tier (from Payment Link metadata), Stripe session ID, subscription ID
+2. Send donor email via Resend (HTML + plain text):
    - To: donor's email
-   - From: `heroes@hero.empowrcic.org`
-   - Content: greeting, tier card, badge image link (S3 PNG), Stripe portal link, mantra block
-4. Send internal notification to `hero@empowrcic.org`: donor name, tier, amount
-
-**`customer.subscription.created`** — Monthly subscription started
-- Captures subscription ID and links to existing Notion record
+   - From: `hero@empowrcic.org`
+   - `tier === 'onetime'` → one-time thank-you (no badge)
+   - known monthly tier → welcome email with tier card, badge image (S3 PNG), Stripe portal link, mantra block
+   - **tier unresolved** → falls back to the one-time thank-you so a paying donor always hears from us
+3. Send internal notification to `hero@empowrcic.org`. An unresolved tier sends an `ACTION NEEDED` alert instead — it means a Payment Link is missing its `tier` metadata in Stripe
+4. Log record to Notion Donations DB:
+   - Record title: tier label
+   - Fields: Tier, Amount, Currency, Date, Email Status, Stripe Dashboard URL, Subscription ID, Status
+   - Notion failure is caught and logged, never thrown — the email has already been sent
 
 **`customer.subscription.deleted`** — Subscription cancelled
 1. Update Notion record: Status → "Cancelled"
 2. Log cancellation reason (from Stripe feedback field)
 3. Send internal cancellation notification to `hero@empowrcic.org`
 
-**`invoice.payment_action_required`** — Payment failed
+**`invoice.payment_failed`** — Payment failed
 1. Update Notion record: Status → "Payment Failed"
-2. Increment attempt count in Notion
-3. Send internal payment-failed notification to `hero@empowrcic.org`
+2. Send internal payment-failed notification to `hero@empowrcic.org`, including Stripe's `attempt_count`
+
+Any other event type is ignored and logged. Note that **`customer.subscription.created` is not handled** — the subscription ID is captured from `checkout.session.completed` instead.
 
 ### Notion Schema
 
@@ -159,18 +160,20 @@ Separate variant at `/thankyou/onetime` for one-time gifts.
 ## 8. Email System
 
 **Provider:** Resend  
-**Sending domain:** `hero.empowrcic.org` (verified in Resend)  
-**From address:** `heroes@hero.empowrcic.org`
+**Sending domain:** `empowrcic.org` — the **apex** domain, verified in Resend  
+**From address:** `Empowr Heroes <hero@empowrcic.org>`
+
+> ⚠️ Not `heroes@hero.empowrcic.org`. This document, `CLAUDE.md` and `memory.md` all claimed that address until 2026-08-10. It would not work: `hero.empowrcic.org` has **no MX, SPF, DKIM or DMARC**. Authentication lives on the apex — DKIM at `resend._domainkey.empowrcic.org`, return-path `send.empowrcic.org` → `feedback-smtp.eu-west-1.amazonses.com`.
 
 ### Templates (in `src/core/email-template.js`)
 
 | Template | Trigger | Recipient |
 |---|---|---|
-| Monthly donation welcome | `payment_intent.succeeded` (subscription) | Donor |
-| One-time donation welcome | `payment_intent.succeeded` (one-time) | Donor |
-| Internal new donation | Same | `hero@empowrcic.org` |
-| Internal cancellation | `subscription.deleted` | `hero@empowrcic.org` |
-| Internal payment failed | `invoice.payment_action_required` | `hero@empowrcic.org` |
+| Monthly donation welcome | `checkout.session.completed`, known monthly tier | Donor |
+| One-time donation welcome | `checkout.session.completed`, `tier === 'onetime'` **or** tier unresolved | Donor |
+| Internal new donation | Same — `ACTION NEEDED` variant if tier unresolved | `hero@empowrcic.org` |
+| Internal cancellation | `customer.subscription.deleted` | `hero@empowrcic.org` |
+| Internal payment failed | `invoice.payment_failed` | `hero@empowrcic.org` |
 
 All templates have both HTML and plain-text variants. Badge images are served from S3 (PNG) — they won't display in local testing (localhost not publicly accessible), which is expected.
 
@@ -196,7 +199,8 @@ Preview emails locally with: `npm run preview:email`
 | Route | Purpose |
 |---|---|
 | `/patron` | Founding Patron programme (£100k+ annual/multi-year, by invitation) |
-| `/why-experiential-learning` | Research-backed educational content, embedded Notion doc |
+
+`/why-experiential-learning` was removed on 2026-08-10. It duplicated `empowrcic.org/experiential-learning/report` word for word while having no inbound links and zero pageviews since launch; the Main Site copy is canonical. Source preserved at `Empowr CIC/_trash/empowr-heroes-nextjs/`.
 
 ---
 

@@ -16,7 +16,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'yearly' as const,
       priority: 0.6,
     })),
-    { url: `${BASE}/why-experiential-learning`, changeFrequency: 'yearly', priority: 0.7 },
     { url: `${BASE}/patron`, changeFrequency: 'yearly', priority: 0.5 },
   ]
 }

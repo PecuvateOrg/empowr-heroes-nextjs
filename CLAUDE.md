@@ -25,7 +25,7 @@ This file is the map. Workspace detail lives in each CONTEXT.md. Also read `DEVL
 ## Cross-Workspace Flows
 
 - **Stripe** — tier metadata (`tier` field) must be set manually on each Payment Link in the Stripe dashboard; webhook fires on successful payment
-- **Resend** — sending domain `hero.empowrcic.org`; email template in `src/core/email-template.js`
+- **Resend** — sends from `hero@empowrcic.org` (the **apex** domain); email template in `src/core/email-template.js`. Do **not** change this to `hero.empowrcic.org` — that subdomain has no MX, SPF, DKIM or DMARC (verified 2026-08-10) and mail from it would fail outright. Authentication lives on the apex: DKIM at `resend._domainkey.empowrcic.org`, return-path `send.empowrcic.org`.
 - **Notion** — donation records logged to `Empowr Heroes Donations DB`; integration name `Empowr Heroes Webhook`
 - **LegalHub** — policy docs hosted at `legalhub.pecuvate.com`; links live in `src/lib/links.ts`
 
