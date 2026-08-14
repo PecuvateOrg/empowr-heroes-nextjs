@@ -84,4 +84,16 @@ This file is the map. Workspace detail lives in each CONTEXT.md. Also read `DEVL
 - Domain: `hero.empowrcic.org`
 - Branch: main
 - Base directory: src/
+
+---
+
+## Skills and Tools Available
+
+| Tool / Skill | Trigger | Purpose |
+|---|---|---|
+| `/netlify-deploy` | deploying to Netlify | Deploy to Netlify and configure `hero.empowrcic.org` |
+| `/pre-build-check` | before any deploy | Validate build structure and frontend quality |
+| `/pre-deploy-security` | before any deploy | Security hygiene scan — secrets, CVEs, headers, RLS; FAILs block the deploy |
+| `/webapp-testing` | after frontend changes | Test UI with Playwright, capture screenshots |
+| `/simplify` | after a feature is built | Review changed code for reuse, quality, and efficiency |
 - GitHub: `Pecuvate/empowr-heroes-nextjs`
