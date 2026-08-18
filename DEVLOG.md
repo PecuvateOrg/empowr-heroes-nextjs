@@ -4,6 +4,19 @@ A running record of development sessions, changes made, and decisions taken.
 
 ---
 
+## 2026-08-18 — "Support a Project" section shipped; webhook chain converted to TypeScript, `tier-config.js` retired
+
+Two clean commits, both pushed to `main` (`148ffa5`, `69af5a7`) — Netlify auto-deploys.
+
+- **Architecture fix first:** `donation-handler.js`/`stripe-webhook.js` converted to `.ts`, importing `tiers.ts` directly instead of the hand-synced `tier-config.js` (now deleted) — the split only existed because the webhook was CommonJS and couldn't import the app's TS config, and it had already caused one real bug (the missing-`onetime`-entry incident). `analytics.ts` refactored onto a new shared `notion-donations.ts` fetch.
+- **New `/projects` section**, alongside (not replacing) the generic Hero signup. `src/lib/projects.ts` is the single source of truth — an explicit `Project` type rather than `as const` inference, so the app type-checks correctly with zero projects configured. `/projects/[project]` is the app's first dynamic route. Backing a project hands off to the *existing* tier/checkout flow via a `?project=` param; `CheckoutConfirm` tags the Stripe URL with `client_reference_id` (no new Payment Link needed per project — confirmed against Stripe's docs). `donation-handler.ts` now writes the resolved project to a new Notion `Project` select property (added via MCP).
+- **No real projects configured yet** — `/projects` shows a "no open projects right now" empty state pointing to `/become`, deliberately not shipped with placeholder content. Adding one is a one-file edit to `projects.ts` (see `ops/runbooks/add-a-project.md`); discussed and declined a yes/no interest-survey in favour of watching real conversion via PostHog once a project exists.
+- **Verified live, not just built:** `stripe trigger` turned out unable to test the project-tagged path (`payment_link` isn't settable via the API — only Stripe itself sets it on a genuine Payment Link checkout), so verification used a manually-signed synthetic webhook event instead. Confirmed via direct Notion query: the row landed with the correct Tier/Project/Amount. Also confirmed a cross-app guard already present in the working tree (`if (!session.payment_link) return ignored` — not authored this session, found mid-work, preserved) correctly rejects non-Heroes sessions.
+- **Along the way:** cleared a stale leftover `next dev` process blocking local testing; caught `donation-handler.js` reappearing on disk byte-identical to git `HEAD` after being deleted (almost certainly an editor auto-restore, not real work — removed again); re-ran `stripe login` after finding the CLI's stored credential had been expired since 2026-07-01.
+- **Open:** a synthetic test donation row ("Test Donor (synthetic webhook)", session `cs_test_synthetic_1787056255718`) needs manual deletion from the live Notion Donations DB — no page-trash tool was available to do it directly. A restricted `Customers: Read`-only Stripe key for production (currently a full `sk_test_`/`sk_live_` key) was discussed and deferred as a separate, more careful task.
+
+---
+
 ## 2026-08-14
 
 - Added a new `## Skills and Tools Available` section to `CLAUDE.md`, closing an M8 gap flagged by the scheduled mwp-health compliance audit (README already existed and passed M10).
@@ -38,13 +51,6 @@ Both `patron-enquiry-form_spec.md` (written the previous session) and a new `gen
 ---
 
 ## 2026-08-11 — Platform audit: the "zero donations" premise was wrong, mail landmine cleared, duplicate page removed, first funnel event shipped
-
-- **This platform has converted. The "nobody has donated" claim in the 2026-07-30 entry below is wrong** — corrected inline there, and superseded here. The Notion DB holds **5 donations, £165 total**, 2026-04-29 → 2026-06-10: four one-time (£100/£20/£15/£20) and one Seed Hero monthly (£10) that later cancelled. Every record shows `Email Status = Sent`, so webhook → Resend → Notion → cancellation are all proven in production. All five predate instrumentation (22 Jun), which is why "zero `/thankyou` pageviews" was true *and* fully consistent with real donations. Correct framing: **no donations since 10 June**. Note the shape — 4 of 5 were one-time and the only monthly subscriber churned, while the site leads with the monthly ladder.
-- **Mail landmine cleared.** `CLAUDE.md`, `memory.md` and `docs/donation-flow.md` all named `heroes@hero.empowrcic.org` as the Resend sender; that subdomain has no MX, SPF, DKIM or DMARC, so mail from it would fail outright. The code's `hero@empowrcic.org` was always right — the docs were wrong in the direction that breaks production if acted on. Same pass fixed webhook drift: the doc described `payment_intent.succeeded`, `customer.subscription.created` and `invoice.payment_action_required`, none of which the handler uses.
-- **`/why-experiential-learning` removed** (`bd8489e`, PR #12) — a word-for-word duplicate of `empowrcic.org/experiential-learning/report`, with no inbound links and two pageviews ever, while three "read the research" links sent people off-site to the Main Site copy. Main Site is canonical; the URL now 301s there (`4a34abc`), chosen over a 404 because Main Site planning notes record its copy as ported *from* this page. Took 181 lines of dead CSS with it; source preserved in `Empowr CIC/_trash/`.
-- **`donation_started` shipped** (`3c46ad4`) — the site's first custom event, on the Proceed-to-Payment click. Verified live with correct `tier`/`price`/`is_recurring`, and it immediately captured a Stripe abandonment, previously indistinguishable from never clicking.
-- **`TIER_CONFIG` gained an `onetime` entry** (`2f08701`, PR #14) — its absence made the Notion logger write the raw key, visible on all four one-time rows. This also corrected a claim committed hours earlier in `5c1f782`: the one-time Payment Link **already** redirects to `/thankyou/onetime`, so that flow was never broken. The error came from treating a memory note labelled "verified via Stripe MCP" as the verification itself.
-- **Two specs written** (`65f1e9f`), neither built: `patron-enquiry-form_spec.md` — replace the `/patron` mailto, since inbound Outlook mail is spam-filtered by the receiving Google Workspace mailbox and no DNS fix exists for mail composed on the sender's infrastructure; and `stack-revamp_spec.md` — Heroes is the only estate project still on plain CSS with no eslint, D1–D4 awaiting decisions. **Open:** whether `?tier=` carries the key or the label on the monthly redirect (the pill silently vanishes if it is the label), the unsurfaced billing-portal link, the YouTube `sameAs` 404, and DMARC still at `p=none`.
 
 ---
 
