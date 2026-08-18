@@ -1,8 +1,9 @@
 import Link from 'next/link'
 import Mantra from '@/components/Mantra'
 import { getMostPopularTier } from '@/lib/analytics'
-import { LINKS } from '@/lib/links'
+import { LINKS, buildCheckoutHref } from '@/lib/links'
 import { TIERS, TIER_ORDER } from '@/lib/tiers'
+import { PROJECTS, type ProjectKey } from '@/lib/projects'
 
 export const metadata = {
   title: 'Become a Hero — Empowr Heroes',
@@ -10,19 +11,33 @@ export const metadata = {
 
 export const revalidate = 3600
 
-export default async function BecomePage() {
-  const popularTier = await getMostPopularTier()
+export default async function BecomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ project?: string }>
+}) {
+  const [popularTier, { project }] = await Promise.all([getMostPopularTier(), searchParams])
+  const projectInfo = project && project in PROJECTS ? PROJECTS[project as ProjectKey] : null
 
   return (
     <main className="page-content page-become">
       <div className="wrap">
-        <div className="callout callout-hero">
-          <div style={{ fontSize: '1.2rem', fontWeight: 900, color: 'var(--blue)', marginBottom: '0.5rem' }}>
-            Welcome, Empowr Hero 🏆
+        {projectInfo ? (
+          <div className="callout callout-hero">
+            <div style={{ fontSize: '1.2rem', fontWeight: 900, color: 'var(--blue)', marginBottom: '0.5rem' }}>
+              {projectInfo.emoji} Supporting {projectInfo.name}
+            </div>
+            Choose how you'd like to back this project — as a monthly Hero or with a one-off gift. Your contribution will be counted toward <strong>{projectInfo.name}</strong>.
           </div>
-          💡 Thanks for supporting <strong>Empowr's mission of lifelong wellbeing through experiential learning</strong>.
-          You're about to support something powerful — action-based healing in real communities.
-        </div>
+        ) : (
+          <div className="callout callout-hero">
+            <div style={{ fontSize: '1.2rem', fontWeight: 900, color: 'var(--blue)', marginBottom: '0.5rem' }}>
+              Welcome, Empowr Hero 🏆
+            </div>
+            💡 Thanks for supporting <strong>Empowr's mission of lifelong wellbeing through experiential learning</strong>.
+            You're about to support something powerful — action-based healing in real communities.
+          </div>
+        )}
 
         <h2 className="h2">🏆 Choose Your Hero Level</h2>
         <p className="body">Select the contribution that feels right for you. Every level makes a real difference.</p>
@@ -37,7 +52,7 @@ export default async function BecomePage() {
                 <div className="tc-price">{tier.price}</div>
                 <div className="tc-desc"><strong>{tier.lead}</strong> — {tier.body}</div>
                 <div className="tc-btns">
-                  <Link href={`/checkout?tier=${key}`} className="tca tca-main">Choose This Tier</Link>
+                  <Link href={buildCheckoutHref(key, project)} className="tca tca-main">Choose This Tier</Link>
                   <Link href={`/tiers/${key}`} className="tca tca-ghost">Find out more →</Link>
                 </div>
               </div>

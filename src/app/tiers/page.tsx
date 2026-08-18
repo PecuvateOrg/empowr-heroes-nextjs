@@ -1,19 +1,31 @@
 import Link from 'next/link'
 import Mantra from '@/components/Mantra'
-import { LINKS } from '@/lib/links'
+import { LINKS, buildCheckoutHref } from '@/lib/links'
 import { TIERS, TIER_ORDER } from '@/lib/tiers'
+import { PROJECTS, type ProjectKey } from '@/lib/projects'
 
 export const metadata = {
   title: 'Hero Tiers — Empowr Heroes',
 }
 
-export default function TiersPage() {
+export default async function TiersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ project?: string }>
+}) {
+  const { project } = await searchParams
+  const projectInfo = project && project in PROJECTS ? PROJECTS[project as ProjectKey] : null
+
   return (
     <main className="page-content page-tiers">
       <div className="wrap">
         <div className="tiers-intro">
           <h2 className="h2">Understanding Your Impact</h2>
-          <p className="body">Every Hero tier represents a meaningful contribution to our mission. Here's what your support helps make possible at each level.</p>
+          {projectInfo ? (
+            <p className="body">{projectInfo.emoji} Supporting <strong>{projectInfo.name}</strong> — choose the tier that feels right for you.</p>
+          ) : (
+            <p className="body">Every Hero tier represents a meaningful contribution to our mission. Here's what your support helps make possible at each level.</p>
+          )}
         </div>
 
         {TIER_ORDER.map((key) => {
@@ -29,7 +41,7 @@ export default function TiersPage() {
               </div>
               <div className="tr-desc">{tier.short}</div>
               <div className="tr-actions">
-                <Link href={`/checkout?tier=${key}`} className="btn btn-blue btn-sm">Choose Tier</Link>
+                <Link href={buildCheckoutHref(key, project)} className="btn btn-blue btn-sm">Choose Tier</Link>
                 <Link href={`/tiers/${key}`} className="btn btn-ghost">Find out more</Link>
               </div>
             </div>

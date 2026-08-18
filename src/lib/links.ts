@@ -1,6 +1,17 @@
 // Central source of truth for all external links used across the site.
 // Update a link here and it updates everywhere automatically.
 
+/**
+ * Builds a /checkout link, optionally carrying a `project` slug so the tier
+ * picker and checkout page can show project context and (in CheckoutConfirm)
+ * tag the outgoing Stripe URL with client_reference_id. Used by /become,
+ * /tiers, and /projects/[project] — keeps the three in sync instead of each
+ * hand-building the query string.
+ */
+export function buildCheckoutHref(tier: string, project?: string | null): string {
+  return project ? `/checkout?tier=${tier}&project=${encodeURIComponent(project)}` : `/checkout?tier=${tier}`
+}
+
 export const LINKS = {
 
   policy: {

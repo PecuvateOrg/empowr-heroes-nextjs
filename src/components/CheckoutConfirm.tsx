@@ -8,11 +8,18 @@ import { TIERS, type TierKey } from '@/lib/tiers'
 export default function CheckoutConfirm({
   stripeUrl,
   tierKey,
+  project,
 }: {
   stripeUrl: string
   tierKey: TierKey
+  project?: string | null
 }) {
   const [agreed, setAgreed] = useState(false)
+  // Stripe delivers this back on session.client_reference_id in the webhook —
+  // see donation-handler.ts. Appended as a URL param, not metadata, because
+  // Payment Link metadata is fixed per-link in the dashboard and can't vary
+  // per project.
+  const finalStripeUrl = project ? `${stripeUrl}?client_reference_id=${encodeURIComponent(project)}` : stripeUrl
 
   return (
     <div className="checkout-confirm">
@@ -37,7 +44,7 @@ export default function CheckoutConfirm({
       </label>
 
       <a
-        href={agreed ? stripeUrl : undefined}
+        href={agreed ? finalStripeUrl : undefined}
         className={`btn btn-blue checkout-btn${!agreed ? ' btn-disabled' : ''}`}
         aria-disabled={!agreed}
         onClick={e => {
@@ -52,6 +59,7 @@ export default function CheckoutConfirm({
             tier_name: TIERS[tierKey].name,
             price: TIERS[tierKey].price,
             is_recurring: tierKey !== 'onetime',
+            ...(project && { project }),
           })
         }}
       >

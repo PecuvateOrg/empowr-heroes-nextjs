@@ -35,6 +35,9 @@ export default function Nav() {
           <Link href="/" className={isActive('/') ? 'active' : ''}>Our Mission</Link>
         </li>
         <li>
+          <Link href="/projects" className={isActive('/projects') ? 'active' : ''}>Support a Project</Link>
+        </li>
+        <li>
           <Link href="/become" className={isActive('/become') ? 'active' : ''}>Become a Hero</Link>
         </li>
         <li>

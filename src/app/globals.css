@@ -329,6 +329,34 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 2.2rem 0; }
 .tca-ghost { background: transparent; color: var(--muted); border: 1.5px solid var(--border); }
 .tca-ghost:hover { border-color: var(--blue); color: var(--blue); }
 
+/* Project funding progress — used on /projects cards and project detail pages */
+.pc-progress { margin: 0.75rem 0 1rem; }
+.pc-progress-track {
+  height: 8px; border-radius: 100px;
+  background: var(--border); overflow: hidden;
+}
+.pc-progress-fill {
+  height: 100%; border-radius: 100px;
+  background: var(--blue);
+  transition: width 0.3s;
+}
+.pc-progress-label {
+  font-size: 0.78rem; color: var(--muted);
+  margin-top: 0.4rem;
+}
+.pc-progress-label strong { color: var(--black); }
+.pc-progress-lg { margin: 0 0 1.75rem; }
+.pc-progress-lg .pc-progress-track { height: 12px; }
+.pc-progress-lg .pc-progress-label { font-size: 0.9rem; }
+
+/* Checkout project context banner */
+.checkout-project-banner {
+  background: var(--blue-pale); border: 1px solid var(--border-b);
+  border-radius: 10px; padding: 0.65rem 1rem;
+  font-size: 0.85rem; color: var(--black);
+  margin: 0.75rem 0;
+}
+
 /* Next steps box */
 .next-box {
   background: var(--card); border: 1px solid var(--border);

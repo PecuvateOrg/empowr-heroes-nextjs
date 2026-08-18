@@ -28,9 +28,14 @@ import {
 } from './email-template'
 import { BADGES } from '../lib/badges'
 import { TIERS, tierDesc, type TierKey } from '../lib/tiers'
+import { PROJECTS, type ProjectKey } from '../lib/projects'
 
 function isTierKey(tier: string): tier is Exclude<TierKey, 'onetime'> {
   return tier in TIERS && tier !== 'onetime'
+}
+
+function isProjectKey(project: string): project is ProjectKey {
+  return project in PROJECTS
 }
 
 /** Shape the webhook/email path needs from a tier — derived from the canonical TIERS, never hand-duplicated. */
@@ -45,6 +50,7 @@ function tierEmailData(tier: Exclude<TierKey, 'onetime'>) {
 
 async function logToNotionWithStatus({
   tier,
+  project,
   amountTotal,
   currency,
   emailStatus,
@@ -55,6 +61,7 @@ async function logToNotionWithStatus({
   notionDatabaseId,
 }: {
   tier: string
+  project: string | null
   amountTotal: number | null
   currency: string | null
   emailStatus: string
@@ -66,6 +73,7 @@ async function logToNotionWithStatus({
 }) {
   const notion = new Client({ auth: notionApiKey })
   const tierLabel = isTierKey(tier) ? TIERS[tier].name : tier === 'onetime' ? TIERS.onetime.name : null
+  const projectLabel = project && isProjectKey(project) ? PROJECTS[project].name : null
   const amount = amountTotal ? (amountTotal / 100).toFixed(2) : '0.00'
   const currencyUpper = (currency || 'gbp').toUpperCase()
 
@@ -100,6 +108,9 @@ async function logToNotionWithStatus({
       }),
       ...(status && {
         'Status': { select: { name: status } },
+      }),
+      ...(projectLabel && {
+        Project: { select: { name: projectLabel } },
       }),
     },
   })
@@ -340,6 +351,11 @@ export async function handleDonation({
   const name = session.customer_details?.name || session.metadata?.donor_name || 'Hero'
   const email = session.customer_details?.email || session.metadata?.donor_email || ''
   const tier = (session.metadata?.tier || '').toLowerCase()
+  // Which project (if any) this donation was directed at — carried via the
+  // client_reference_id URL param appended to the Stripe Payment Link by
+  // CheckoutConfirm.tsx, not via metadata (Payment Link metadata is fixed
+  // per-link in the Stripe dashboard and can't vary per project).
+  const project = (session.client_reference_id || '').toLowerCase() || null
   const amountTotal = session.amount_total
   const currency = session.currency
   const stripeSessionId = session.id
@@ -453,6 +469,7 @@ export async function handleDonation({
   try {
     await logToNotionWithStatus({
       tier,
+      project,
       amountTotal,
       currency,
       emailStatus,
