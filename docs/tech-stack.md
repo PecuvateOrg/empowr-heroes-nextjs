@@ -137,10 +137,10 @@ All data is structured and typed for programmatic access:
 - `src/lib/tiers.ts` — all tier definitions + Stripe URLs
 - `src/lib/links.ts` — all external URLs (never hardcoded in components)
 - `src/lib/badges.js` — all S3 badge URLs
-- `src/core/donation-handler.js` — portable business logic, no platform coupling
+- `src/core/donation-handler.ts` — portable business logic, no platform coupling
 
 ### Portable Business Logic
-`src/core/` contains zero Netlify-specific code. The Netlify Function in `netlify/functions/stripe-webhook.js` is a thin adapter only. This means `src/core/` can be extracted into a shared Pecuvate service without any rewrite.
+`src/core/` contains zero Netlify-specific code. The Netlify Function in `netlify/functions/stripe-webhook.ts` is a thin adapter only. This means `src/core/` can be extracted into a shared Pecuvate service without any rewrite.
 
 ### Custom CSS Over Tailwind
 Chosen for brand control and agent legibility — CSS variables are easy to parse and modify without knowing Tailwind's utility class names. Patron tier styling (gold palette) exists as a completely separate set of variables so it can be restyled independently.

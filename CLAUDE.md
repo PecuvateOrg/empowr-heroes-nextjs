@@ -47,9 +47,9 @@ This file is the map. Workspace detail lives in each CONTEXT.md. Also read `DEVL
 - Shared UI components → `src/components/`
 - External URLs → `src/lib/links.ts`
 - Tier data and Stripe URLs → `src/lib/tiers.ts`
-- Donation webhook business logic → `src/core/donation-handler.js`
+- Donation webhook business logic → `src/core/donation-handler.ts`
 - Email template → `src/core/email-template.js`
-- Netlify function (thin adapter only) → `src/netlify/functions/stripe-webhook.js`
+- Netlify function (thin adapter only) → `src/netlify/functions/stripe-webhook.ts`
 - Badge assets → `src/public/badges/` (SVG + PNG; emails use PNG only)
 
 ---
@@ -71,7 +71,7 @@ This file is the map. Workspace detail lives in each CONTEXT.md. Also read `DEVL
 - **Never hardcode tier data** — all tier info via `src/lib/tiers.ts`
 - **`src/core/` is platform-agnostic** — no Netlify-specific code belongs there
 - **No cookie banner** — Variant A (`cookieless_mode: 'always'`) sets no cookies and needs none. The two unused banner components were deleted 2026-07-30; only reintroduce one if optional cookies are actually added.
-- **Tier copy lives only in `src/lib/tiers.ts`** — `lead`/`body` (full sentence, used by `/become` + `/checkout`) and `short` (compact rows, used by `/tiers`). Both pages map over `TIER_ORDER`; never inline tier copy into a page again. `src/lib/tier-config.js` is a separate CommonJS copy for the email/webhook path — sync by hand.
+- **Tier copy lives only in `src/lib/tiers.ts`** — `lead`/`body` (full sentence, used by `/become` + `/checkout`) and `short` (compact rows, used by `/tiers`). Both pages map over `TIER_ORDER`; never inline tier copy into a page again. `src/core/` is TypeScript and imports `tiers.ts` directly — there is no separate CommonJS copy to keep in sync (the old `tier-config.js` was deleted 2026-08-18 when the webhook chain was converted to TS for exactly this reason).
 - **`capture_pageview` must stay `'history_change'`** — `true` silently disables client-side route-change tracking and makes the entire funnel invisible. See `_config/guides/posthog-consent.md`.
 - **Security headers live in two places** — `netlify.toml` (static assets) and `src/next.config.ts` (runtime-rendered HTML). Both required; keep values identical.
 - Run `npx tsc --noEmit` before committing to catch type errors early

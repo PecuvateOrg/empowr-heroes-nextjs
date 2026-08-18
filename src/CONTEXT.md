@@ -10,8 +10,8 @@ Read this before touching any component, page, or library file.
 |---|---|
 | `app/` | Next.js App Router pages and layouts |
 | `components/` | Shared UI components |
-| `lib/` | Typed data and URL constants (`links.ts`, `tiers.ts`, `tier-config.js`, `badges.js`) |
-| `core/` | Donation automation business logic (`donation-handler.js`, `email-template.js`) |
+| `lib/` | Typed data and URL constants (`links.ts`, `tiers.ts`, `badges.js`) |
+| `core/` | Donation automation business logic (`donation-handler.ts`, `email-template.js`) |
 
 ---
 
@@ -43,7 +43,7 @@ Key colour variables: `--blue`, `--blue-dark`, `--blue-pale`, `--cream`, `--warm
 
 ## Core / donation logic
 
-- `core/donation-handler.js` — all webhook business logic. No platform-specific code.
+- `core/donation-handler.ts` — all webhook business logic. No platform-specific code.
 - `core/email-template.js` — HTML and plain text email builders. Edit this for any email copy or design changes.
 - This code is intentionally portable — no Netlify-specific imports.
 

@@ -87,7 +87,7 @@ User is now on Stripe's hosted payment page. Stripe handles all PCI compliance.
 
 ## 6. Webhook Processing — `/.netlify/functions/stripe-webhook`
 
-The Netlify Function is a thin adapter. It verifies the Stripe webhook signature and passes the raw event to `src/core/donation-handler.js`.
+The Netlify Function is a thin adapter. It verifies the Stripe webhook signature and passes the raw event to `src/core/donation-handler.ts`.
 
 ### Events Handled
 
@@ -213,6 +213,5 @@ All flow-critical data lives in typed library files — not hardcoded in compone
 | `src/lib/tiers.ts` | Tier names, prices, descriptions, Stripe Payment Link URLs |
 | `src/lib/links.ts` | All external URLs (social, legal, portal, email, main site) |
 | `src/lib/badges.js` | S3 badge image URLs (5 tiers — no onetime badge) |
-| `src/lib/tier-config.js` | Tier metadata for email templates (label, emoji, price, description) |
-| `src/core/donation-handler.js` | All webhook business logic |
+| `src/core/donation-handler.ts` | All webhook business logic — imports `tiers.ts` directly for email/Notion tier data, no separate config file |
 | `src/core/email-template.js` | All email HTML/text builders |

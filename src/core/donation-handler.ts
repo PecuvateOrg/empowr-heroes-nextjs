@@ -1,5 +1,5 @@
 /**
- * core/donation-handler.js
+ * core/donation-handler.ts
  *
  * The kitchen — all business logic lives here.
  * No dependency on Netlify, Express, or any hosting platform.
@@ -11,20 +11,61 @@
  * Donor name and email are extracted from Stripe's billing_details.
  */
 
-const Stripe = require('stripe')
-const { Resend } = require('resend')
-const { Client } = require('@notionhq/client')
-const { buildEmailHtml, buildEmailText, buildOneTimeEmailHtml, buildOneTimeEmailText, buildInternalNotificationHtml, buildInternalNotificationText, buildCancellationNotificationHtml, buildCancellationNotificationText, buildPaymentFailedNotificationHtml, buildPaymentFailedNotificationText } = require('./email-template')
-const { BADGES } = require('../lib/badges')
-const { TIER_CONFIG } = require('../lib/tier-config')
+import Stripe from 'stripe'
+import { Resend } from 'resend'
+import { Client } from '@notionhq/client'
+import {
+  buildEmailHtml,
+  buildEmailText,
+  buildOneTimeEmailHtml,
+  buildOneTimeEmailText,
+  buildInternalNotificationHtml,
+  buildInternalNotificationText,
+  buildCancellationNotificationHtml,
+  buildCancellationNotificationText,
+  buildPaymentFailedNotificationHtml,
+  buildPaymentFailedNotificationText,
+} from './email-template'
+import { BADGES } from '../lib/badges'
+import { TIERS, tierDesc, type TierKey } from '../lib/tiers'
+
+function isTierKey(tier: string): tier is Exclude<TierKey, 'onetime'> {
+  return tier in TIERS && tier !== 'onetime'
+}
+
+/** Shape the webhook/email path needs from a tier — derived from the canonical TIERS, never hand-duplicated. */
+function tierEmailData(tier: Exclude<TierKey, 'onetime'>) {
+  const t = TIERS[tier]
+  return { label: t.name, emoji: t.emoji, price: t.price, desc: tierDesc(tier), badgeUrl: BADGES[tier] }
+}
 
 // ---------------------------------------------------------------------------
 // Notion logger
 // ---------------------------------------------------------------------------
 
-async function logToNotionWithStatus({ tier, amountTotal, currency, emailStatus, stripeSessionId, subscriptionId, status, notionApiKey, notionDatabaseId }) {
+async function logToNotionWithStatus({
+  tier,
+  amountTotal,
+  currency,
+  emailStatus,
+  stripeSessionId,
+  subscriptionId,
+  status,
+  notionApiKey,
+  notionDatabaseId,
+}: {
+  tier: string
+  amountTotal: number | null
+  currency: string | null
+  emailStatus: string
+  stripeSessionId: string
+  subscriptionId: string | null
+  status: string
+  notionApiKey: string
+  notionDatabaseId: string
+}) {
   const notion = new Client({ auth: notionApiKey })
-  const tierData = TIER_CONFIG[tier] || {}
+  const tierLabel = isTierKey(tier) ? TIERS[tier].name : tier === 'onetime' ? TIERS.onetime.name : null
   const amount = amountTotal ? (amountTotal / 100).toFixed(2) : '0.00'
   const currencyUpper = (currency || 'gbp').toUpperCase()
 
@@ -32,10 +73,10 @@ async function logToNotionWithStatus({ tier, amountTotal, currency, emailStatus,
     parent: { database_id: notionDatabaseId },
     properties: {
       Record: {
-        title: [{ text: { content: tierData.label || tier || 'Unknown' } }],
+        title: [{ text: { content: tierLabel || tier || 'Unknown' } }],
       },
       Tier: {
-        select: { name: tierData.label || tier },
+        select: { name: tierLabel || tier },
       },
       Amount: {
         number: parseFloat(amount),
@@ -72,7 +113,7 @@ const NOTION_DONATIONS_DATA_SOURCE_ID = '86ae1485-c4e1-8269-ba31-870796a355e1'
 // Cancellation handler
 // ---------------------------------------------------------------------------
 
-const CANCELLATION_FEEDBACK_LABELS = {
+const CANCELLATION_FEEDBACK_LABELS: Record<string, string> = {
   customer_service: 'Customer service',
   low_quality: 'Low quality',
   missing_features: 'Missing features',
@@ -83,13 +124,20 @@ const CANCELLATION_FEEDBACK_LABELS = {
   unused: 'No longer using it',
 }
 
-async function handleCancellationEvent(event, { stripeSecretKey, resendApiKey, notionApiKey, notionDatabaseId }) {
-  const subscription = event.data.object
-  const subscriptionId = subscription.id
-  const details = subscription.cancellation_details || {}
+type WebhookCreds = {
+  stripeSecretKey: string
+  resendApiKey: string
+  notionApiKey: string
+  notionDatabaseId: string
+}
 
-  const feedbackLabel = CANCELLATION_FEEDBACK_LABELS[details.feedback] || details.feedback || ''
-  const comment = details.comment || ''
+async function handleCancellationEvent(event: Stripe.Event, { stripeSecretKey, resendApiKey, notionApiKey, notionDatabaseId }: WebhookCreds) {
+  const subscription = event.data.object as Stripe.Subscription
+  const subscriptionId = subscription.id
+  const details = subscription.cancellation_details
+
+  const feedbackLabel = (details?.feedback && CANCELLATION_FEEDBACK_LABELS[details.feedback]) || details?.feedback || ''
+  const comment = details?.comment || ''
   const cancellationReason = [feedbackLabel, comment].filter(Boolean).join(' — ') || 'Not provided'
 
   // Fetch customer name and email from Stripe
@@ -97,11 +145,11 @@ async function handleCancellationEvent(event, { stripeSecretKey, resendApiKey, n
   let email = ''
   try {
     const stripe = new Stripe(stripeSecretKey)
-    const customer = await stripe.customers.retrieve(subscription.customer)
+    const customer = await stripe.customers.retrieve(subscription.customer as string) as Stripe.Customer
     name = customer.name || 'Unknown'
     email = customer.email || ''
   } catch (err) {
-    console.error('[donation-handler] Could not fetch Stripe customer:', err.message)
+    console.error('[donation-handler] Could not fetch Stripe customer:', (err as Error).message)
   }
 
   const notion = new Client({ auth: notionApiKey })
@@ -117,8 +165,9 @@ async function handleCancellationEvent(event, { stripeSecretKey, resendApiKey, n
   if (response.results.length === 0) {
     console.warn(`[donation-handler] No Notion record found for subscription ${subscriptionId}`)
   } else {
-    const pageId = response.results[0].id
-    const tier = response.results[0].properties?.Tier?.select?.name || 'Unknown'
+    const page = response.results[0] as any
+    const pageId = page.id
+    const tier = page.properties?.Tier?.select?.name || 'Unknown'
 
     await notion.pages.update({
       page_id: pageId,
@@ -142,7 +191,7 @@ async function handleCancellationEvent(event, { stripeSecretKey, resendApiKey, n
       })
       console.log(`[donation-handler] Cancellation notification sent for ${name} (${subscriptionId})`)
     } catch (err) {
-      console.error('[donation-handler] Cancellation notification error:', err.message)
+      console.error('[donation-handler] Cancellation notification error:', (err as Error).message)
     }
   }
 
@@ -153,9 +202,9 @@ async function handleCancellationEvent(event, { stripeSecretKey, resendApiKey, n
 // Payment failed handler
 // ---------------------------------------------------------------------------
 
-async function handlePaymentFailedEvent(event, { stripeSecretKey, resendApiKey, notionApiKey, notionDatabaseId }) {
-  const invoice = event.data.object
-  const subscriptionId = invoice.subscription
+async function handlePaymentFailedEvent(event: Stripe.Event, { stripeSecretKey, resendApiKey, notionApiKey, notionDatabaseId }: WebhookCreds) {
+  const invoice = event.data.object as Stripe.Invoice
+  const subscriptionId = (invoice as any).subscription as string | null
   const amountFormatted = invoice.amount_due ? (invoice.amount_due / 100).toFixed(2) : '0.00'
   const currency = (invoice.currency || 'gbp').toUpperCase()
   const attemptCount = invoice.attempt_count || 1
@@ -165,11 +214,11 @@ async function handlePaymentFailedEvent(event, { stripeSecretKey, resendApiKey, 
   let email = ''
   try {
     const stripe = new Stripe(stripeSecretKey)
-    const customer = await stripe.customers.retrieve(invoice.customer)
+    const customer = await stripe.customers.retrieve(invoice.customer as string) as Stripe.Customer
     name = customer.name || 'Unknown'
     email = customer.email || ''
   } catch (err) {
-    console.error('[donation-handler] Could not fetch Stripe customer:', err.message)
+    console.error('[donation-handler] Could not fetch Stripe customer:', (err as Error).message)
   }
 
   const notion = new Client({ auth: notionApiKey })
@@ -178,7 +227,7 @@ async function handlePaymentFailedEvent(event, { stripeSecretKey, resendApiKey, 
     data_source_id: NOTION_DONATIONS_DATA_SOURCE_ID,
     filter: {
       property: 'Subscription ID',
-      rich_text: { equals: subscriptionId },
+      rich_text: { equals: subscriptionId || '' },
     },
   })
 
@@ -187,8 +236,9 @@ async function handlePaymentFailedEvent(event, { stripeSecretKey, resendApiKey, 
   if (response.results.length === 0) {
     console.warn(`[donation-handler] No Notion record found for subscription ${subscriptionId} (payment failed)`)
   } else {
-    const pageId = response.results[0].id
-    tier = response.results[0].properties?.Tier?.select?.name || 'Unknown'
+    const page = response.results[0] as any
+    const pageId = page.id
+    tier = page.properties?.Tier?.select?.name || 'Unknown'
 
     await notion.pages.update({
       page_id: pageId,
@@ -207,12 +257,12 @@ async function handlePaymentFailedEvent(event, { stripeSecretKey, resendApiKey, 
       from: 'Empowr Heroes <hero@empowrcic.org>',
       to: 'hero@empowrcic.org',
       subject: `Payment Failed: ${name} — ${tier} (attempt ${attemptCount})`,
-      html: buildPaymentFailedNotificationHtml({ name, email, tier, amountFormatted, currency, attemptCount, subscriptionId }),
-      text: buildPaymentFailedNotificationText({ name, email, tier, amountFormatted, currency, attemptCount, subscriptionId }),
+      html: buildPaymentFailedNotificationHtml({ name, email, tier, amountFormatted, currency, attemptCount, subscriptionId: subscriptionId || '' }),
+      text: buildPaymentFailedNotificationText({ name, email, tier, amountFormatted, currency, attemptCount, subscriptionId: subscriptionId || '' }),
     })
     console.log(`[donation-handler] Payment failed notification sent for ${name} (${subscriptionId})`)
   } catch (err) {
-    console.error('[donation-handler] Payment failed notification error:', err.message)
+    console.error('[donation-handler] Payment failed notification error:', (err as Error).message)
   }
 
   return { handled: true, event: 'invoice.payment_failed', subscriptionId }
@@ -222,20 +272,7 @@ async function handlePaymentFailedEvent(event, { stripeSecretKey, resendApiKey, 
 // Main handler
 // ---------------------------------------------------------------------------
 
-/**
- * handleDonation
- *
- * @param {object} params
- * @param {string} params.rawBody          - Raw request body string (required for Stripe signature verification)
- * @param {string} params.signature        - Value of the stripe-signature header
- * @param {string} params.stripeSecretKey
- * @param {string} params.stripeWebhookSecret
- * @param {string} params.resendApiKey
- * @param {string} params.notionApiKey
- * @param {string} params.notionDatabaseId
- * @param {string} params.siteUrl          - Live site URL e.g. https://hero.empowrcic.org
- */
-async function handleDonation({
+export async function handleDonation({
   rawBody,
   signature,
   stripeSecretKey,
@@ -244,15 +281,24 @@ async function handleDonation({
   notionApiKey,
   notionDatabaseId,
   siteUrl,
+}: {
+  rawBody: string
+  signature: string
+  stripeSecretKey: string
+  stripeWebhookSecret: string
+  resendApiKey: string
+  notionApiKey: string
+  notionDatabaseId: string
+  siteUrl: string
 }) {
   // 1. Verify Stripe webhook signature
   const stripe = new Stripe(stripeSecretKey)
-  let event
+  let event: Stripe.Event
 
   try {
     event = stripe.webhooks.constructEvent(rawBody, signature, stripeWebhookSecret)
   } catch (err) {
-    const error = new Error(`Stripe signature verification failed: ${err.message}`)
+    const error = new Error(`Stripe signature verification failed: ${(err as Error).message}`) as Error & { statusCode?: number }
     error.statusCode = 400
     throw error
   }
@@ -270,7 +316,25 @@ async function handleDonation({
     return { ignored: true, eventType: event.type }
   }
 
-  const session = event.data.object
+  const session = event.data.object as Stripe.Checkout.Session
+
+  // Guard: this Stripe account is shared with other Empowr CIC apps (e.g.
+  // Members), and Stripe fires checkout.session.completed to every webhook
+  // endpoint on the account regardless of which app created the session —
+  // it is NOT scoped by API key. Every genuine Heroes donation comes from a
+  // dashboard-configured Payment Link (see the file header); every other
+  // app creates its own sessions via the API with `price_data`, which never
+  // carries a `payment_link`. Bug found 2026-08-18: a Members booking with
+  // no `tier` metadata fell into the "unresolved tier" fallback below,
+  // which assumed any checkout.session.completed with a missing tier was
+  // still a genuine (if misconfigured) Heroes donation — sending the donor
+  // a thank-you email, an internal Notion-log alert, for someone else's
+  // booking. Ignore anything that didn't come through a Payment Link
+  // before any of that logic runs.
+  if (!session.payment_link) {
+    console.log(`[donation-handler] Ignoring checkout.session.completed with no payment_link (not a Heroes donation): ${session.id}`)
+    return { ignored: true, reason: 'not_a_payment_link_session', sessionId: session.id }
+  }
 
   // 3. Extract donor details
   const name = session.customer_details?.name || session.metadata?.donor_name || 'Hero'
@@ -279,14 +343,14 @@ async function handleDonation({
   const amountTotal = session.amount_total
   const currency = session.currency
   const stripeSessionId = session.id
-  const subscriptionId = session.subscription || null
+  const subscriptionId = (session.subscription as string) || null
   const notionStatus = tier === 'onetime' ? 'One-Time' : 'Active'
 
   if (!email) {
     console.warn('[donation-handler] No email found on session:', session.id)
   }
 
-  if (!tier || (tier !== 'onetime' && !TIER_CONFIG[tier])) {
+  if (!tier || (tier !== 'onetime' && !isTierKey(tier))) {
     console.warn(`[donation-handler] Unknown or missing tier "${tier}" on session:`, session.id)
   }
 
@@ -306,22 +370,22 @@ async function handleDonation({
       emailStatus = 'Sent'
       console.log(`[donation-handler] One-time thank you email sent to ${email}`)
     } catch (err) {
-      console.error('[donation-handler] Resend error:', err.message)
+      console.error('[donation-handler] Resend error:', (err as Error).message)
       emailStatus = 'Failed'
     }
-  } else if (email && tier && TIER_CONFIG[tier]) {
+  } else if (email && tier && isTierKey(tier)) {
     try {
       await resend.emails.send({
         from: 'Empowr Heroes <hero@empowrcic.org>',
         to: email,
         subject: "You're an Empowr Hero",
-        html: buildEmailHtml({ name, tierData: { ...TIER_CONFIG[tier], badgeUrl: BADGES[tier] } }),
-        text: buildEmailText({ name, tierData: { ...TIER_CONFIG[tier], badgeUrl: BADGES[tier] } }),
+        html: buildEmailHtml({ name, tierData: tierEmailData(tier) }),
+        text: buildEmailText({ name, tierData: tierEmailData(tier) }),
       })
       emailStatus = 'Sent'
       console.log(`[donation-handler] Welcome email sent to ${email}`)
     } catch (err) {
-      console.error('[donation-handler] Resend error:', err.message)
+      console.error('[donation-handler] Resend error:', (err as Error).message)
       emailStatus = 'Failed'
     }
   } else if (email) {
@@ -340,7 +404,7 @@ async function handleDonation({
       emailStatus = 'Sent'
       console.warn(`[donation-handler] Fallback thank-you sent to ${email} — unresolved tier "${tier}" on session ${stripeSessionId}`)
     } catch (err) {
-      console.error('[donation-handler] Resend error:', err.message)
+      console.error('[donation-handler] Resend error:', (err as Error).message)
       emailStatus = 'Failed'
     }
   }
@@ -349,16 +413,17 @@ async function handleDonation({
   try {
     const amountFormatted = amountTotal ? (amountTotal / 100).toFixed(2) : '0.00'
     const currencyUpper = (currency || 'gbp').toUpperCase()
-    let notificationSubject, notificationTierLabel, notificationPeriod
+    let notificationSubject = ''
+    let notificationTierLabel = ''
+    let notificationPeriod = ''
 
     if (tier === 'onetime') {
       notificationSubject = `New One-Time Donation: ${name}`
       notificationTierLabel = 'One-Time Donation'
       notificationPeriod = '(one-time)'
-    } else if (tier && TIER_CONFIG[tier]) {
-      const tierData = TIER_CONFIG[tier]
-      notificationSubject = `New Hero: ${name} — ${tierData.label}`
-      notificationTierLabel = tierData.label
+    } else if (tier && isTierKey(tier)) {
+      notificationSubject = `New Hero: ${name} — ${TIERS[tier].name}`
+      notificationTierLabel = TIERS[tier].name
       notificationPeriod = '/ month'
     } else {
       // Unresolved tier. This previously left notificationSubject undefined,
@@ -381,7 +446,7 @@ async function handleDonation({
       console.log(`[donation-handler] Internal notification sent for ${name} (${tier})`)
     }
   } catch (err) {
-    console.error('[donation-handler] Internal notification error:', err.message)
+    console.error('[donation-handler] Internal notification error:', (err as Error).message)
   }
 
   // 5. Log to Notion
@@ -399,11 +464,9 @@ async function handleDonation({
     })
     console.log(`[donation-handler] Logged to Notion for session ${stripeSessionId}`)
   } catch (err) {
-    console.error('[donation-handler] Notion error:', err.message)
+    console.error('[donation-handler] Notion error:', (err as Error).message)
     // Don't throw — email was already sent, logging failure should not break the response
   }
 
   return { success: true, email, tier, emailStatus }
 }
-
-module.exports = { handleDonation }

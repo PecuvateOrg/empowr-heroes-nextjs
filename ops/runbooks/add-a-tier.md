@@ -19,26 +19,20 @@ Add the new tier to the `TIERS` array with all required fields: `id`, `name`, `p
 
 ---
 
-## 3. Update `src/lib/tier-config.js`
-
-Add the tier key and its email configuration object to `TIER_CONFIG`. This is used by the email template.
-
----
-
-## 4. Update `src/lib/badges.js`
+## 3. Update `src/lib/badges.js`
 
 Add the badge URL mapping for the new tier key. Ensure both SVG (for web) and PNG (for email) versions of the badge exist in `public/badges/`.
 
 ---
 
-## 5. Upload badge assets
+## 4. Upload badge assets
 
 Upload the badge PNG to AWS S3: `empowr-cic` bucket, `badges/` prefix.
 The file must be publicly accessible — the email template links to it directly.
 
 ---
 
-## 6. Test locally
+## 5. Test locally
 
 ```bash
 npm run preview:email -- <tier-key>
@@ -48,7 +42,7 @@ Open `ops/scripts/preview.html` in a browser and verify the badge and copy are c
 
 ---
 
-## 7. Test the webhook end-to-end
+## 6. Test the webhook end-to-end
 
 ```bash
 npm run dev:netlify
@@ -61,6 +55,6 @@ Use Stripe test mode to trigger a `checkout.session.completed` event with the ne
 
 ---
 
-## 8. Deploy
+## 7. Deploy
 
 Merge to `main`. Netlify deploys automatically.

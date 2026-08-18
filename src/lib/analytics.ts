@@ -1,49 +1,27 @@
-import { Client } from '@notionhq/client'
 import { unstable_cache } from 'next/cache'
+import { getAllDonationRecords } from './notion-donations'
+import { TIERS, TIER_ORDER } from './tiers'
 
-// Matches the collection ID in CLAUDE.md and donation-handler.js
-const NOTION_DONATIONS_DATA_SOURCE_ID = '86ae1485-c4e1-8269-ba31-870796a355e1'
-
-// Maps the Tier label stored in Notion back to a tier key. `onetime` carries
-// both forms: rows written before the tier-config fix hold the raw key, later
-// ones hold the label. The 4 historical rows (Apr–Jun 2026) are the raw form
-// and can be relabelled by hand in Notion if a single value is wanted.
+// Maps the Tier label stored in Notion back to a tier key, derived from the
+// canonical TIERS so it can't drift out of sync with the display names.
+// `onetime` carries an extra raw-key entry: rows written before the
+// tier-config fix (see git history) hold the raw key instead of the label —
+// the 4 historical rows (Apr–Jun 2026) are the raw form and can be
+// relabelled by hand in Notion if a single value is wanted.
 const TIER_LABEL_TO_KEY: Record<string, string> = {
-  'Seed Hero': 'seed',
-  'Momentum Hero': 'momentum',
-  'Community Hero': 'community',
-  'Champion Hero': 'champion',
-  'Legacy Hero': 'legacy',
-  'One-Time Hero': 'onetime',
+  ...Object.fromEntries(TIER_ORDER.map((key) => [TIERS[key].name, key])),
   onetime: 'onetime',
 }
 
 async function fetchMostPopularTier(): Promise<string | null> {
-  const notionApiKey = process.env.NOTION_API_KEY
-  if (!notionApiKey) return null
-
   try {
-    const notion = new Client({ auth: notionApiKey })
+    const records = await getAllDonationRecords()
     const counts: Record<string, number> = {}
-    let cursor: string | undefined
 
-    do {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const response = await (notion as any).dataSources.query({
-        data_source_id: NOTION_DONATIONS_DATA_SOURCE_ID,
-        ...(cursor && { start_cursor: cursor }),
-        page_size: 100,
-      })
-
-      for (const page of response.results) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const label: string = (page as any).properties?.Tier?.select?.name
-        const key = TIER_LABEL_TO_KEY[label]
-        if (key) counts[key] = (counts[key] || 0) + 1
-      }
-
-      cursor = response.has_more ? response.next_cursor : undefined
-    } while (cursor)
+    for (const record of records) {
+      const key = record.tierLabel ? TIER_LABEL_TO_KEY[record.tierLabel] : undefined
+      if (key) counts[key] = (counts[key] || 0) + 1
+    }
 
     const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1])
     if (sorted.length === 0) return null
@@ -59,7 +37,7 @@ async function fetchMostPopularTier(): Promise<string | null> {
 
     return null
   } catch (err) {
-    console.error('[analytics] Could not fetch tier counts from Notion:', err)
+    console.error('[analytics] Could not compute most popular tier:', err)
     return null
   }
 }
