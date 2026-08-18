@@ -30,6 +30,7 @@ All project data lives in `src/lib/projects.ts` (`PROJECTS`/`PROJECT_ORDER`, exp
 
 ## Current State
 
+- **2026-08-18 (session 2) — cross-app Stripe webhook bug found and fixed.** A real Empowr Members booking payment triggered a genuine Heroes donation "thank you" email plus an internal `hero@empowrcic.org` alert, because Heroes and Members share one live Stripe account and Stripe fires `checkout.session.completed` to every registered webhook endpoint regardless of which app's API key created the session. `donation-handler.ts` now guards on `!session.payment_link` (every genuine Heroes donation arrives via a dashboard Payment Link; every other app's session never carries one) before any donor/email/Notion logic runs. Live: commit `69af5a7`, published 12:54 UTC. This is the guard referenced without attribution in the "Support a Project" entry below — it landed in the same working tree from a concurrent session.
 - src/ migration complete (2026-06-23)
 - PostHog analytics instrumented — cookieless server hash mode (`cookieless_mode: 'always'`) since 2026-07-28, replacing memory-mode persistence
 - **2026-07-30:** `capture_pageview` was `true`, which disables posthog-js `HistoryAutocapture` — so no client-side route change ever produced a pageview and the whole funnel was invisible. Fixed to `'history_change'` here and fleet-wide. **All PostHog data before 2026-07-30 is landing-page-only:** bounce rate (~96%) and pages/session (1.04) are artefacts, and `/checkout` having zero views is an artefact too. Do not treat pre-30-July numbers as behaviour.

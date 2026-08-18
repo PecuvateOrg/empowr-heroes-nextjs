@@ -4,6 +4,15 @@ A running record of development sessions, changes made, and decisions taken.
 
 ---
 
+## 2026-08-18 (session 2) — Cross-app Stripe webhook bug found and fixed: a Members booking triggered a real donation email
+
+Discovered from the Empowr Members side, mid-way through that project's live-mode Stripe smoke test: a real Members booking payment (Skate Jam, £7) triggered both the correct Members booking-confirmation email AND a Heroes "Thank You for Supporting Empowr" donor email plus an internal "ACTION NEEDED — unrecognised tier" alert to `hero@empowrcic.org` (confirmed sent 11:07 UTC via Gmail). No phantom Notion row landed — the missing `tier` value was rejected by Notion's own select-field schema before any write could happen.
+
+- **Root cause**: Heroes and Members share one live Stripe account. Stripe fires `checkout.session.completed` to every webhook endpoint registered on the account, regardless of which app's API key created the session — this is not scoped by API key. `donation-handler.ts`'s fallback path (written for a *misconfigured Heroes Payment Link* missing its `tier` metadata) had no way to tell that case apart from *an entirely different app's session*, so it treated the Members booking as an unresolved-tier donation and ran the full donor-email/alert/Notion-log path.
+- **Fix**: every genuine Heroes donation arrives via a dashboard-configured Payment Link; every other app (Members included) creates its own sessions via the API with `price_data`, which never carries a `payment_link`. Added a guard on `!session.payment_link` immediately after event-type routing, before any donor/email/Notion logic runs, in `donation-handler.ts`.
+- **Landed via a concurrent session, not a standalone commit here**: the fix was written mid-way through this project's own JS→TS migration/"Support a Project" work happening in parallel (same day, same repo) — the guard was sitting uncommitted in the shared working tree and got picked up automatically when that work was committed (`148ffa5`). Confirmed live: deployed commit `69af5a7`, published 12:54 UTC.
+- No cleanup needed on the Notion side (nothing was written); the stray internal alert email in `hero@empowrcic.org` was left as-is, not deleted.
+
 ## 2026-08-18 — "Support a Project" section shipped; webhook chain converted to TypeScript, `tier-config.js` retired
 
 Two clean commits, both pushed to `main` (`148ffa5`, `69af5a7`) — Netlify auto-deploys.
@@ -33,20 +42,7 @@ Follow-up polish after the enquiry forms shipped, done via a local production-bu
 
 ---
 
-## 2026-08-11 (session 2) — Two enquiry forms replace the site's last mailto links
-
-Both `patron-enquiry-form_spec.md` (written the previous session) and a new `general-enquiry-form_spec.md` are now built and applied. Both existed to fix the same problem: `mailto:` CTAs with no subject/body land in a Google Workspace inbox as unauthenticated mail from an unknown domain with no prior correspondence — a textbook spam classification, first diagnosed for `/patron` and structurally identical for the `/tiers` "Contact Us" link.
-
-**Shared plumbing, not a shared form.** `src/core/enquiry-handler.js` holds `handlePatronEnquiry()` and `handleGeneralEnquiry()` — two functions sharing `escapeHtml`, a honeypot check, and the Resend send shape, each with its own Netlify function (`patron-enquiry.js` / `general-enquiry.js`) so the client can never influence which inbox a submission reaches. The two forms themselves stay separate components (`PatronEnquiryForm.tsx`, `GeneralEnquiryForm.tsx`) — different required fields, different recipient, different tone; forcing both through one generic form would only have hidden the difference in a config object.
-
-- **`/patron`** — the `mailto:patron@empowrcic.org` CTA inside `.patron-contact` is now a form (name, email, organisation, phone, interest, indicative commitment, message). Styled for the dark gold `.patron-contact` background it sits inside.
-- **`/contact`** (new route) — replaces the bare `mailto:hero@empowrcic.org` on `/tiers`. Fields: name, email, topic (dropdown), message. Linked from `/tiers`, the footer, and added to `sitemap.ts` (a real landing page, not a transient flow step). Deliberately not added to the main nav — kept the primary nav conversion-focused.
-- **Topic taxonomy lives in its own file** (`src/lib/enquiry-topics.ts`) — the user wants to eventually route some enquiries into a Calendly/video-call flow, and this is the seam that lets a future topic branch into a scheduling embed without restructuring anything shipped here. No scheduling code was added — a "Book a call" option that doesn't book a call would be worse than not offering it.
-- **`PATRON_EMAIL`** and **`GENERAL_EMAIL`** env vars added to Netlify (production, deploy-preview, branch-deploy, dev) via CLI — both have hardcoded fallbacks in the handler so a missing var can't silently black-hole a submission.
-- **Verified for real, not just built:** ran `netlify dev` locally and hit both Netlify functions directly — honeypot-populated (200, no mail), required-field-missing (400, no mail), and one full success submission per form. Both success submissions used the org's own inboxes (`patron@empowrcic.org`, `hero@empowrcic.org`) as the "prospect" address too, so both the internal notification and the acknowledgement email landed only in inboxes the user already monitors — clearly marked as a Claude Code build-verification test, nothing sent externally.
-- `contact-routing.md` and `_config/registry/env-vars.md` updated. `LINKS.email.hero` / `LINKS.email.patron` in `links.ts` are no longer referenced in the UI but left in place, unchanged from the patron spec's original decision.
-
-**Open:** everything the original patron spec left open (the `?tier=` key-vs-label question, unsurfaced billing-portal link, YouTube `sameAs` 404, DMARC `p=none`) is untouched by this session.
+## 2026-08-11 (session 2) — Two enquiry forms (`/patron`, new `/contact`) replaced the site's last mailto CTAs, fixing a spam-classification problem; verified live via netlify dev
 
 ---
 
