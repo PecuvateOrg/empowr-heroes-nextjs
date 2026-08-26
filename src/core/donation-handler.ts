@@ -29,6 +29,7 @@ import {
 import { BADGES } from '../lib/badges'
 import { TIERS, tierDesc, type TierKey } from '../lib/tiers'
 import { PROJECTS, type ProjectKey } from '../lib/projects'
+import { resolveEventOwnership, invoiceSubscriptionId } from './event-ownership'
 
 function isTierKey(tier: string): tier is Exclude<TierKey, 'onetime'> {
   return tier in TIERS && tier !== 'onetime'
@@ -215,7 +216,12 @@ async function handleCancellationEvent(event: Stripe.Event, { stripeSecretKey, r
 
 async function handlePaymentFailedEvent(event: Stripe.Event, { stripeSecretKey, resendApiKey, notionApiKey, notionDatabaseId }: WebhookCreds) {
   const invoice = event.data.object as Stripe.Invoice
-  const subscriptionId = (invoice as any).subscription as string | null
+  // `invoice.subscription` does NOT exist on the account's current API version
+  // — it moved to `invoice.parent.subscription_details.subscription`. The old
+  // `(invoice as any).subscription` cast silenced TypeScript and evaluated to
+  // undefined every time, so every payment-failed alert and Notion row carried
+  // a null subscription ID. Read it through the helper, which owns that shape.
+  const subscriptionId = invoiceSubscriptionId(invoice)
   const amountFormatted = invoice.amount_due ? (invoice.amount_due / 100).toFixed(2) : '0.00'
   const currency = (invoice.currency || 'gbp').toUpperCase()
   const attemptCount = invoice.attempt_count || 1
@@ -314,7 +320,30 @@ export async function handleDonation({
     throw error
   }
 
-  // 2. Route based on event type
+  // 2. Ownership gate — ONCE, BEFORE ANY ROUTING.
+  //
+  // This Stripe account is shared with other Empowr CIC apps (Members), and
+  // Stripe fans every subscribed event type out to every endpoint on the
+  // account regardless of which app created the object — delivery is NOT
+  // scoped by API key. So an event arriving here is only "some event on the
+  // Empowr CIC account" until proven otherwise.
+  //
+  // Deliberately placed above the routing rather than inside each handler:
+  // the previous shape checked ownership only on the checkout.session branch,
+  // which left customer.subscription.deleted and invoice.payment_failed wide
+  // open — a Members subscriber cancelling would have been written into the
+  // Heroes donor Notion database. Checking here means a new event type cannot
+  // reach a handler without first being classified in event-ownership.ts.
+  //
+  // See core/event-ownership.ts for the design rules. Do not move this check
+  // downwards, and do not add a "probably ours" fallback.
+  const ownership = resolveEventOwnership(event)
+  if (!ownership.ours) {
+    console.log(`[donation-handler] Ignoring ${event.type} (${event.id}) — not a Heroes object: ${ownership.reason}`)
+    return { ignored: true, reason: 'not_a_heroes_object', eventType: event.type, eventId: event.id }
+  }
+
+  // Route based on event type — everything below is confirmed Heroes'.
   if (event.type === 'customer.subscription.deleted') {
     return await handleCancellationEvent(event, { stripeSecretKey, resendApiKey, notionApiKey, notionDatabaseId })
   }
@@ -328,24 +357,6 @@ export async function handleDonation({
   }
 
   const session = event.data.object as Stripe.Checkout.Session
-
-  // Guard: this Stripe account is shared with other Empowr CIC apps (e.g.
-  // Members), and Stripe fires checkout.session.completed to every webhook
-  // endpoint on the account regardless of which app created the session —
-  // it is NOT scoped by API key. Every genuine Heroes donation comes from a
-  // dashboard-configured Payment Link (see the file header); every other
-  // app creates its own sessions via the API with `price_data`, which never
-  // carries a `payment_link`. Bug found 2026-08-18: a Members booking with
-  // no `tier` metadata fell into the "unresolved tier" fallback below,
-  // which assumed any checkout.session.completed with a missing tier was
-  // still a genuine (if misconfigured) Heroes donation — sending the donor
-  // a thank-you email, an internal Notion-log alert, for someone else's
-  // booking. Ignore anything that didn't come through a Payment Link
-  // before any of that logic runs.
-  if (!session.payment_link) {
-    console.log(`[donation-handler] Ignoring checkout.session.completed with no payment_link (not a Heroes donation): ${session.id}`)
-    return { ignored: true, reason: 'not_a_payment_link_session', sessionId: session.id }
-  }
 
   // 3. Extract donor details
   const name = session.customer_details?.name || session.metadata?.donor_name || 'Hero'
