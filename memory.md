@@ -24,6 +24,17 @@ Running state and persistent context for the Heroes donation platform.
 
 All tier data lives in `src/lib/tiers.ts`. Each Stripe Payment Link must have `tier` metadata set manually in the Stripe dashboard.
 
+**🔴 Adding a tier now ALSO means adding its Stripe Product ID to `HEROES_PRODUCT_IDS` in `src/core/event-ownership.ts`.** Skip it and the tier *silently half-works*: donations still arrive (checkout sessions are identified by `payment_link`), but every `customer.subscription.deleted` and `invoice.payment_failed` for that tier is **ignored** — no cancellation alert, no failed-payment alert, no Notion row, and nothing errors. Full steps in `ops/runbooks/add-a-tier.md` (step 2).
+
+**⚠️ Payment Link metadata trap:** link `metadata` reaches the **Checkout Session**; only `subscription_data.metadata` reaches the **Subscription** object. All five recurring links currently leave `subscription_data.metadata` empty — which is exactly why Heroes' own subscriptions carry **no metadata at all**, and why the webhook guard identifies them structurally by Product ID rather than by a marker.
+
+**📋 PLANNED, NOT DONE — stamp `metadata.app = "heroes"` on Heroes' Stripe objects** (agreed 2026-08-27, next session). **Symmetry and future-proofing, NOT a bug fix** — the guard works today without it.
+
+- Stamp (1) the **6 Products** with `metadata.app=heroes`; (2) the **5 recurring Payment Links** with `subscription_data[metadata][app]=heroes` and `[tier]`. (2) is the valuable half — it makes *future* Heroes subscriptions self-identifying. The single historical subscription is already cancelled; not worth touching.
+- **It must NOT replace the Product-ID guard.** Every subscription created before stamping has no metadata, so a metadata-only check would **reject genuine donors**. Metadata becomes a *second, independent* signal — the belt-and-braces shape Members uses.
+- Value: both apps then follow one convention (`metadata.app`), a third app on the shared account could positively identify itself, and objects become self-describing in the dashboard. Convention documented in `_config/registry/third-party-services.md`.
+- ~11 reversible API calls, all via the Stripe CLI (the MCP cannot update a Payment Link's `subscription_data`). Forward-looking only — no urgency, no retroactive benefit.
+
 ## Support a Project
 
 All project data lives in `src/lib/projects.ts` (`PROJECTS`/`PROJECT_ORDER`, explicit `Project` type). **Zero projects configured as of 2026-08-18** — `/projects` shows an empty state. No new Stripe Payment Link needed per project: backing one carries a `?project=<slug>` through `/become` → `/checkout`, and `CheckoutConfirm` tags the outgoing Stripe URL with `?client_reference_id=<slug>`, which Stripe returns on the webhook's `session.client_reference_id`. Donations DB has a `Project` Select property (added 2026-08-18) that `donation-handler.ts` writes to when resolved. Adding a real project = one edit to `projects.ts`, see `ops/runbooks/add-a-project.md`.
