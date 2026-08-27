@@ -4,6 +4,15 @@ A running record of development sessions, changes made, and decisions taken.
 
 ---
 
+## 2026-08-27 — add-a-tier runbook now covers Product-ID registration; metadata stamping planned
+
+Follow-up to yesterday's ownership gate. No code changed.
+
+- **`ops/runbooks/add-a-tier.md` gained a load-bearing step (new step 2).** Since the dispatch gate landed, adding a tier without registering its Stripe **Product ID** in `HEROES_PRODUCT_IDS` makes the tier *silently half-work*: donations still arrive (checkout sessions are identified by `payment_link`), but every `customer.subscription.deleted` and `invoice.payment_failed` for it is ignored — no alert, no Notion row, nothing errors. The step carries its own rationale, because a step whose reason is missing gets skipped.
+- **Documented the Payment Link metadata trap** in the same runbook and in `memory.md`: link `metadata` reaches the Checkout Session, but only `subscription_data.metadata` reaches the Subscription. All five recurring links leave it empty — which is exactly why Heroes' own subscriptions carry no marker and the guard identifies structurally.
+- **Planned, not done:** stamp `metadata.app = "heroes"` on the 6 Products and the 5 Payment Links' `subscription_data.metadata`. **Symmetry and future-proofing, not a fix** — and it must *not* replace the Product-ID guard, since every subscription created before stamping has no metadata and a metadata-only check would reject genuine donors. ~11 reversible CLI calls; affects future subscriptions only.
+- Yesterday's gate confirmed still live (deploy `ready` on `83be16e`) and **still not exercised by a real event** — the first signal will be an `Ignoring … not a Heroes object` line once Members has a live subscription.
+
 ## 2026-08-26 — The August guard covered one of three branches; ownership now resolved at dispatch (PR #15, MERGED and live)
 
 Found from the Members side while scoping Phase 2 subscriptions. The 2026-08-18 fix below was real but **incomplete in a way that mattered**: it guarded `checkout.session.completed`, and that branch sits *below* `customer.subscription.deleted` and `invoice.payment_failed` in the same router. Both were unguarded.
@@ -39,45 +48,21 @@ Two clean commits, both pushed to `main` (`148ffa5`, `69af5a7`) — Netlify auto
 
 ---
 
-## 2026-08-14
-
-- Added a new `## Skills and Tools Available` section to `CLAUDE.md`, closing an M8 gap flagged by the scheduled mwp-health compliance audit (README already existed and passed M10).
-
----
+## 2026-08-14 — Added a new `## Skills and Tools Available` section to `CLAUDE.md`, closing an M8 gap flagged by the scheduled mwp-health compliance audit (README alr…
 
 ## 2026-08-11 (session 2, part 2) — Design pass: patron form expand/collapse, centred heroes, new headline
 
-Follow-up polish after the enquiry forms shipped, done via a local production-build preview server (`next start` on a scratch port) rather than shipping blind.
-
-- **Patron form is now collapsed by default.** It sat open under the page copy on `/patron`, which read as pushy for a rare, high-value CTA. Now it's the original "✉️ Get in Touch" button until clicked, then grows open via a `grid-template-rows` transition (avoids needing a measured height in JS).
-- **Every hero/intro block centred**, not just the homepage: `/patron`'s badge+headline+intro, `/become`'s welcome callout, `/tiers`' intro line, and all six tier-detail pages' badge/name/price/tagline. Tier-detail pages centre the back-link too (it's one shared block there); `/patron` keeps its back-link left, matching how `/checkout` and other pages treat back-links.
-- **Homepage headline rewritten twice.** First pass replaced "Real Change Starts Here" with no headline at all — promoted the description to a bold `<h1>` instead. User feedback: too much text for a hero, doesn't read as a "quick hit." Reverted to a real two-line headline, new copy **"Wellbeing, Built *by Doing*"** — ties into the brand mantra already used sitewide instead of a generic line that didn't connect to the mission. Chosen from a set of options I drafted; kept the H1 tag throughout both passes for SEO/heading-hierarchy reasons (this page and `not-found.tsx` are the only two `.h1` users).
-
----
-
 ## 2026-08-11 (session 2) — Two enquiry forms (`/patron`, new `/contact`) replaced the site's last mailto CTAs, fixing a spam-classification problem; verified live via netlify dev
-
----
 
 ## 2026-08-11 — Platform audit: the "zero donations" premise was wrong, mail landmine cleared, duplicate page removed, first funnel event shipped
 
----
-
 ## 2026-07-30 (session 2) — Cleanup batch: tier data centralised into `tiers.ts` (removed 3 drifted copies across `/checkout`, `/become`, `/tiers`), dead cookie-banner components removed, sitemap.xml/llms.txt SEO gaps closed
-
----
 
 ## 2026-07-30 — Platform review: fixed `capture_pageview:true` breaking pageview tracking fleet-wide, added security headers to the Next.js runtime, fixed a silent failure on unresolved Stripe tier metadata, corrected inaccurate tier copy, and wrote the campaign UTM taxonomy spec (the "nobody has donated" finding here was corrected by the 2026-08-11 entry above)
 
----
-
 ## 2026-07-29 — Fixed referrer-stripping `rel="noopener noreferrer"` on 3 outbound links back to empowrcic.org (missed by an earlier sweep) and added UTM tags to them
 
----
-
 ## 2026-07-28 — Switched PostHog from `persistence: 'memory'` to `cookieless_mode: 'always'` (`0713504`) as part of the Empowr CIC-wide cookieless rollout; deploy verified ready
-
----
 
 ## Session — 7 May 2026 — Added `invoice.payment_failed` webhook handler (Notion status + orange internal alert); replaced the hardcoded "Most Popular" tier badge with a data-driven one from Notion donation counts (`lib/analytics.ts`, 1h cache)
 
