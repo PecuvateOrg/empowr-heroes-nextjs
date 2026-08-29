@@ -12,14 +12,15 @@
   --red-soft:    rgba(255,97,97,0.09);
   --black:       #1B1B1B;
   --mid:         #4a4a4a;
-  --muted:       #7a7a8a;
+  --muted:       #6b6b78;
   --cream:       #f8f7f4;
   --warm-white:  #fdfcfa;
   --card:        #ffffff;
   --border:      #e5e1db;
   --border-b:    rgba(74,112,194,0.18);
   --patron-bg:      #faf8f3;
-  --patron-gold:    #b8924a;
+  --patron-gold:      #7d6329;
+  --patron-gold-text: var(--patron-gold);
   --patron-gold-lt: #d4aa6a;
   --patron-gold-s:  rgba(184,146,74,0.12);
   --patron-border:  rgba(184,146,74,0.25);
@@ -142,8 +143,8 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 2.2rem 0; }
    BUTTONS — mobile base
 ───────────────────────────────────────── */
 .btn {
-  display: inline-flex; align-items: center; gap: 0.4rem;
-  padding: 0.72rem 1.4rem; border-radius: 100px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+  padding: 0.72rem 1.4rem; border-radius: 100px; min-height: 44px;
   font-family: 'Nunito', sans-serif;
   font-size: 0.88rem; font-weight: 800;
   text-decoration: none; border: none; cursor: pointer;
@@ -317,8 +318,8 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 2.2rem 0; }
 .tc-desc { font-size: clamp(0.78rem, 1.5vw, 0.84rem); color: var(--muted); line-height: 1.6; margin-bottom: 1rem; flex-grow: 1; }
 .tc-btns { display: flex; flex-direction: column; gap: 0.38rem; }
 .tca {
-  display: block; text-align: center;
-  padding: 0.56rem 1rem; border-radius: 100px;
+  display: flex; align-items: center; justify-content: center; text-align: center;
+  padding: 0.56rem 1rem; border-radius: 100px; min-height: 44px;
   font-family: 'Nunito', sans-serif;
   font-size: 0.8rem; font-weight: 800;
   text-decoration: none; transition: all 0.2s;
@@ -404,15 +405,15 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 2.2rem 0; }
   background: var(--patron-gold-s); border: 1px solid var(--patron-border);
   border-radius: 100px; padding: 0.3rem 0.8rem;
   font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em;
-  text-transform: uppercase; color: var(--patron-gold); margin-bottom: 0.9rem;
+  text-transform: uppercase; color: var(--patron-gold-text); margin-bottom: 0.9rem;
 }
 .fp-title {
   font-size: 1.5rem; font-weight: 900;
   color: var(--patron-deep); line-height: 1.12; margin-bottom: 0.45rem;
 }
-.fp-title em { font-style: italic; color: var(--patron-gold); }
+.fp-title em { font-style: italic; color: var(--patron-gold-text); }
 .fp-price {
-  font-size: 0.82rem; color: var(--patron-gold);
+  font-size: 0.82rem; color: var(--patron-gold-text);
   font-weight: 700; margin-bottom: 0.8rem; opacity: 0.85;
 }
 .fp-desc {
@@ -576,7 +577,7 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 2.2rem 0; }
   background: var(--patron-gold-s); border: 1px solid var(--patron-border);
   border-radius: 100px; padding: 0.34rem 0.88rem;
   font-size: 0.68rem; font-weight: 800; letter-spacing: 0.16em;
-  text-transform: uppercase; color: var(--patron-gold); margin: 0 auto 1rem;
+  text-transform: uppercase; color: var(--patron-gold-text); margin: 0 auto 1rem;
 }
 .patron-h1 {
   font-size: clamp(1.9rem, 5vw, 4rem); font-weight: 900;
@@ -584,7 +585,7 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 2.2rem 0; }
   color: var(--patron-deep); margin-bottom: 0.9rem;
   text-align: center;
 }
-.patron-h1 em { font-style: italic; color: var(--patron-gold); }
+.patron-h1 em { font-style: italic; color: var(--patron-gold-text); }
 .patron-intro {
   font-size: 0.97rem; line-height: 1.8; color: var(--mid);
   font-weight: 500; margin-bottom: 1.5rem;
@@ -605,7 +606,7 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 2.2rem 0; }
   display: block;
   font-size: 0.68rem; font-weight: 800;
   letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--patron-gold); margin-bottom: 1.5rem; opacity: 0.85;
+  color: var(--patron-gold-text); margin-bottom: 1.5rem; opacity: 0.85;
 }
 
 /* Impact grid */
@@ -652,7 +653,7 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 2.2rem 0; }
 .patron-partnership-box::before {
   content: '"';
   position: absolute; top: -0.5rem; left: 1.5rem;
-  font-size: 8rem; color: var(--patron-gold);
+  font-size: 8rem; color: var(--patron-gold-text);
   opacity: 0.08; font-family: Georgia, serif;
   line-height: 1; pointer-events: none;
 }
@@ -750,7 +751,7 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 2.2rem 0; }
   margin-top: 2.5rem; padding-top: 1.75rem;
   border-top: 1px solid var(--patron-border);
   font-style: italic; font-size: 0.93rem;
-  color: var(--patron-gold); line-height: 1.9;
+  color: var(--patron-gold-text); line-height: 1.9;
   font-weight: 600; text-align: center; opacity: 0.7;
 }
 
@@ -847,7 +848,7 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 2.2rem 0; }
 .fp-anchor-link {
   display: inline-flex; align-items: center; gap: 0.35rem;
   font-size: 0.95rem; font-weight: 700;
-  color: var(--patron-gold); text-decoration: none;
+  color: var(--patron-gold-text); text-decoration: none;
   border-bottom: 1.5px solid var(--patron-border);
   padding-bottom: 0.15rem;
   transition: all 0.2s; letter-spacing: 0.01em;
