@@ -4,6 +4,15 @@ A running record of development sessions, changes made, and decisions taken.
 
 ---
 
+## 2026-08-29 — Email templates surveyed from the Members side: 9 duplicated shells and an off-brand blue (findings only, nothing changed)
+
+No code in this repo was touched. Recorded here so the finding is not lost in another project's log.
+
+- `src/core/email-template.js` is **956 lines containing 9 separate `<!DOCTYPE` shells** — the same layout re-hand-written per email type.
+- Its palette mixes brand tokens (`#4A70C2`, `#e5e1db`, `#7a7a8a`, `#1B1B1B`) with off-brand ones, including **`#4f6ef7` — a different blue from brand `#4A70C2`** — in live donor email.
+- Heroes does have something Members lacks: **plain-text variants** (`buildEmailText`, `buildOneTimeEmailText`). Worth keeping if a shared shell is ever adopted.
+- Context and the proposal live in `Empowr CIC/DEVLOG.md` 2026-08-29. **Awaiting a scope decision — do not treat as scheduled work.**
+
 ## 2026-08-27 — add-a-tier runbook now covers Product-ID registration; metadata stamping planned
 
 Follow-up to yesterday's ownership gate. No code changed.
