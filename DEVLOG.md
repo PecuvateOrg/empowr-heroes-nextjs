@@ -4,6 +4,16 @@ A running record of development sessions, changes made, and decisions taken.
 
 ---
 
+## 2026-08-29 (session 2) — Design-audit fixes: tap-targets and text contrast raised to WCAG AA, merged to `main`
+
+- Ran `/design-audit` against 6 public routes (`/`, `/projects`, `/tiers`, `/become`, `/patron`, `/contact`) × 8 viewports. Found 1 HIGH (`/contact` form fields have no visible focus indicator — still open) and ~41 MEDIUM findings.
+- **Two shared button classes explained most tap-target findings.** `.btn`/`.tca` now guarantee `min-height: 44px` (were rendering 38-42px on mobile) — cleared ~34 findings across `/tiers` and `/become` in one CSS change each, not per-instance fixes.
+- **Contrast fixed via two design tokens.** Darkened `--muted` (`#7a7a8a`→`#6b6b78`) and `--patron-gold` (`#b8924a`→`#7d6329`, consolidated with a new `--patron-gold-text` alias since both needs converged on the same value) — clears description text, `.back-btn`, and every Patron-page gold text/button instance (including white-on-gold buttons that were failing at 2.9:1).
+- **Roughly half the original findings were checker noise, not real defects.** `design-audit.mjs` itself was alpha-blind (scored a 10%-opacity color tint as full-strength, producing false `1.00:1`/`1.85:1` readings on `--blue-soft`/`--patron-gold-s` tints) and gradient-blind (never read `background-image`, so white text inside a dark gradient CTA section scored against a distant light ancestor as `1.06:1`). Both fixed in Web Build Framework's own checker — full detail in that project's DEVLOG.
+- Also fixed a `run-audit.ps1` port-passthrough bug in `_config` that silently timed out every server-mode project's audit (not just this one) — the harness waited on port 4173 while `next start` always bound 3000.
+- Merged `feat/design-audit-fixes` to `main`, pushed — live.
+- **Still open, not attempted this session:** HIGH focus-visible gap on `/contact`; missing `<h1>` on `/become`/`/projects`/`/tiers`; missing `aria-current` in the nav; 2 badges under the 12px text floor; one iOS input-zoom and one heading-skip LOW; one unresolved ~2.8:1 contrast near-miss (single sample per page, couldn't pin to a specific element without disproportionate digging).
+
 ## 2026-08-29 — Email templates surveyed from the Members side: 9 duplicated shells and an off-brand blue (findings only, nothing changed)
 
 No code in this repo was touched. Recorded here so the finding is not lost in another project's log.
@@ -37,23 +47,7 @@ Found from the Members side while scoping Phase 2 subscriptions. The 2026-08-18 
 
 ## 2026-08-18 (session 2) — Cross-app Stripe webhook bug found and fixed: a Members booking triggered a real donation email
 
-Discovered from the Empowr Members side, mid-way through that project's live-mode Stripe smoke test: a real Members booking payment (Skate Jam, £7) triggered both the correct Members booking-confirmation email AND a Heroes "Thank You for Supporting Empowr" donor email plus an internal "ACTION NEEDED — unrecognised tier" alert to `hero@empowrcic.org` (confirmed sent 11:07 UTC via Gmail). No phantom Notion row landed — the missing `tier` value was rejected by Notion's own select-field schema before any write could happen.
-
-- **Root cause**: Heroes and Members share one live Stripe account. Stripe fires `checkout.session.completed` to every webhook endpoint registered on the account, regardless of which app's API key created the session — this is not scoped by API key. `donation-handler.ts`'s fallback path (written for a *misconfigured Heroes Payment Link* missing its `tier` metadata) had no way to tell that case apart from *an entirely different app's session*, so it treated the Members booking as an unresolved-tier donation and ran the full donor-email/alert/Notion-log path.
-- **Fix**: every genuine Heroes donation arrives via a dashboard-configured Payment Link; every other app (Members included) creates its own sessions via the API with `price_data`, which never carries a `payment_link`. Added a guard on `!session.payment_link` immediately after event-type routing, before any donor/email/Notion logic runs, in `donation-handler.ts`.
-- **Landed via a concurrent session, not a standalone commit here**: the fix was written mid-way through this project's own JS→TS migration/"Support a Project" work happening in parallel (same day, same repo) — the guard was sitting uncommitted in the shared working tree and got picked up automatically when that work was committed (`148ffa5`). Confirmed live: deployed commit `69af5a7`, published 12:54 UTC.
-- No cleanup needed on the Notion side (nothing was written); the stray internal alert email in `hero@empowrcic.org` was left as-is, not deleted.
-
 ## 2026-08-18 — "Support a Project" section shipped; webhook chain converted to TypeScript, `tier-config.js` retired
-
-Two clean commits, both pushed to `main` (`148ffa5`, `69af5a7`) — Netlify auto-deploys.
-
-- **Architecture fix first:** `donation-handler.js`/`stripe-webhook.js` converted to `.ts`, importing `tiers.ts` directly instead of the hand-synced `tier-config.js` (now deleted) — the split only existed because the webhook was CommonJS and couldn't import the app's TS config, and it had already caused one real bug (the missing-`onetime`-entry incident). `analytics.ts` refactored onto a new shared `notion-donations.ts` fetch.
-- **New `/projects` section**, alongside (not replacing) the generic Hero signup. `src/lib/projects.ts` is the single source of truth — an explicit `Project` type rather than `as const` inference, so the app type-checks correctly with zero projects configured. `/projects/[project]` is the app's first dynamic route. Backing a project hands off to the *existing* tier/checkout flow via a `?project=` param; `CheckoutConfirm` tags the Stripe URL with `client_reference_id` (no new Payment Link needed per project — confirmed against Stripe's docs). `donation-handler.ts` now writes the resolved project to a new Notion `Project` select property (added via MCP).
-- **No real projects configured yet** — `/projects` shows a "no open projects right now" empty state pointing to `/become`, deliberately not shipped with placeholder content. Adding one is a one-file edit to `projects.ts` (see `ops/runbooks/add-a-project.md`); discussed and declined a yes/no interest-survey in favour of watching real conversion via PostHog once a project exists.
-- **Verified live, not just built:** `stripe trigger` turned out unable to test the project-tagged path (`payment_link` isn't settable via the API — only Stripe itself sets it on a genuine Payment Link checkout), so verification used a manually-signed synthetic webhook event instead. Confirmed via direct Notion query: the row landed with the correct Tier/Project/Amount. Also confirmed a cross-app guard already present in the working tree (`if (!session.payment_link) return ignored` — not authored this session, found mid-work, preserved) correctly rejects non-Heroes sessions.
-- **Along the way:** cleared a stale leftover `next dev` process blocking local testing; caught `donation-handler.js` reappearing on disk byte-identical to git `HEAD` after being deleted (almost certainly an editor auto-restore, not real work — removed again); re-ran `stripe login` after finding the CLI's stored credential had been expired since 2026-07-01.
-- **Open:** a synthetic test donation row ("Test Donor (synthetic webhook)", session `cs_test_synthetic_1787056255718`) needs manual deletion from the live Notion Donations DB — no page-trash tool was available to do it directly. A restricted `Customers: Read`-only Stripe key for production (currently a full `sk_test_`/`sk_live_` key) was discussed and deferred as a separate, more careful task.
 
 ---
 
