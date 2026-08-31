@@ -4,6 +4,45 @@ Running state and persistent context for the Heroes donation platform.
 
 ---
 
+## Open question — failed-payment alerting (raised 2026-08-31, NOT yet actioned)
+
+Asked while settling the Empowr Members subscription dunning policy. Recorded
+here to be tackled in its own session.
+
+**What exists today.** `handlePaymentFailedEvent` in `src/core/donation-handler.ts`
+already handles `invoice.payment_failed`: it marks the donation's Notion record
+`Status = Payment Failed` and sends an **internal** notification to
+`hero@empowrcic.org` carrying name, email, tier, amount, attempt count and
+subscription ID. `customer.subscription.deleted` is handled separately.
+
+**Two gaps to weigh, neither urgent:**
+
+1. **The alert goes to staff, never to the donor.** Nothing tells the supporter
+   their card failed, so recovery depends on someone reading the inbox and
+   chasing manually. Stripe's own failed-payment emails (Billing → Revenue
+   recovery → customer emails) would cover this with no code, and carry a
+   hosted payment-update link.
+2. **It fires on EVERY retry attempt** (`attempt_count` is in the subject), so a
+   single failing card produces several staff emails across the retry window —
+   noisy enough that real ones may get ignored. A terminal-only alert, or one
+   that fires on first and final attempt only, is probably the better shape.
+
+**Cross-app constraint that makes this shared, not local:** the end-of-retry
+action is set **account-level in Stripe with no per-app override**, and Heroes
+shares the live Stripe account with Empowr Members. Whatever is chosen for one
+applies to the other. The user accepted "cancel the subscription" on 2026-08-31
+on the understanding it means the sub simply ends after retries — but note the
+asymmetry: for Members, cancel is benign (the member reverts to paying per
+session and can still attend), whereas for Heroes a recurring donation silently
+stops and the donor is unlikely to notice. Revenue leak, not a service failure.
+
+⚠️ **The current setting has NOT been verified.** It lives in Billing → Revenue
+recovery → Retries and Stripe exposes no API to read it — confirmed against the
+API surface and the docs on 2026-08-31. A note from 08-27 records it as
+"Cancel the subscription"; treat that as unconfirmed until someone looks.
+
+---
+
 ## Infrastructure
 
 | Service | Detail |
