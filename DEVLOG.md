@@ -4,6 +4,13 @@ A running record of development sessions, changes made, and decisions taken.
 
 ---
 
+## 2026-08-31 — Failed-payment alerting question recorded; Stripe dunning settings verified and shared with Members
+
+- **Recorded an open question in `memory.md` for its own session:** `handlePaymentFailedEvent` already marks the Notion record `Payment Failed` and emails `hero@empowrcic.org`, but **the alert goes to staff and never to the donor** — recovery depends on someone reading that inbox and chasing manually. Stripe's own failed-payment emails would cover it with no code and carry a payment-update link.
+- **Second gap noted: it fires on every retry attempt**, so one failing card produced 8 staff emails across the retry window. Empowr cut the retry schedule from 8 to 4 this session, halving that — so the noise problem is already half-closed before anyone touches the code.
+- **Stripe dunning settings verified in the Dashboard** (no API exposes them): cancel the subscription after all retries fail, leave the invoice past-due, 4 attempts over 2 weeks. **All account-level with no per-app override, and the live account is shared with Empowr Members** — whatever is set for one applies to donors too.
+- ⚠️ Asymmetry worth knowing when this is picked up: for Members, "cancel" is benign (the member reverts to paying per session and can still attend); for Heroes a recurring donation silently stops and the donor is unlikely to notice. Revenue leak, not a service failure. No code changed this session.
+
 ## 2026-08-29 (session 2) — Design-audit fixes: tap-targets and text contrast raised to WCAG AA, merged to `main`
 
 - Ran `/design-audit` against 6 public routes (`/`, `/projects`, `/tiers`, `/become`, `/patron`, `/contact`) × 8 viewports. Found 1 HIGH (`/contact` form fields have no visible focus indicator — still open) and ~41 MEDIUM findings.
@@ -33,17 +40,6 @@ Follow-up to yesterday's ownership gate. No code changed.
 - Yesterday's gate confirmed still live (deploy `ready` on `83be16e`) and **still not exercised by a real event** — the first signal will be an `Ignoring … not a Heroes object` line once Members has a live subscription.
 
 ## 2026-08-26 — The August guard covered one of three branches; ownership now resolved at dispatch (PR #15, MERGED and live)
-
-Found from the Members side while scoping Phase 2 subscriptions. The 2026-08-18 fix below was real but **incomplete in a way that mattered**: it guarded `checkout.session.completed`, and that branch sits *below* `customer.subscription.deleted` and `invoice.payment_failed` in the same router. Both were unguarded.
-
-- **What would have happened.** Members' Phase 2 introduces per-session Subscriptions on the same shared account. A member cancelling their £25/mo Skate Jam plan fires `customer.subscription.deleted`; Heroes would have fetched that customer from Stripe, **written them into the Heroes donor Notion database**, and emailed an internal "supporter cancelled" alert. Same for a failed card via `invoice.payment_failed`. Members holds children's data, which makes the leak worse than the original incident. Nothing had fired yet — Members had no subscriptions.
-- **Stripe endpoint event filters do not help.** Filtering is by event *type*, not originating app, and this endpoint already subscribes to both events. Confirmed against the live account: Heroes' endpoint `we_1TIQI0…` carries `checkout.session.completed`, `customer.subscription.deleted`, `invoice.payment_failed`.
-- **Fix is structural, not another guard.** `resolveEventOwnership()` in new `core/event-ownership.ts` runs **once, before routing**. Positive identification only; default-deny; a new event type cannot reach a handler without being classified first. Adding a per-branch check would have rebuilt the same fragility — the reason this recurred is that the rule lived in one of three sibling branches. Same shape as the AdminHeader misses on Members.
-- **The signal is the Stripe Product ID, not metadata.** All five recurring Payment Links carry `subscription_data.metadata = {}`, so **Heroes' own subscriptions have no metadata on the Subscription object** — a metadata guard would have rejected genuine donors. Product IDs are embedded in the event payload (`subscription.items.data[].price.product`, `invoice.lines.data[].pricing.price_details.product`), so the check costs zero API calls and works retroactively. ⚠️ **Adding a tier now means adding its Product ID to `HEROES_PRODUCT_IDS`** or its subscription/invoice events are silently ignored.
-- **Also fixed a pre-existing bug in the same function.** `invoice.subscription` does not exist on this account's API version — it moved to `invoice.parent.subscription_details.subscription`. The `(invoice as any).subscription` cast silenced TypeScript and evaluated to `undefined` every time, so **every payment-failed alert and Notion row has carried a null subscription ID.** Verified by fetching a real invoice (`in_1TRWKy…`), not by reading SDK types.
-- **Verified against a real foreign object, not just fixtures.** `npm run verify:ownership` is 12/12 with fixtures mirroring live payloads. Beyond that, a genuine Members subscription was created in test mode (`sub_1U8lnw…`, product `prod_V93Ye60bephM1l`) and fed through the deployed resolver: rejected with *"subscription products [prod_V93Ye60bephM1l] are not Heroes products"*. A suite fed only Heroes' own events proves the handler works, not the guard.
-- **Live.** Merged as `83be16e`, Netlify deploy `ready` on that exact commit 18:57 UTC. **Not yet exercised by a real event** — the first genuine signal will be an `Ignoring … not a Heroes object` line in the function logs when Members' first live subscription event arrives. Deliberately not forced: the only way to trigger it today would be a real donor-facing side effect.
-- Blast radius check: the live account holds exactly **one** subscription ever (a £10 Seed Hero, already cancelled), and it carried `metadata: {}` — which is what proved the metadata-guard approach wrong.
 
 ## 2026-08-18 (session 2) — Cross-app Stripe webhook bug found and fixed: a Members booking triggered a real donation email
 
