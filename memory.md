@@ -36,10 +36,15 @@ asymmetry: for Members, cancel is benign (the member reverts to paying per
 session and can still attend), whereas for Heroes a recurring donation silently
 stops and the donor is unlikely to notice. Revenue leak, not a service failure.
 
-⚠️ **The current setting has NOT been verified.** It lives in Billing → Revenue
-recovery → Retries and Stripe exposes no API to read it — confirmed against the
-API surface and the docs on 2026-08-31. A note from 08-27 records it as
-"Cancel the subscription"; treat that as unconfirmed until someone looks.
+✅ **VERIFIED in the Dashboard 2026-08-31** (no API exposes these): subscription
+status after all retries fail → **cancel the subscription**; invoice status →
+leave past-due; retry schedule → **4 attempts over 2 weeks**, reduced from
+Stripe's recommended 8.
+
+That reduction already halves gap 2 above — Heroes alerts staff on every
+`invoice.payment_failed`, so a failing card now produces 4 staff emails per
+donor instead of 8. Worth knowing before tuning the alert further: some of the
+noise problem is already gone.
 
 ---
 
