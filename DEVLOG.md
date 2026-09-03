@@ -4,6 +4,13 @@ A running record of development sessions, changes made, and decisions taken.
 
 ---
 
+## 2026-09-03 — Repository audited, made public, and transferred to PecuvateOrg
+
+- Scanned current files and full Git history before publication; no high-confidence credentials were found and the tracked `.env.example` uses short placeholders
+- Transferred the live repository to `PecuvateOrg/empowr-heroes-nextjs`; the older personal `empowr-heroes` repository was not moved and remains a later archival-review candidate
+- `EmpowrCIC` retains write access; `main` requires a pull request with zero approvals, preserving owner self-merge while blocking direct pushes
+- No application files changed and the live Netlify site remained current
+
 ## 2026-08-31 — Failed-payment alerting question recorded; Stripe dunning settings verified and shared with Members
 
 - **Recorded an open question in `memory.md` for its own session:** `handlePaymentFailedEvent` already marks the Notion record `Payment Failed` and emails `hero@empowrcic.org`, but **the alert goes to staff and never to the donor** — recovery depends on someone reading that inbox and chasing manually. Stripe's own failed-payment emails would cover it with no code and carry a payment-update link.
@@ -30,14 +37,7 @@ No code in this repo was touched. Recorded here so the finding is not lost in an
 - Heroes does have something Members lacks: **plain-text variants** (`buildEmailText`, `buildOneTimeEmailText`). Worth keeping if a shared shell is ever adopted.
 - Context and the proposal live in `Empowr CIC/DEVLOG.md` 2026-08-29. **Awaiting a scope decision — do not treat as scheduled work.**
 
-## 2026-08-27 — add-a-tier runbook now covers Product-ID registration; metadata stamping planned
-
-Follow-up to yesterday's ownership gate. No code changed.
-
-- **`ops/runbooks/add-a-tier.md` gained a load-bearing step (new step 2).** Since the dispatch gate landed, adding a tier without registering its Stripe **Product ID** in `HEROES_PRODUCT_IDS` makes the tier *silently half-work*: donations still arrive (checkout sessions are identified by `payment_link`), but every `customer.subscription.deleted` and `invoice.payment_failed` for it is ignored — no alert, no Notion row, nothing errors. The step carries its own rationale, because a step whose reason is missing gets skipped.
-- **Documented the Payment Link metadata trap** in the same runbook and in `memory.md`: link `metadata` reaches the Checkout Session, but only `subscription_data.metadata` reaches the Subscription. All five recurring links leave it empty — which is exactly why Heroes' own subscriptions carry no marker and the guard identifies structurally.
-- **Planned, not done:** stamp `metadata.app = "heroes"` on the 6 Products and the 5 Payment Links' `subscription_data.metadata`. **Symmetry and future-proofing, not a fix** — and it must *not* replace the Product-ID guard, since every subscription created before stamping has no metadata and a metadata-only check would reject genuine donors. ~11 reversible CLI calls; affects future subscriptions only.
-- Yesterday's gate confirmed still live (deploy `ready` on `83be16e`) and **still not exercised by a real event** — the first signal will be an `Ignoring … not a Heroes object` line once Members has a live subscription.
+## 2026-08-27 — Extended the add-a-tier runbook for Product-ID registration and planned forward-looking Heroes metadata stamping without replacing the structural guard
 
 ## 2026-08-26 — The August guard covered one of three branches; ownership now resolved at dispatch (PR #15, MERGED and live)
 
