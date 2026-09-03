@@ -53,6 +53,7 @@ noise problem is already gone.
 | Service | Detail |
 |---|---|
 | Hosting | Netlify — `hero.empowrcic.org` |
+| GitHub | Public repository `PecuvateOrg/empowr-heroes-nextjs`; `main` is PR-only with zero required approvals |
 | Payments | Stripe (Payment Links, webhooks) |
 | Email | Resend — sending domain `empowrcic.org` (apex), address `hero@empowrcic.org` |
 | Donations DB | Notion — `Empowr Heroes Donations DB` (ID: `2d5e1485c4e1821baaed01000f3df0aa`) |
