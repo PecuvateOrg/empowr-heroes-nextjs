@@ -8,7 +8,7 @@ Read this after `CLAUDE.md`. Orients Claude Code within this project.
 
 Next.js 14 donation platform for the **Empowr Heroes Programme**. Supporters choose a monthly giving tier, pay via Stripe, and receive a welcome email via Resend. Donations are logged to a Notion database via a Netlify Function webhook.
 
-Deployed on Netlify. GitHub repo: `Pecuvate/empowr-heroes-nextjs` (`main` branch).
+Deployed on Netlify. GitHub repo: `PecuvateOrg/empowr-heroes-nextjs` (`main` branch, public).
 
 ---
 
@@ -18,7 +18,6 @@ Deployed on Netlify. GitHub repo: `Pecuvate/empowr-heroes-nextjs` (`main` branch
 empowr-heroes-nextjs/
 ├── CLAUDE.md                  Layer 0 — project rules and routing
 ├── CONTEXT.md                 This file — orientation
-├── DEVLOG.md                  Running session log and decisions
 ├── README.md                  Setup guide and local testing instructions
 │
 ├── src/                       Application code — read src/CONTEXT.md first
@@ -64,7 +63,7 @@ empowr-heroes-nextjs/
 
 ## Before Starting Work
 
-1. Read `DEVLOG.md` — check the latest session and any deferred issues
+1. Read `../workspace-docs/empowr-heroes-nextjs/DEVLOG.md` — the log lives in the private hub, not this repo
 2. Route to the correct workspace using the table above
 3. Run `npx tsc --noEmit` before committing to catch type errors early
 

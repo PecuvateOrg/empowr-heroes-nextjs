@@ -28,7 +28,7 @@ Run through this before merging any branch to `main`.
 - [ ] Working on a branch, not `main`
 - [ ] Branch is up to date with `main`
 - [ ] Commit messages are concise and imperative
-- [ ] `DEVLOG.md` updated with a session summary
+- [ ] `../../../workspace-docs/empowr-heroes-nextjs/DEVLOG.md` updated with a session summary (private hub, not this repo)
 - [ ] `CLAUDE.md` updated if any new infrastructure or architectural decisions were made
 
 ## After merge
