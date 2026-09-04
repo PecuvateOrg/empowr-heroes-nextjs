@@ -29,7 +29,7 @@ project uses eight.
 | Hosting | Netlify |
 | DNS | AWS Route 53 |
 | Domain registrar | Namecheap |
-| Email sending | Resend (`heroes@hero.empowrcic.org`) |
+| Email sending | Resend — sends from `hero@empowrcic.org`, the **apex** domain. Not `hero.empowrcic.org`: that subdomain has no MX, SPF, DKIM or DMARC (verified 2026-08-10) and mail from it fails outright. See `docs/donation-flow.md` §8. |
 | Payment processing | Stripe (Payment Links) |
 | Donation logging | Notion (`Empowr Heroes Donations DB`) |
 | Badge assets | AWS S3 (`empowr-cic` bucket, `badges/` prefix) |
