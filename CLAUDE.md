@@ -1,5 +1,18 @@
 # Empowr Heroes
 
+> **This repository is PUBLIC** (`PecuvateOrg/empowr-heroes-nextjs`).
+>
+> **Devlog and memory location:** `../workspace-docs/empowr-heroes-nextjs/`
+>
+> `DEVLOG.md` and `memory.md` are **not** kept in this repo — they hold operational
+> detail that must not be world-readable. Write session entries to the path above,
+> in the private Empowr CIC hub. Both filenames are gitignored here, so a copy created
+> in this directory is silently never committed.
+>
+> Never put live identifiers, unremediated security findings, or commercial state
+> in any file tracked here. See `../CONTEXT.md` and
+> `_config/guides/public-repo-collaboration.md`.
+
 ## Identity
 Donation platform for the **Empowr Heroes Programme** by Empowr CIC. Supporters choose a monthly giving tier → Stripe checkout → Netlify Function verifies webhook, sends welcome email via Resend, logs donation to Notion.
 
@@ -100,4 +113,4 @@ This file is the map. Workspace detail lives in each CONTEXT.md. Also read `DEVL
 | `/pre-deploy-security` | before any deploy | Security hygiene scan — secrets, CVEs, headers, RLS; FAILs block the deploy |
 | `/webapp-testing` | after frontend changes | Test UI with Playwright, capture screenshots |
 | `/simplify` | after a feature is built | Review changed code for reuse, quality, and efficiency |
-- GitHub: `Pecuvate/empowr-heroes-nextjs`
+- GitHub: `PecuvateOrg/empowr-heroes-nextjs` (public)

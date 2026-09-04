@@ -27,4 +27,4 @@ These docs are written for:
 - Code — that lives in `src/`
 - Operational runbooks (how to do something) — those live in `ops/runbooks/`
 - Architecture decisions — those live in `planning/decisions/`
-- Recent session notes — those live in `DEVLOG.md` at the project root
+- Recent session notes — those live in `../../workspace-docs/empowr-heroes-nextjs/DEVLOG.md`, in the private hub

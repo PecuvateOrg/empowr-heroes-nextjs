@@ -53,7 +53,7 @@ Reference for anyone (human or agent) picking up this project cold. Covers what 
 | Badge/asset CDN | AWS S3 | Badge PNGs served from `empowr-cic.s3.us-east-1.amazonaws.com` |
 | Font | Google Fonts | Nunito (loaded via `next/font/google`) |
 | Domain | hero.empowrcic.org | Production URL |
-| Repo | GitHub | `Pecuvate/empowr-heroes-nextjs`, `main` branch |
+| Repo | GitHub | `PecuvateOrg/empowr-heroes-nextjs`, `main` branch (public) |
 
 ---
 

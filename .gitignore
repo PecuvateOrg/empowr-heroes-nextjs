@@ -44,3 +44,9 @@ scripts/preview.html
 
 # Local env backups
 .env.local.bak
+
+# Internal workspace documents — held privately by the Empowr CIC hub.
+# This repo is PUBLIC; these carry operational detail and must never be
+# tracked here. See ../CONTEXT.md and ../workspace-docs/empowr-heroes-nextjs/.
+DEVLOG.md
+memory.md

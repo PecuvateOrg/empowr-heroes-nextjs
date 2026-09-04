@@ -43,6 +43,6 @@ Netlify will not automatically redeploy after an env var change. Trigger a manua
 
 Only after confirming the new key works in production.
 
-### 6. Update `DEVLOG.md`
+### 6. Update `DEVLOG.md` (in the private hub)
 
 Note the rotation date and reason.
