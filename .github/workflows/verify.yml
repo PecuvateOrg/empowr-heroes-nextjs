@@ -1,0 +1,54 @@
+# Runs the typecheck and the Stripe event-ownership suite on every pull request.
+#
+# Why this exists: Heroes shares ONE live Stripe account with Empowr Members, and
+# Stripe delivers every subscribed event type to EVERY endpoint on the account —
+# delivery is not scoped by API key. `verify:ownership` is the guard that keeps a
+# Members booking from being processed as a Heroes donation. That has already
+# happened twice (2026-08-18 incident, 2026-08-26 near-miss).
+#
+# The suite existed and nothing ran it. It was invoked by hand, if at all.
+name: verify
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# A new push to the same PR supersedes the previous run.
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: src
+    steps:
+      - uses: actions/checkout@v4
+
+      # NOT netlify.toml's NODE_VERSION, which is 20. verify:ownership runs a .ts
+      # file directly through `node --test`, and native type stripping only exists
+      # from Node 22 — on 20 it dies with ERR_UNKNOWN_FILE_EXTENSION before
+      # asserting anything. Same split as empowr-members: the suite is pure logic
+      # (event classification, product-ID matching) with no runtime coupling, so
+      # validating on 22 is sound. Closing the split is a deploy change, not a CI
+      # one — either bump netlify.toml to 22 or add a type stripper.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: src/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      # CLAUDE.md requires this before every commit; a job should own it, not a habit.
+      - name: Typecheck
+        run: npx tsc --noEmit -p tsconfig.json
+
+      - name: Verify suites
+        run: npm run verify:ownership
