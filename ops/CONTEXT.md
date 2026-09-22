@@ -15,7 +15,7 @@ This workspace covers deployment, infrastructure, and operational tooling.
 
 Rotating an API key is **not** documented here. The procedure is workspace-level
 (`_config/guides/environment.md` → "Rotating a credential"), the variable list is in
-`_config/registry/env-vars.md` → `empowr-heroes`, and where to get a replacement value
+`_config/registry/credentials.md` → `empowr-heroes`, and where to get a replacement value
 is in `_config/registry/third-party-services.md` per service. This repo previously
 carried its own copy; it had already drifted — it listed six variables when the
 project uses eight.
