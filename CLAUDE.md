@@ -32,6 +32,16 @@ at session start.
 
 ---
 
+## Shared Memory
+
+Adopts `Frameworks/MWP Framework/spec/session-memory.md` (2026-10-05). This repo is public, so
+all of these live in the **private** hub at `../workspace-docs/empowr-heroes-nextjs/`, never here:
+
+- Session bridge (read at start, rewrite in place at close, ≤1,000 words): `memory.md`
+- Decisions: `decisions.md`
+- Traps and "do not" rules — read before touching the area: `gotchas.md`
+- Session history: `DEVLOG.md`; pre-bridge memory, search only: `archive/memory-history-to-2026-10-05.md`
+
 ## Cross-Workspace Flows
 
 - **Stripe** — tier metadata (`tier` field) must be set manually on each Payment Link in the Stripe dashboard; webhook fires on successful payment
