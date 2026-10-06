@@ -52,6 +52,12 @@ export default async function ProjectDetailPage({
       <div className="wrap section-top-2">
         <ProjectProgress raised={raised} goal={info.goalAmount} large />
 
+        {info.link && (
+          <p className="body">
+            <a href={info.link.href} target="_blank" rel="noopener" style={{ color: 'var(--blue)', fontWeight: 700 }}>{info.link.label}</a>
+          </p>
+        )}
+
         <div className="tag-section">
           <span className="tag-label">What Your Support Funds</span>
           <div className="impact-sm">

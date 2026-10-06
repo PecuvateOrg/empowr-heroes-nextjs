@@ -3,6 +3,8 @@
 // project is a one-file change (no new page needed — /projects/[project] is
 // a dynamic route driven entirely by this file). See ops/runbooks/add-a-project.md.
 //
+import { LINKS } from '@/lib/links'
+
 // Unlike tiers.ts, projects have NO separate Stripe Payment Link. Backing a
 // project hands off to the existing tier/checkout flow with a `project` query
 // param, which CheckoutConfirm appends to the Stripe URL as `client_reference_id`
@@ -29,6 +31,7 @@ export type Project = {
   goalAmount: number | null // GBP funding target; null = not costed yet, shows "target coming soon" with no bar
   status: 'active' | 'funded' | 'closed'
   impactAreas: ImpactArea[] // exactly 4, shown on the detail page
+  link?: { href: string; label: string } // optional outbound link on the detail page; href comes from LINKS
 }
 
 export type ProjectKey = string
@@ -70,6 +73,7 @@ export const PROJECTS: Record<ProjectKey, Project> = {
     short: 'A permanent Empowr space at the former Bridge Leisure Centre',
     goalAmount: null,
     status: 'active',
+    link: { href: LINKS.projects.bridgeListing, label: 'See the building we\'re working to secure →' },
     impactAreas: [
       { icon: '🔑', title: 'Securing the Building', body: 'Taking on the lease of a building that has stood empty for years.' },
       { icon: '🛠️', title: 'Making It Safe & Skateable', body: 'Repairs, flooring and safety work to bring it up to standard.' },
