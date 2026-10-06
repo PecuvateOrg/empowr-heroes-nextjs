@@ -1,0 +1,19 @@
+# Netlify deploy previews are switched off for this site (skip_prs, 2026-10-06):
+# every Netlify site shares one build-minute allowance. This posts a one-time
+# reminder on each new PR to preview the branch locally instead.
+name: Preview locally
+on:
+  pull_request:
+    types: [opened]
+permissions:
+  pull-requests: write
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+    steps:
+      - run: gh pr comment "$PR" --repo "$REPO" --body "$BODY"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          BODY: "**No Netlify preview for this PR.** Deploy previews are turned off for this site to save build minutes. To review before merging, check out this branch and run the production build defined in `netlify.toml`, then open it locally."
