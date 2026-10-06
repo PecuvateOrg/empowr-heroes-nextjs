@@ -31,7 +31,8 @@ export type Project = {
   goalAmount: number | null // GBP funding target; null = not costed yet, shows "target coming soon" with no bar
   status: 'active' | 'funded' | 'closed'
   impactAreas: ImpactArea[] // exactly 4, shown on the detail page
-  link?: { href: string; label: string } // optional outbound link on the detail page; href comes from LINKS
+  about?: string[]       // optional extra paragraphs on the detail page (the longer story)
+  places?: { name: string; note: string; href: string }[] // optional "spaces we're working to secure" list; href comes from LINKS
 }
 
 export type ProjectKey = string
@@ -64,21 +65,28 @@ export type ProjectKey = string
 // donation logged against the new project.
 
 export const PROJECTS: Record<ProjectKey, Project> = {
-  'the-bridge': {
-    name: 'The Bridge — A Home for Empowr',
+  'eela-spaces': {
+    name: 'EELA Spaces — Empty Places, Social Value',
     emoji: '🏗️',
-    tagline: 'Help us bring the former Bridge Leisure Centre in Sydenham back to life as a permanent Empowr space',
-    lead: 'Turn an empty leisure centre into a home for the community',
-    body: 'your support helps us secure and convert the former Bridge Leisure Centre on Kangley Bridge Road into a permanent space for skating, wellbeing and experiential learning, so our sessions no longer depend on hired halls.',
-    short: 'A permanent Empowr space at the former Bridge Leisure Centre',
+    tagline: 'Help us turn abandoned buildings into community spaces for wellbeing, learning and belonging',
+    lead: 'Turn abandoned places into spaces with social value',
+    body: 'your support helps us secure and convert empty buildings, many of them disused council properties, into permanent EELA Spaces: community hubs where people move, connect and grow, starting with skating.',
+    short: 'Converting empty buildings into permanent community spaces',
     goalAmount: null,
     status: 'active',
-    link: { href: LINKS.projects.bridgeListing, label: 'See the building we\'re working to secure →' },
+    about: [
+      'Empowr began with a simple observation: across our communities were countless empty halls and unused spaces, sitting idle for most of the week. We set out to bring life back into them as hubs of experiential learning.',
+      'An EELA Space is a permanent home for Empowr Experiential Learning Activities: a place where people of all ages learn by doing, and build confidence, connection and wellbeing along the way. Every Space starts with skating, through our MoveWell programme, and grows from there.',
+      'Today we rely on hired halls. A space of our own means more sessions, more people reached, and a building that gives back to the community around it instead of standing empty.',
+    ],
+    places: [
+      { name: 'The Bridge, Sydenham', note: 'The former Bridge Leisure Centre on Kangley Bridge Road, empty for years. Our first priority.', href: LINKS.projects.bridgeListing },
+    ],
     impactAreas: [
-      { icon: '🔑', title: 'Securing the Building', body: 'Taking on the lease of a building that has stood empty for years.' },
-      { icon: '🛠️', title: 'Making It Safe & Skateable', body: 'Repairs, flooring and safety work to bring it up to standard.' },
-      { icon: '🏠', title: 'A Permanent Home', body: 'A space of our own instead of relying on hired halls.' },
-      { icon: '🌱', title: 'More Sessions, More People', body: 'Room to run more sessions and new wellbeing programmes for SE London.' },
+      { icon: '🔑', title: 'Securing Buildings', body: 'Taking on empty buildings and bringing them back into community use.' },
+      { icon: '🛠️', title: 'Making Them Safe & Usable', body: 'Repairs, flooring and safety work to bring each space up to standard.' },
+      { icon: '🛼', title: 'Starting With Skating', body: 'Each Space opens with MoveWell skating sessions, then grows.' },
+      { icon: '🤝', title: 'Lasting Social Value', body: 'Places that build wellbeing, belonging and opportunity, not empty buildings.' },
     ],
   },
   'the-pathway': {
@@ -100,7 +108,7 @@ export const PROJECTS: Record<ProjectKey, Project> = {
 }
 
 /** Display order for the projects list. Empty = /projects shows its "no open projects" state. */
-export const PROJECT_ORDER: ProjectKey[] = ['the-bridge', 'the-pathway']
+export const PROJECT_ORDER: ProjectKey[] = ['eela-spaces', 'the-pathway']
 
 /** Full sentence form, same convention as tierDesc() in tiers.ts. */
 export function projectDesc(key: ProjectKey): string {

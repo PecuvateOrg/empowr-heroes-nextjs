@@ -52,10 +52,27 @@ export default async function ProjectDetailPage({
       <div className="wrap section-top-2">
         <ProjectProgress raised={raised} goal={info.goalAmount} large />
 
-        {info.link && (
-          <p className="body">
-            <a href={info.link.href} target="_blank" rel="noopener" style={{ color: 'var(--blue)', fontWeight: 700 }}>{info.link.label}</a>
-          </p>
+        {info.about?.map((para) => (
+          <p className="body" key={para}>{para}</p>
+        ))}
+
+        {info.places && info.places.length > 0 && (
+          <div className="tag-section">
+            <span className="tag-label">Spaces We're Working to Secure</span>
+            <div className="impact-sm">
+              {info.places.map((place) => (
+                <div className="impact-sm-item" key={place.name}>
+                  <div className="impact-sm-icon">📍</div>
+                  <div className="impact-sm-body">
+                    <strong>{place.name}</strong>
+                    <span>{place.note}{' '}
+                      <a href={place.href} target="_blank" rel="noopener" style={{ color: 'var(--blue)', fontWeight: 700 }}>See the building →</a>
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         )}
 
         <div className="tag-section">
