@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import Mantra from '@/components/Mantra'
+import ProjectProgress from '@/components/ProjectProgress'
 import { getProjectFundingTotals } from '@/lib/project-funding'
 import { PROJECTS, PROJECT_ORDER, projectDesc, type ProjectKey } from '@/lib/projects'
 
@@ -36,7 +37,6 @@ export default async function ProjectDetailPage({
 
   const totals = await getProjectFundingTotals()
   const raised = totals[project] || 0
-  const pct = Math.min(100, Math.round((raised / info.goalAmount) * 100))
 
   return (
     <main className="page-content page-tier-detail">
@@ -50,14 +50,7 @@ export default async function ProjectDetailPage({
       </div>
 
       <div className="wrap section-top-2">
-        <div className="pc-progress pc-progress-lg">
-          <div className="pc-progress-track">
-            <div className="pc-progress-fill" style={{ width: `${pct}%` }} />
-          </div>
-          <div className="pc-progress-label">
-            <strong>£{raised.toLocaleString('en-GB')}</strong> raised of £{info.goalAmount.toLocaleString('en-GB')} goal
-          </div>
-        </div>
+        <ProjectProgress raised={raised} goal={info.goalAmount} large />
 
         <div className="tag-section">
           <span className="tag-label">What Your Support Funds</span>
