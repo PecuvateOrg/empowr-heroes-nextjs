@@ -9,6 +9,8 @@ const BASE = 'https://hero.empowrcic.org'
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: BASE, changeFrequency: 'monthly', priority: 1 },
+    { url: `${BASE}/projects`, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE}/mission`, changeFrequency: 'yearly', priority: 0.7 },
     { url: `${BASE}/become`, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${BASE}/tiers`, changeFrequency: 'monthly', priority: 0.8 },
     ...TIER_ORDER.map((key) => ({
