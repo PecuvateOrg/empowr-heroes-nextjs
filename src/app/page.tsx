@@ -18,7 +18,7 @@ export default async function Home() {
         <div className="hero-inner">
           <h1 className="h1">Turning Places Into Spaces<br /><em>for Lifelong Wellbeing</em></h1>
           <p className="hero-sub">
-            Empowr CIC is a South-East London movement promoting lifelong wellbeing through experiential learning.
+            Empowr CIC is a movement promoting lifelong wellbeing through experiential learning.
             Through skating, classes and community sessions, people of all ages build confidence, connection and health by doing.
           </p>
           <div className="hero-btns">
