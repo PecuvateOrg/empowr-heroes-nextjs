@@ -32,7 +32,7 @@ export default function Nav() {
       </div>
       <ul className="nav-links">
         <li>
-          <Link href="/" className={isActive('/') ? 'active' : ''}>Our Mission</Link>
+          <Link href="/mission" className={isActive('/mission') ? 'active' : ''}>Our Mission</Link>
         </li>
         <li>
           <Link href="/projects" className={isActive('/projects') ? 'active' : ''}>Support a Project</Link>

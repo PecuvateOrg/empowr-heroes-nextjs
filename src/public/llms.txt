@@ -6,7 +6,9 @@ Empowr Heroes provides a transparent, mission-aligned giving experience — conn
 
 ## Key Pages
 
-- [Home](https://hero.empowrcic.org): Empowr's mission, why experiential learning matters, and what supporter contributions make possible
+- [Home](https://hero.empowrcic.org): What Empowr is raising for, the two ways to give (back a project or become a Hero), and what a Hero receives
+- [Support a Project](https://hero.empowrcic.org/projects): Named projects to fund directly, such as EELA Spaces (converting empty buildings into community spaces) and The Pathway (skater to certified coach)
+- [Our Mission](https://hero.empowrcic.org/mission): Why experiential learning matters and what supporter contributions make possible
 - [Become a Hero](https://hero.empowrcic.org/become): Choose a Hero tier and give — the main donation page
 - [Hero Tiers](https://hero.empowrcic.org/tiers): Side-by-side comparison of every giving level and its impact
 - [Founding Patron](https://hero.empowrcic.org/patron): Transformational giving programme (£100,000+ annual or multi-year commitment, by enquiry)

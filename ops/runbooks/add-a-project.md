@@ -10,7 +10,7 @@ Add a new entry to `PROJECTS` keyed by a URL-safe slug, and add that slug to `PR
 
 - `name`, `emoji`, `tagline` — used on the `/projects` list card
 - `lead`, `body`, `short` — same copy convention as `tiers.ts`
-- `goalAmount` — funding target in GBP, used to compute the progress bar
+- `goalAmount` — funding target in GBP, used to compute the progress bar. `null` = not costed yet: the project shows "funding target coming soon" with no bar
 - `status` — `'active' | 'funded' | 'closed'`
 - `impactAreas` — 4 items of `{ icon, title, body }`, shown on the detail page
 

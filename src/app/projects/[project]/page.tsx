@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import Mantra from '@/components/Mantra'
+import ProjectProgress from '@/components/ProjectProgress'
 import { getProjectFundingTotals } from '@/lib/project-funding'
 import { PROJECTS, PROJECT_ORDER, projectDesc, type ProjectKey } from '@/lib/projects'
 
@@ -36,7 +37,6 @@ export default async function ProjectDetailPage({
 
   const totals = await getProjectFundingTotals()
   const raised = totals[project] || 0
-  const pct = Math.min(100, Math.round((raised / info.goalAmount) * 100))
 
   return (
     <main className="page-content page-tier-detail">
@@ -50,14 +50,30 @@ export default async function ProjectDetailPage({
       </div>
 
       <div className="wrap section-top-2">
-        <div className="pc-progress pc-progress-lg">
-          <div className="pc-progress-track">
-            <div className="pc-progress-fill" style={{ width: `${pct}%` }} />
+        <ProjectProgress raised={raised} goal={info.goalAmount} large />
+
+        {info.about?.map((para) => (
+          <p className="body" key={para}>{para}</p>
+        ))}
+
+        {info.places && info.places.length > 0 && (
+          <div className="tag-section">
+            <span className="tag-label">Spaces We're Working to Secure</span>
+            <div className="impact-sm">
+              {info.places.map((place) => (
+                <div className="impact-sm-item" key={place.name}>
+                  <div className="impact-sm-icon">📍</div>
+                  <div className="impact-sm-body">
+                    <strong>{place.name}</strong>
+                    <span>{place.note}{' '}
+                      <a href={place.href} target="_blank" rel="noopener" style={{ color: 'var(--blue)', fontWeight: 700 }}>See the building →</a>
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="pc-progress-label">
-            <strong>£{raised.toLocaleString('en-GB')}</strong> raised of £{info.goalAmount.toLocaleString('en-GB')} goal
-          </div>
-        </div>
+        )}
 
         <div className="tag-section">
           <span className="tag-label">What Your Support Funds</span>

@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import Mantra from '@/components/Mantra'
+import ProjectCard from '@/components/ProjectCard'
 import { getProjectFundingTotals } from '@/lib/project-funding'
-import { PROJECTS, PROJECT_ORDER } from '@/lib/projects'
+import { PROJECT_ORDER } from '@/lib/projects'
 
 export const metadata = {
   title: 'Support a Project — Empowr Heroes',
@@ -38,31 +39,9 @@ export default async function ProjectsPage() {
             <p className="body">Every project below is a concrete piece of work we're trying to fund. Pick one, and we'll take you through becoming a Hero or making a one-off gift in its support.</p>
 
             <div className="tiers-grid">
-              {PROJECT_ORDER.map((key) => {
-                const project = PROJECTS[key]
-                const raised = totals[key] || 0
-                const pct = Math.min(100, Math.round((raised / project.goalAmount) * 100))
-                return (
-                  <div key={key} className="tc">
-                    <div className="tc-emoji">{project.emoji}</div>
-                    <div className="tc-name">{project.name}</div>
-                    <div className="tc-desc">{project.tagline}</div>
-
-                    <div className="pc-progress">
-                      <div className="pc-progress-track">
-                        <div className="pc-progress-fill" style={{ width: `${pct}%` }} />
-                      </div>
-                      <div className="pc-progress-label">
-                        <strong>£{raised.toLocaleString('en-GB')}</strong> raised of £{project.goalAmount.toLocaleString('en-GB')} goal
-                      </div>
-                    </div>
-
-                    <div className="tc-btns">
-                      <Link href={`/projects/${key}`} className="tca tca-main">Support This Project</Link>
-                    </div>
-                  </div>
-                )
-              })}
+              {PROJECT_ORDER.map((key) => (
+                <ProjectCard key={key} projectKey={key} raised={totals[key] || 0} />
+              ))}
             </div>
           </>
         )}

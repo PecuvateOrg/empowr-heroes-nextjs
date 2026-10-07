@@ -26,6 +26,11 @@ export const LINKS = {
     patron: 'mailto:patron@empowrcic.org',
   },
 
+  projects: {
+    // Agent's listing for The Bridge. Link only: Kalmars' terms forbid reusing their photos.
+    bridgeListing: 'https://www.kalmars.com/commercial-property-to-rent/industrialwarehouse-to-rent-in-the-former-bridge-sports-leisure-centre-kangley-bridge-road-london-greater-london/4122',
+  },
+
   assets: {
     logo: '/logo.png',
   },

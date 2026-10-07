@@ -1,137 +1,125 @@
 import Link from 'next/link'
 import Mantra from '@/components/Mantra'
-import { LINKS } from '@/lib/links'
+import ProjectCard from '@/components/ProjectCard'
+import { getProjectFundingTotals } from '@/lib/project-funding'
+import { PROJECT_ORDER } from '@/lib/projects'
+import { TIERS, TIER_ORDER } from '@/lib/tiers'
 
-export default function Home() {
+export const revalidate = 3600
+
+export default async function Home() {
+  const totals = await getProjectFundingTotals()
+
   return (
     <main className="page-content page-home">
       <div className="hero-wrap">
         <div className="glow1"></div>
         <div className="glow2"></div>
         <div className="hero-inner">
-          <div className="callout callout-hero">
-             <strong><h2>💡Our mission is simple</h2></strong>
-            <b>To lead, promote, and scale Experiential Learning as the path to lifelong wellbeing for everyone.</b>
-          </div>
-          <h1 className="h1">Wellbeing, Built<br /><em>by Doing</em></h1>
+          <h1 className="h1">Turning Places Into Spaces<br /><em>for Lifelong Wellbeing</em></h1>
           <p className="hero-sub">
-            At Empowr, we don't just talk about wellbeing — we build it. Through hands-on experiences that strengthen body and mind,
-            we're proving that experiential learning isn't just beneficial, it's essential to a healthier, more capable society.
+            Empowr CIC is a movement promoting lifelong wellbeing through experiential learning.
+            Through skating, classes and community sessions, people of all ages build confidence, connection and health by doing.
           </p>
           <div className="hero-btns">
-            <Link href="/become" className="btn btn-blue">🏆 Become a Hero Today →</Link>
+            <a href="#projects" className="btn btn-blue">🎯 Back a Project</a>
+            <Link href="/become" className="btn btn-outline">🏆 Become a Hero</Link>
           </div>
         </div>
       </div>
 
       <div className="wrap section-top">
-        <h2 className="h2">Why This Matters</h2>
-        <div className="callout">
-          Every day, people across the UK struggle with mental and physical health challenges that traditional approaches can't fully address.
-          Meanwhile, our NHS buckles under pressure, and communities feel increasingly disconnected.
-        </div>
-        <p className="body">
-          But here's what science tells us: the brain, like the body, thrives on stimulation and activity. When people engage in novel,
-          challenging experiences — whether it's mastering roller skating, solving a Rubik's Cube, or simply showing up and trying something
-          new — they create new neural pathways. They build resilience. They discover capability.
-        </p>
-        <p className="body">And that individual transformation? It ripples outward:</p>
-        <div className="impact-grid">
-          <div className="ic">
-            <div className="ic-icon">💼</div>
-            <div className="ic-name">Stronger workforce engagement</div>
-            <div className="ic-desc">People become more focused, adaptable, and productive.</div>
+        <h2 className="h2">Two Ways to Give</h2>
+        <div className="tiers-grid home-paths">
+          <div className="tc">
+            <div className="tc-emoji">🎯</div>
+            <div className="tc-name">Back a Project</div>
+            <div className="tc-desc">
+              Choose something specific, like a building or our coaching pathway, and every pound you give is counted toward it.
+              You still become a Hero and receive your badge.
+            </div>
+            <div className="tc-btns">
+              <a href="#projects" className="tca tca-main">See Current Projects</a>
+            </div>
           </div>
-          <div className="ic">
-            <div className="ic-icon">🏥</div>
-            <div className="ic-name">Reduced pressure on health services</div>
-            <div className="ic-desc">Improved mental resilience means fewer GP visits and less reliance on NHS resources.</div>
-          </div>
-          <div className="ic">
-            <div className="ic-icon">🤝</div>
-            <div className="ic-name">More resilient communities</div>
-            <div className="ic-desc">People who feel capable contribute more actively to society.</div>
-          </div>
-          <div className="ic">
-            <div className="ic-icon">📈</div>
-            <div className="ic-name">Economic growth</div>
-            <div className="ic-desc">A healthier population is a more productive one.</div>
+          <div className="tc">
+            <div className="tc-emoji">🏆</div>
+            <div className="tc-name">Become a Hero</div>
+            <div className="tc-desc">
+              Give monthly from {TIERS.seed.price}, or a one-off gift of any amount. Your support goes wherever it's needed most
+              across Empowr's work.
+            </div>
+            <div className="tc-btns">
+              <Link href="/become" className="tca tca-main">Become a Hero</Link>
+            </div>
           </div>
         </div>
-        <p className="body">At Empowr, we're not just running activities. We're laying the groundwork for a more capable, healthier, and economically resilient society.</p>
-        <p className="body" style={{ fontSize: '0.9rem' }}>
-          <a href={LINKS.site.el} target="_blank" rel="noopener" style={{ color: 'var(--blue)', fontWeight: 700 }}>
-            Discover our approach to experiential learning →
-          </a>
-        </p>
 
         <hr className="div" />
 
-        <h2 className="h2">How We Do It</h2>
-        <p className="body">Through carefully designed experiential learning programs delivered in communities across the UK, we create spaces where people:</p>
-        <div className="three-col">
-          <div className="pillar">
-            <div className="pillar-icon">🌱</div>
-            <div className="pillar-name">Grow through action</div>
-            <div className="pillar-text">Transformation happens when people engage and experience.</div>
-          </div>
-          <div className="pillar">
-            <div className="pillar-icon">🫂</div>
-            <div className="pillar-name">Find belonging</div>
-            <div className="pillar-text">Authentic relationships and shared purpose unite our community.</div>
-          </div>
-          <div className="pillar">
-            <div className="pillar-icon">✨</div>
-            <div className="pillar-name">Build lifelong wellbeing</div>
-            <div className="pillar-text">Everyday habits and mindsets that create lasting health and joy.</div>
-          </div>
+        <h2 className="h2" id="projects">🎯 Current Projects</h2>
+        <p className="body">Concrete pieces of work we're raising for right now. Pick one to see exactly what your support makes possible.</p>
+        <div className="tiers-grid">
+          {PROJECT_ORDER.map((key) => (
+            <ProjectCard key={key} projectKey={key} raised={totals[key] || 0} />
+          ))}
         </div>
-        <p className="body">Our sessions are powered by the people who join them. But our future? That's built by our Heroes.</p>
 
         <hr className="div" />
 
-        <h2 className="h2">What Your Support Makes Possible</h2>
-        <div className="callout">💡 Empowr Heroes aren't just donors — they're sponsors of movement, healing, and growth.</div>
-        <p className="body">Your contributions directly fund:</p>
+        <h2 className="h2">🎖️ What You Get as a Hero</h2>
+        <div className="badge-row">
+          {TIER_ORDER.map((key) => (
+            <img key={key} src={`/badges/${key}-hero.svg`} alt={`${TIERS[key].name} badge`} width={72} height={72} />
+          ))}
+        </div>
         <ul className="support-list">
           <li>
             <div className="tick">✓</div>
-            <span><strong>Accessible sessions</strong> — keeping programs affordable for everyone, regardless of background or income.</span>
+            <span><strong>Your personalised Hero badge</strong>, sent with your welcome email, to share and wear with pride.</span>
           </li>
           <li>
             <div className="tick">✓</div>
-            <span><strong>Community coach training</strong> — developing coaches from within our communities who understand local needs.</span>
+            <span><strong>Updates on the impact you're making</strong>, so you see where your support goes.</span>
           </li>
           <li>
             <div className="tick">✓</div>
-            <span><strong>Expanded reach</strong> — bringing experiential learning to more venues, schools, and local hubs.</span>
+            <span><strong>A place in the Heroes community</strong>, the people who keep Empowr's work going.</span>
           </li>
           <li>
             <div className="tick">✓</div>
-            <span><strong>Sustainable growth</strong> — ensuring we can scale our impact across the UK.</span>
+            <span><strong>More at higher tiers:</strong> Champion and Legacy Heroes also receive quarterly updates and optional recognition, and Legacy Heroes get an annual conversation with our leadership team.</span>
           </li>
         </ul>
-        <p className="body">Every Hero fuels lifelong wellbeing through real-world action. Your impact starts with a simple choice.</p>
 
-        <hr className="div" />
-
-        <h2 className="h2">🎁 Choose Your Hero Tier</h2>
-        <p className="body">
-          Each Hero level helps us go further — and shows what your support makes possible. Whether it's a one-off fiver or £500 a month,
-          you're investing in a movement that transforms lives through the power of experience.
-        </p>
-        <div className="btn-row-inline">
-          <Link href="/tiers" className="btn btn-blue">🏆 View Full Hero Tier Breakdown →</Link>
-        </div>
-
-        <hr className="div" />
-
-        <h2 className="h2">🚀 Ready to Make Your Impact?</h2>
-        <p className="body">Join a growing movement of people who believe wellbeing is built through real-life action, connection, and care.</p>
-        <p className="body">Support the Empowr journey with a one-off or monthly Hero contribution.</p>
+        <ul className="home-tiers">
+          {TIER_ORDER.map((key) => (
+            <li key={key}>
+              <Link href={`/tiers/${key}`}>
+                <span>{TIERS[key].emoji} {TIERS[key].name}</span>
+                <strong>{TIERS[key].price}</strong>
+              </Link>
+            </li>
+          ))}
+        </ul>
         <div className="btn-row-inline">
           <Link href="/become" className="btn btn-blue">🏆 Become a Hero →</Link>
+          <Link href="/tiers" className="btn btn-outline">Compare Tiers</Link>
         </div>
+        <p className="body" style={{ fontSize: '0.9rem' }}>
+          Thinking bigger? <Link href="/patron" style={{ color: 'var(--blue)', fontWeight: 700 }}>Explore the Founding Patron Programme →</Link>
+        </p>
+
+        <hr className="div" />
+
+        <h2 className="h2">Why It Matters</h2>
+        <p className="body">
+          People learn best when they're in motion. Hands-on experiences build confidence, resilience and belonging, and that
+          ripples out into healthier, more connected communities.
+        </p>
+        <p className="body" style={{ fontSize: '0.9rem' }}>
+          <Link href="/mission" style={{ color: 'var(--blue)', fontWeight: 700 }}>Read our mission →</Link>
+        </p>
         <Mantra />
       </div>
     </main>

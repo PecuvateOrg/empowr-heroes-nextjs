@@ -1417,3 +1417,25 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 2.2rem 0; }
   /* Contact */
   .contact-wrap { max-width: 560px; }
 }
+
+/* ─────────────────────────────────────────
+   HOMEPAGE — badges and tier list
+───────────────────────────────────────── */
+.badge-row {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 0.75rem; margin: 1rem 0 0.5rem;
+}
+.badge-row img { width: 64px; height: 64px; }
+.home-tiers { list-style: none; margin: 1rem 0; display: flex; flex-direction: column; gap: 0.4rem; }
+.home-tiers a {
+  display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+  min-height: 44px; padding: 0.6rem 1rem;
+  background: var(--card); border: 1.5px solid var(--border); border-radius: 12px;
+  color: var(--black); text-decoration: none; font-size: 0.9rem; font-weight: 700;
+}
+.home-tiers a:hover { border-color: var(--blue-light); }
+.home-tiers strong { color: var(--blue); }
+@media (min-width: 768px) {
+  .home-paths { grid-template-columns: 1fr 1fr; }
+  .badge-row img { width: 80px; height: 80px; }
+}
