@@ -16,11 +16,10 @@ export default async function Home() {
         <div className="glow1"></div>
         <div className="glow2"></div>
         <div className="hero-inner">
-          <h1 className="h1">Turn Empty Places Into<br /><em>Spaces That Change Lives</em></h1>
+          <h1 className="h1">Turning Places Into Spaces<br /><em>for Lifelong Wellbeing</em></h1>
           <p className="hero-sub">
-            Empowr CIC builds wellbeing through doing: skating, learning and community in South-East London.
-            We're raising to turn empty buildings into permanent community spaces and to train the next generation of coaches.
-            Back a project directly, or become a Hero and support everything we do.
+            Empowr CIC is a South-East London movement promoting lifelong wellbeing through experiential learning.
+            Through skating, classes and community sessions, people of all ages build confidence, connection and health by doing.
           </p>
           <div className="hero-btns">
             <a href="#projects" className="btn btn-blue">🎯 Back a Project</a>
