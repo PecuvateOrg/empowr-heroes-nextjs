@@ -130,7 +130,7 @@ export default function PatronPage() {
           </p>
           <div className="patron-research-links">
             <a href={LINKS.site.elReport} target="_blank" rel="noopener" className="btn btn-outline">Read the Research →</a>
-            <a href={LINKS.research.notionDoc} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">View Source Document →</a>
+            <a href={LINKS.research.reportPdf} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">Download the Report (PDF) →</a>
           </div>
         </div>
 
