@@ -1,5 +1,18 @@
 # Empowr Heroes
 
+## About
+
+### What it is
+The donation site for the Empowr Heroes Programme, at hero.empowrcic.org.
+
+### What it's for
+To let supporters give regularly to Empowr CIC's work in a few clicks, and be thanked properly when they do.
+
+### How it works
+1. A supporter chooses a monthly giving tier.
+2. They pay securely through Stripe.
+3. They get a welcome email straight away, and the donation is recorded for Empowr's team.
+
 Next.js 14 site for the **Empowr Heroes Programme** by **Empowr CIC**.
 
 Hosted on Netlify. Supports monthly giving tiers routed through Stripe.
