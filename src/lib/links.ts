@@ -49,7 +49,7 @@ export const LINKS = {
   },
 
   research: {
-    notionDoc: 'https://empowr-cic.notion.site/A-Non-Medical-Approach-to-Tackling-Mental-Health-b74d6983ad4683699b790169fce98458?source=copy_link',
+    reportPdf: 'https://www.empowrcic.org/reports/empowr-non-medical-approach-to-mental-health-2025.pdf',
   },
 
   stripe: {
