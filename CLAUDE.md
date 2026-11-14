@@ -21,6 +21,7 @@ at session start.
 
 | Task | Go to | Read first | Skills |
 |---|---|---|---|
+| **Design: look, colours, components** | `design-system/` | `design-system/MASTER.md` (then the Empowr brand kit it names) | — |
 | UI — pages, components, styles | `src/` | `src/CONTEXT.md` | `/webapp-testing` |
 | Donation webhook, email logic | `src/core/` | `src/CONTEXT.md` | — |
 | Tier data and Stripe URLs | `src/lib/tiers.ts` | — | — |
