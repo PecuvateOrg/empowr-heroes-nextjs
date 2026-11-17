@@ -25,7 +25,7 @@ const SECURITY_HEADERS = [
 ]
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ['192.168.1.249'],
+  allowedDevOrigins: ['192.168.1.248'],
   async headers() {
     return [{ source: '/:path*', headers: SECURITY_HEADERS }]
   },
