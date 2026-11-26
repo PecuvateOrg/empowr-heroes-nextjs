@@ -7,9 +7,7 @@
 > `DEVLOG.md` and `memory.md` are not kept in this repo — write session entries to the path
 > above instead. See `NON-NEGOTIABLES.md` for what must never be committed here.
 
-@NON-NEGOTIABLES.md
-
-Other tools: read `NON-NEGOTIABLES.md` first, then `~/projects/NON-NEGOTIABLES.md`.
+Read `NON-NEGOTIABLES.md` before doing anything.
 
 ## Routing
 
